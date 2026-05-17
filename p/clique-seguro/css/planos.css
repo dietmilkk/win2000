@@ -1,0 +1,74 @@
+/* ==========================================================================
+   PLANOS.CSS - Estilos exclusivos para a Página de Planos
+   ========================================================================== */
+
+/* --- 01. LAYOUT & ESTRUTURA BASE --- */
+.planos-header { margin-left: -110px; width: calc(100% + 220px); }
+.pricing-grid { display: flex; gap: 30px; margin-top: 3rem; margin-bottom: 2rem; align-items: stretch; justify-content: center; width: calc(100% + 220px); margin-left: -110px; }
+.faq-section { margin-left: -50px; width: calc(100% + 50px); text-align: left; }
+.faq-accordion { display: flex; flex-direction: column; gap: 15px; max-width: 800px; margin: 0 auto; }
+
+/* --- 02. COMPONENTES PRINCIPAIS --- */
+.price-item { flex: 1; padding: 40px 30px; border: 1px solid #d4ceba; border-radius: 16px; display: flex; flex-direction: column; background-color: #f8f4e696; transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease, border-color 0.4s ease; }
+.price-item:hover { transform: translateY(-8px); border-color: var(--accent-green); box-shadow: 0 20px 40px rgba(0,0,0,0.08); background-color: #f8f4e6; }
+.price-item.featured { border-color: var(--accent-green); background-color: #f8f4e6d2; box-shadow: 0 10px 30px #0000000d; transform: scale(1.02); }
+.price-item.featured:hover { transform: scale(1.04) translateY(-10px); box-shadow: 0 25px 50px rgba(16, 185, 129, 0.15); }
+
+.faq-item { background: #fff; border-radius: 16px; border: 1px solid #d4ceba; overflow: hidden; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+.faq-item.active { border-color: var(--accent-green); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1); }
+.faq-question { width: 100%; text-align: left; background: none; border: none; padding: 25px; font-size: 1.15rem; font-weight: 600; color: var(--text-main); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Inter', sans-serif; }
+.faq-answer { max-height: 0; padding: 0 25px; opacity: 0; transition: all 0.4s ease; background: #fff; }
+.faq-item.active .faq-answer { max-height: 1500px !important; padding: 0 25px 25px 25px; opacity: 1; }
+
+/* --- 03. ELEMENTOS INTERNOS & TEXTOS --- */
+.price-item h2 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.price-item .price-value { margin: 1.5rem 0; font-size: 2.2rem; font-weight: 700; color: var(--text-main); }
+.price-item .price-value span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+.price-item .btn { width: 100%; font-size: 1rem; }
+.price-item:not(.featured) .btn { background-color: #292524; box-shadow: 0 4px 0 #1c1917; }
+.price-item:not(.featured) .btn:hover { background-color: #3b3534; box-shadow: 0 6px 0 #1c1917; }
+
+.feature-list-small { list-style: none; margin-bottom: 2.5rem; flex-grow: 1; }
+.feature-list-small li { font-size: 1rem; color: var(--text-muted); margin-bottom: 12px; padding-left: 24px; position: relative; }
+.feature-list-small li::before { content: '✓'; position: absolute; left: 0; color: var(--accent-green); font-weight: 700; }
+
+.faq-section h2 { font-size: 2.2rem; margin-top: 6rem; margin-bottom: 2.5rem; }
+.faq-icon { font-size: 1.5rem; color: var(--accent-green); transition: transform 0.3s ease; }
+.faq-item.active .faq-icon { transform: rotate(45deg); }
+
+/* Botão Individual (Escuro) */
+.price-item:not(.featured) .btn.is-active-lock,
+.price-item:not(.featured) .btn.is-loading {
+    background-color: #3b3534 !important;
+    filter: brightness(0.9); /* Um pouco mais escuro por ser cinza */
+}
+
+/* Botão Família (Verde) */
+.price-item.featured .btn.is-active-lock,
+.price-item.featured .btn.is-loading {
+    background-color: #12cc8f !important;
+    filter: brightness(0.95);
+}
+
+/* --- 04. RESPONSIVIDADE (@media) --- */
+@media (max-width: 1000px) {
+    .pricing-grid, .planos-header, .faq-section { width: 100%; margin-left: 0; }
+    .price-item.featured { transform: none; }
+}
+
+@media (max-width: 650px) {
+    .pricing-grid { flex-direction: column; gap: 20px; }
+}
+
+@media (max-width: 600px) {
+    .price-item, .faq-item { -webkit-tap-highlight-color: transparent !important; user-select: none; }
+    .planos-header, .faq-section h2 { text-align: left !important; margin-left: 0; }
+    .planos-header { margin-top: 10px !important; margin-bottom: 3rem; }
+    
+    .price-item { padding: 25px 15px; }
+    .price-item:hover { transform: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.4) !important; border-color: rgba(0, 0, 0, 0.05) !important; }
+    .price-item.featured:hover { transform: none !important; box-shadow: none !important; border-color: var(--accent-green) !important; }
+    
+    .feature-list-small li { padding-left: 28px !important; margin-bottom: 12px; position: relative; }
+    .feature-list-small li::before { content: '✓' !important; position: absolute; left: 0; top: 0; color: var(--accent-green); display: block !important; }
+}

@@ -1,0 +1,140 @@
+/* ==========================================================================
+   GLOBAL.CSS - Variáveis, Reset, Header, Footer e Componentes Globais
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg-color: #eee6d0;      
+    --text-main: #292524;     
+    --text-muted: #57534e;    
+    --accent-green: #10b981d4;  
+    --accent-hover: #0da575;  
+    --title: #064e3b;         
+}
+
+/* Reset e Estilos Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color); color: var(--text-main);
+    line-height: 1.6; font-weight: 400; padding: 140px 20px 0 20px; 
+    -webkit-font-smoothing: antialiased;
+    opacity: 0; transition: opacity 0.8s ease-in-out;
+}
+body.page-loaded { opacity: 1; }
+body.page-exit { opacity: 0; }
+
+h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 1rem; color: var(--text-main); }
+h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 1.2rem; color: var(--title); text-transform: none; }
+p { margin-bottom: 1.2rem; font-size: 1.1rem; color: var(--text-muted); }
+ul, li { list-style: none; }
+
+.container { max-width: 680px; margin: 0 auto; }
+
+/* Container estendido para páginas de conteúdo (Sobre/Planos) */
+.container-large { max-width: 950px; margin: 0 auto; }
+
+section { margin-bottom: 4rem; }
+
+/* Cabeçalho (Header) - Otimizado para GPU */
+header {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateZ(0);
+    width: calc(100% - 40px); max-width: 970px; margin: 0; padding: 18px 35px;
+    background-color: rgba(247, 243, 232, 0.5); 
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    background-image: radial-gradient(#dccfbc 0.5px, transparent 0.5px); background-size: 15px 15px; border-radius: 16px;
+    display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+    transition: max-width 0.4s ease, padding 0.4s ease, background-color 0.4s ease, border-radius 0.4s ease, box-shadow 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+    will-change: transform, width; /* Avisa o navegador para preparar a memória */
+}
+
+header.header-scrolled {
+    width: max-content !important; max-width: max-content !important; padding: 10px 20px; border-radius: 50px; 
+    background-color: rgba(251, 248, 239, 0.5); /* Aumentamos a opacidade levemente... */
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); /* ...para reduzir o peso do blur no scroll */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 2px solid rgba(0,0,0,0.04);
+}
+
+header.header-scrolled .logo { display: none; }
+header .logo { font-weight: 700; font-size: 1.3rem; letter-spacing: -0.02em; }
+
+nav { display: flex; gap: 2px; position: relative; align-items: center; }
+nav a {
+    color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; 
+    padding: 6px 14px; border-radius: 20px; transition: color 0.3s ease; letter-spacing: -0.01em; position: relative; z-index: 2; 
+}
+nav a:hover, nav a.active { color: var(--text-main); font-weight: 600; }
+.nav-indicator {
+    position: absolute; background-color: #e4d8b6; border-radius: 20px; z-index: 1; 
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); pointer-events: none; opacity: 0; left: 0; top: 0;
+}
+
+/* Rodapé (Footer) */
+footer { text-align: center; padding: 30px 0 30px; font-size: 0.9rem; color: #00000040; border-top: 1px solid #0000000b; max-width: 680px; margin: 10rem auto 0 auto; }
+
+/* Botões */
+.btn {
+    position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center;
+    padding: 16px 40px; background-color: #10b981; color: #ffffff; text-decoration: none; 
+    font-weight: 600; font-size: 1.05rem; border-radius: 50px; border: none; cursor: pointer;
+    transition: all 0.2s ease; box-shadow: 0 4px 0 #059669; 
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #059669; background-color: #12cc8f; }
+.btn:active { transform: translateY(4px); box-shadow: 0 0 0 #059669; transition: all 0.2s ease-out; }
+.btn-outline { background-color: transparent !important; color: var(--accent-green) !important; border: 2px solid var(--accent-green) !important; box-shadow: none !important; padding: 14px !important; }
+.btn-outline:hover { background-color: rgba(16, 185, 129, 0.1) !important; transform: translateY(-2px); }
+
+.btn.is-loading::after {
+    content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 26px; height: 26px;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="%23ffffff" stroke-width="5" stroke-dasharray="31.4 31.4"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" from="0 25 25" to="360 25 25"/></circle></svg>');
+    background-size: cover; opacity: 0; animation: btn-svg-fadein 0.3s ease-in forwards 0.2s;
+}
+
+/* Garante que o botão fique "travado" visualmente sem mudar de cor */
+.btn.is-active-lock, 
+.btn.is-loading {
+    background-color: #12cc8f !important; /* Cor fixa do hover para evitar a "picada" */
+    transform: translateY(4px) !important;
+    box-shadow: 0 0 0 #059669 !important;
+    pointer-events: none;
+    transition: all 0.3s ease; /* Suaviza qualquer mudança de estado */
+}
+
+/* Classe auxiliar para sumir com o texto suavemente */
+.btn.text-hide {
+    color: transparent !important;
+}
+
+@keyframes btn-svg-fadein { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); } }
+
+/* Responsividade Global (Mobile) */
+@media (max-width: 600px) {
+    html, body { width: 100%; overflow-x: hidden; }
+    body { padding: 135px 15px 0 15px; box-sizing: border-box; }
+    h1, h2, p, strong { text-align: left !important; margin-left: 0; }
+    .btn { width: 100%; padding: 15px; text-align: center; }
+    .btn-outline:hover { transform: none !important; }
+
+    header {
+        position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; max-width: 100% !important; transform: none !important; 
+        border-radius: 0 0 20px 20px !important; background-color: rgba(247, 243, 232, 0.95) !important;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); background-image: none !important; 
+        flex-direction: column !important; align-items: center !important; justify-content: center !important;
+        padding: 12px 15px 5px 15px !important; box-sizing: border-box; border: none !important; border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.05) !important;
+    }
+    header .logo { white-space: nowrap !important; font-size: 1.3rem !important; margin-bottom: 8px !important; }
+    nav { width: 100% !important; justify-content: center !important; overflow-x: auto !important; padding-bottom: 5px !important; gap: 15px !important; }
+    nav::-webkit-scrollbar { display: none; }
+    .nav-indicator { display: none !important; }
+    nav a.active { background-color: #e4dcbf !important; color: var(--text-main) !important; font-weight: 600 !important; }
+
+    header.header-scrolled {
+        flex-direction: row !important; width: max-content !important; padding: 10px 18px !important; border-radius: 40px !important; top: 15px !important; left: 50% !important;
+        transform: translateX(-50%) !important; max-width: 90% !important; display: flex !important; justify-content: center !important; align-items: center !important;
+        border: 2px solid rgba(0,0,0,0.05) !important; background-color: rgba(251, 248, 239, 0.4) !important;
+    }
+    header.header-scrolled .logo { display: none !important; }
+    header.header-scrolled nav { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+}

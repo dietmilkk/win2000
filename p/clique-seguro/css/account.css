@@ -1,0 +1,44 @@
+/* ==========================================================================
+   ACCOUNT.CSS - Estilos exclusivos para a Página da Conta / Login
+   ========================================================================== */
+
+/* --- 01. LAYOUT & ESTRUTURA BASE --- */
+.auth-page-container { max-width: 1000px !important; padding-top: 1rem; }
+.auth-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 50px; align-items: center; }
+.auth-content { display: flex; flex-direction: column; }
+
+/* --- 02. LISTA DE BENEFÍCIOS --- */
+.auth-benefits { list-style: none; padding: 0; margin-top: 10px; display: flex; flex-direction: column; gap: 25px; }
+.auth-benefits li { display: flex; align-items: flex-start; gap: 18px; }
+.benefit-icon { width: 48px; height: 48px; background-color: #d1fae5; color: #059669; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.auth-benefits strong { display: block; font-size: 1.1rem; color: var(--title); margin-bottom: 4px; }
+.auth-benefits span { font-size: 0.95rem; color: var(--text-muted); line-height: 1.4; display: block; }
+
+/* --- 03. FORMULÁRIOS & INPUTS --- */
+.auth-form { padding: 10px 0 25px 0; display: flex; flex-direction: column; gap: 18px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; text-align: left; width: 100%; }
+.form-group label { font-weight: 600; color: var(--title); font-size: 0.95rem; padding-left: 5px; }
+.form-group input { padding: 16px; border: 1px solid #d4ceba; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; background-color: #ffffff; color: var(--text-main); transition: all 0.3s ease; width: 100%; box-sizing: border-box; }
+.form-group input:focus { outline: none; border-color: var(--accent-green); box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); }
+.form-group .code-input { font-size: 1.4rem; text-align: center; letter-spacing: 2px; background-color: #fcfaf3; border: 2px solid #d4ceba; font-weight: 700; }
+.code-group { margin-top: 15px; padding-top: 25px; border-top: 2px dashed rgba(212, 206, 186, 0.5); display: flex; flex-direction: column; gap: 15px; }
+.auth-form .btn { width: 100%; font-size: 1rem; padding: 18px; }
+.auth-helper { font-size: 0.85rem !important; text-align: center !important; color: var(--text-muted) !important; opacity: 0.8; }
+
+/* --- 04. BLOCO DE VIDRO & SANFONAS PADRÃO --- */
+.auth-box-glass { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transform: translateZ(0); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 24px; padding: 30px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04); position: relative; z-index: 10; }
+.auth-box-glass .faq-item { box-shadow: none; border: 1px solid rgba(0,0,0,0.06); background: rgba(255, 255, 255, 0.7); transition: all 0.4s ease; border-radius: 16px; overflow: hidden; margin-bottom: 15px;}
+.auth-box-glass .faq-item.active { background: #ffffff; border-color: var(--accent-green); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.08); }
+.auth-box-glass .faq-question { width: 100%; text-align: left; background: none; border: none; padding: 25px; font-size: 1.15rem; font-weight: 600; color: var(--text-main); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.auth-box-glass .faq-icon { font-size: 1.5rem; color: var(--accent-green); transition: transform 0.3s ease; }
+.auth-box-glass .faq-item.active .faq-icon { transform: rotate(45deg); }
+.auth-box-glass .faq-answer { max-height: 0; padding: 0 25px; opacity: 0; transition: all 0.4s ease; background: #fff; }
+.auth-box-glass .faq-item.active .faq-answer { max-height: 1500px !important; padding: 0 25px 25px 25px; opacity: 1; }
+
+/* --- 05. RESPONSIVIDADE (@media) --- */
+@media (max-width: 850px) {
+    .auth-layout { grid-template-columns: 1fr; gap: 40px; }
+    .auth-content { text-align: center; }
+    .auth-benefits li { text-align: left; }
+    .auth-box-glass { padding: 20px 15px; background: transparent; box-shadow: none; border: none; }
+}

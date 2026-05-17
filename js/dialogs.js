@@ -1,0 +1,150 @@
+/* ============================================================
+   dialogs.js — Custom XP-style dialogs (alert, confirm, prompt)
+   ============================================================ */
+
+(function() {
+  "use strict";
+
+  var dialogOverlay = null;
+  var dialogBox = null;
+  var dialogCallback = null;
+
+  function xpDialog(options) {
+    var title = options.title || "Dialog";
+    var icon = options.icon || "i";
+    var message = options.message || "";
+    var type = options.type || "alert";
+    var defaultValue = options.defaultValue || "";
+    var callback = options.callback || function() {};
+
+    if (dialogOverlay) {
+      dialogOverlay.remove();
+    }
+
+    dialogOverlay = document.createElement("div");
+    dialogOverlay.id = "xpDialogOverlay";
+
+    var iconSvg = "";
+    switch (icon) {
+      case "?":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">?</text></svg>';
+        break;
+      case "!":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><polygon points="16,4 28,28 4,28" fill="#aa2222" stroke="#6a1111" stroke-width="2"/><text x="16" y="24" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">!</text></svg>';
+        break;
+      case ">":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><polygon points="6,6 26,16 6,26" fill="#666" stroke="#333" stroke-width="2"/></svg>';
+        break;
+      case "@":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><rect x="4" y="10" width="24" height="16" fill="#f0ece4" stroke="#888" stroke-width="2"/><rect x="6" y="12" width="20" height="3" fill="#0099cc"/></svg>';
+        break;
+      case "R":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><path d="M8 8 L24 8 L24 24 L8 24 Z M12 12 L12 20 M12 16 L20 12" fill="none" stroke="#888" stroke-width="3"/></svg>';
+        break;
+      case "C":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><text x="8" y="24" font-size="20" font-family="Arial" fill="#444" font-weight="bold">C</text></svg>';
+        break;
+      case "N":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><text x="8" y="24" font-size="20" font-family="Arial" fill="#444" font-weight="bold">N</text></svg>';
+        break;
+      default:
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/></svg>';
+    }
+
+    var buttons = "";
+    if (type === "confirm") {
+      buttons =
+        '<button id="xpDialogOk" class="xp-dialog-btn">OK</button><button id="xpDialogCancel" class="xp-dialog-btn">Cancel</button>';
+    } else if (type === "prompt") {
+      buttons =
+        '<button id="xpDialogOk" class="xp-dialog-btn">OK</button><button id="xpDialogCancel" class="xp-dialog-btn">Cancel</button>';
+    } else {
+      buttons = '<button id="xpDialogOk" class="xp-dialog-btn">OK</button>';
+    }
+
+    var inputField = "";
+    if (type === "prompt") {
+      inputField =
+        '<input type="text" id="xpDialogInput" class="xp-dialog-input" value="' +
+        defaultValue.replace(/"/g, "&quot;") +
+        '">';
+    }
+
+    dialogOverlay.innerHTML =
+      '<div id="xpDialogBox" class="xp-dialog">' +
+      '<div class="title-bar" style="background:#000080;color:#fff;padding:4px 8px;display:flex;align-items:center;justify-content:space-between;">' +
+      '<span style="font-weight:bold;">' +
+      title +
+      '</span>' +
+      '<span id="xpDialogClose" style="cursor:pointer;font-size:16px;line-height:1;">×</span>' +
+      "</div>" +
+      '<div class="xp-dialog-body" style="display:flex;padding:16px;gap:12px;align-items:flex-start;">' +
+      '<div style="flex-shrink:0;">' +
+      iconSvg +
+      "</div>" +
+      '<div style="flex:1;">' +
+      '<div style="white-space:pre-wrap;margin-bottom:12px;">' +
+      message +
+      "</div>" +
+      inputField +
+      "</div>" +
+      "</div>" +
+      '<div style="text-align:right;padding:8px 16px;background:#d4d0c8;">' +
+      buttons +
+      "</div>" +
+      "</div>";
+
+    document.body.appendChild(dialogOverlay);
+
+    var closeBtn = document.getElementById("xpDialogClose");
+    var okBtn = document.getElementById("xpDialogOk");
+    var cancelBtn = document.getElementById("xpDialogCancel");
+
+    function closeDialog() {
+      if (dialogOverlay) {
+        dialogOverlay.remove();
+        dialogOverlay = null;
+      }
+    }
+
+    closeBtn.addEventListener("click", closeDialog);
+
+    okBtn.addEventListener("click", function() {
+      if (type === "prompt") {
+        var input = document.getElementById("xpDialogInput");
+        callback(input.value);
+      } else {
+        callback(true);
+      }
+      closeDialog();
+    });
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function() {
+        if (type === "confirm") {
+          callback(false);
+        } else if (type === "prompt") {
+          callback(null);
+        }
+        closeDialog();
+      });
+    }
+
+    if (type === "prompt") {
+      setTimeout(function() {
+        var input = document.getElementById("xpDialogInput");
+        if (input) input.focus();
+      }, 10);
+    }
+  }
+
+  window.xpDialog = xpDialog;
+})();

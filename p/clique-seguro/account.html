@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta name="description" content="Acesse sua conta ou cadastre-se.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clique Seguro | Conta</title>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="css/account.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">Clique Seguro</div>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="planos.html">Planos</a>
+            <a href="account.html" class="active">Conta</a>
+        </nav>
+    </header>
+
+    <main class="container-large auth-page-container">
+        
+        <div class="auth-layout">
+            
+            <div class="auth-content">
+                <h1 style="font-size: 2.5rem; margin-bottom: 20px;">Sua segurança começa aqui.</h1>
+                <p style="font-size: 1.15rem; margin-bottom: 30px;">Crie sua conta em menos de 1 minuto ou acesse sua conta para gerenciar suas proteções.</p>
+                
+                <ul class="auth-benefits">
+                    <li>
+                        <div class="benefit-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div>
+                            <strong>Sem senhas difíceis</strong>
+                            <span>Acesse rapidamente com um código seguro enviado para você.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefit-icon" style="background-color: #dbeafe; color: #2563eb;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        </div>
+                        <div>
+                            <strong>Conexão Direta</strong>
+                            <span>Receba seus alertas e fale com o suporte direto no WhatsApp.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefit-icon" style="background-color: #fce7f3; color: #db2777;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <div>
+                            <strong>100% de Privacidade</strong>
+                            <span>Seus dados são criptografados e nunca compartilhados.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="auth-box-glass">
+                <section class="faq-section" style="width: 100%; margin: 0;">
+                    <div class="faq-accordion">
+                        
+                        <div class="faq-item">
+                            <button class="faq-question">Já tenho conta (Entrar) <span class="faq-icon">+</span></button>
+                            <div class="faq-answer">
+                                <form class="auth-form" id="login-form" onsubmit="event.preventDefault();">
+                                    <div class="form-group">
+                                        <label for="login-nome">Seu Nome Completo:</label>
+                                        <input type="text" id="login-nome" placeholder="Exemplo: Maria Souza da Silva" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="login-contato">Seu Telefone:</label>
+                                        <input type="text" id="login-contato" placeholder="Exemplo: (81) 99999-9999" required>
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-outline" id="btn-get-code-login">Quero Continuar</button>
+                                    
+                                    <div class="form-group code-group" id="login-code-group" style="display: none;">
+                                        <label for="login-codigo">Digite os números enviados para seu WhatsApp:</label>
+                                        <input type="text" id="login-codigo" placeholder="" required class="code-input">
+                                        <button type="submit" class="btn">Finalizar Cadastro</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="faq-item active">
+                            <button class="faq-question">Quero criar uma conta <span class="faq-icon">+</span></button>
+                            <div class="faq-answer">
+                                <form class="auth-form" id="register-form" onsubmit="event.preventDefault();">
+                                    <div class="form-group">
+                                        <label for="register-nome">Seu Nome Completo:</label>
+                                        <input type="text" id="register-nome" placeholder="Exemplo: Maria Silva" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="register-contato">Seu Telefone:</label>
+                                        <input type="text" id="register-contato" placeholder="Exemplo: (81) 99999-9999" required>
+                                    </div>
+
+                                    <button type="button" class="btn btn-outline" id="btn-get-code-register">Quero Continuar</button>
+
+                                    <div class="form-group code-group" id="register-code-group" style="display: none;">
+                                        <label for="register-codigo">Digite os números enviados para seu WhatsApp:</label>
+                                        <input type="text" id="register-codigo" placeholder="" required class="code-input">
+                                        <button type="submit" class="btn">Finalizar Cadastro</button>
+                                        <p class="auth-helper">Suas informações estão seguras conosco.</p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </section>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>&copy; 2026 Clique Seguro - SafeClick Project.</footer>
+
+</body>
+</html>
