@@ -22,7 +22,7 @@
     }
 
     dialogOverlay = document.createElement("div");
-    dialogOverlay.id = "xpDialogOverlay";
+    dialogOverlay.className = "xp-dialog-overlay";
 
     var iconSvg = "";
     switch (icon) {
@@ -80,27 +80,27 @@
 
     dialogOverlay.innerHTML =
       '<div id="xpDialogBox" class="xp-dialog">' +
-      '<div class="title-bar" style="background:#000080;color:#fff;padding:4px 8px;display:flex;align-items:center;justify-content:space-between;">' +
-      '<span style="font-weight:bold;">' +
+      '<div class="xp-dialog-title-bar">' +
+      '<span class="xp-dialog-title-text">' +
       title +
       '</span>' +
-      '<span id="xpDialogClose" style="cursor:pointer;font-size:16px;line-height:1;">×</span>' +
-      "</div>" +
-      '<div class="xp-dialog-body" style="display:flex;padding:16px;gap:12px;align-items:flex-start;">' +
-      '<div style="flex-shrink:0;">' +
+      '<span id="xpDialogClose" class="xp-dialog-close">×</span>' +
+      '</div>' +
+      '<div class="xp-dialog-body">' +
+      '<div class="xp-dialog-icon-area">' +
       iconSvg +
-      "</div>" +
-      '<div style="flex:1;">' +
-      '<div style="white-space:pre-wrap;margin-bottom:12px;">' +
+      '</div>' +
+      '<div class="xp-dialog-content">' +
+      '<div class="xp-dialog-msg">' +
       message +
-      "</div>" +
+      '</div>' +
       inputField +
-      "</div>" +
-      "</div>" +
-      '<div style="text-align:right;padding:8px 16px;background:#d4d0c8;">' +
+      '</div>' +
+      '</div>' +
+      '<div class="xp-dialog-buttons">' +
       buttons +
-      "</div>" +
-      "</div>";
+      '</div>' +
+      '</div>';
 
     document.body.appendChild(dialogOverlay);
 

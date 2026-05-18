@@ -19,7 +19,7 @@
 
       var ss = document.createElement("style");
       ss.textContent =
-        "*{cursor:none!important}#retroCursor{pointer-events:none;position:fixed;z-index:99999}.rc-img{display:block}";
+        "*{cursor:none!important}#retroCursor{pointer-events:none;position:fixed;z-index:199999}.rc-img{display:block}";
       document.head.appendChild(ss);
 
       var imgs = el.querySelectorAll(".rc-img");

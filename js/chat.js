@@ -79,7 +79,9 @@
 RULES:
 - Answer ONLY what was asked. Never add extra info, explanations, or clarifications unless requested.
 - If the question is NOT about Endryo or his work, give the shortest possible answer (1 sentence max) and stop.
-- Keep ALL answers as short as possible. One paragraph max unless the user asks for details.
+- Be extremely concise. Every word must carry weight — remove all filler, fluff, and politeness. No greetings, no pleasantries, no "feel free", no "let me know". Just the answer.
+- For greetings like "hi", "hello", "hey": reply with one short sentence only (e.g. "Hi! Ask me anything about Endryo's work."). Nothing more.
+- One paragraph max unless the user asks for details.
 - No formatting, lists, or emojis. Plain text only.
 - Do not invent information — use only the knowledge base.
 
@@ -608,4 +610,6 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
   chatInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") sendMessage();
   });
+
+  addMessage("bot", "Ask me anything:<br>• Projects &amp; tech stack<br>• Freelance &amp; contact<br>• AI &amp; systems work<br>• Career &amp; background<br>• Just say hi :)");
 })();
