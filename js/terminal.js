@@ -9,7 +9,44 @@
     var termBtnClose = document.getElementById('termBtnClose');
     var termBtnMinimize = document.getElementById('termBtnMinimize');
     var termBtnMaximize = document.getElementById('termBtnMaximize');
-    var termTaskbarEntry = document.getElementById('termTaskbarEntry');
+    var termTaskbarEntry = null;
+
+    function createTaskbarEntry() {
+      if (termTaskbarEntry) return;
+      var container = document.querySelector('.taskbar-items');
+      if (!container) return;
+      termTaskbarEntry = document.createElement('div');
+      termTaskbarEntry.className = 'taskbar-item';
+      termTaskbarEntry.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#111" stroke="#333" stroke-width="2"/><text x="8" y="11" text-anchor="middle" fill="#0f0" font-size="7" font-weight="bold">C:\\</text></svg> Terminal';
+      container.appendChild(termTaskbarEntry);
+      termTaskbarEntry.addEventListener('click', function() {
+        if (document.body.classList.contains('mobile-mode')) {
+          if (termWin.classList.contains('active')) {
+            termWin.classList.remove('active');
+            termTaskbarEntry.classList.remove('active');
+          } else {
+            document.querySelectorAll('.window').forEach(function(w) { w.classList.remove('active'); });
+            document.querySelectorAll('.taskbar-item').forEach(function(t) { t.classList.remove('active'); });
+            termWin.classList.add('active');
+            termTaskbarEntry.classList.add('active');
+            termBringToFront();
+          }
+          return;
+        }
+        if (termMinimized || termWin.style.display === 'none') {
+          showTerminal();
+        } else {
+          minimizeTerminal();
+        }
+      });
+    }
+
+    function removeTaskbarEntry() {
+      if (termTaskbarEntry) {
+        termTaskbarEntry.remove();
+        termTaskbarEntry = null;
+      }
+    }
 
     var termMinimized = true;
     var termMaximized = false;
@@ -343,27 +380,31 @@
             return '';
         },
         gif: function() {
-            var gifs = ['khanh2k6.gif','Working Chis Sweet Home GIF.gif','Apple Fruit GIF.gif','Gif.gif','Cat Festival GIF by W&W.gif','Baby Niche GIF.gif','gif.gif','Skeleton GIF.gif','Dance Skeleton GIF.gif','Bye Bye Skeleton GIF.gif','Sad Break Time GIF by BlueStacks.gif','Danse Macabre Fun GIF by Kiszkiloszki.gif','chuunibyou demo koi ga shitai dance GIF.gif','taiga aisaka t GIF.gif','cute anime GIF.gif','Anime Girl GIF.gif','gif(1).gif','Spinner Fern GIF.gif','Spinner Spinning GIF.gif','dancing GIF.gif','Animated GIF.gif','Sad Scream GIF.gif','tears crying GIF.gif','Om Nom Eating GIF.gif'];
-            var currentIndex = Math.floor(Math.random() * gifs.length);
-            var overlayId = 'gifOverlay' + Date.now();
-            var overlay = document.createElement('div');
-            overlay.id = overlayId;
-            function showGif(index) {
-              overlay.innerHTML = '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' + gifs[index] + '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">SPACE to exit | ← → to navigate (' + (index+1) + '/' + gifs.length + ')</div>';
-            }
-            showGif(currentIndex);
-            overlay.setAttribute('tabindex', '0');
-            overlay.style.outline = 'none';
-            document.body.appendChild(overlay);
-            overlay.focus();
-            var closeGif = function() { overlay.remove(); document.removeEventListener('keydown', keyHandler); };
-            var keyHandler = function(e) {
-              if (e.key === ' ') { e.preventDefault(); closeGif(); }
-              else if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % gifs.length; showGif(currentIndex); }
-              else if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + gifs.length) % gifs.length; showGif(currentIndex); }
-            };
-            document.addEventListener('keydown', keyHandler);
-            overlay.addEventListener('click', closeGif);
+            var output = '';
+            if (typeof window.loadGifList !== 'function') return 'GIF viewer not available.\n';
+            window.loadGifList(function(gifs) {
+                if (!gifs.length) return;
+                var currentIndex = Math.floor(Math.random() * gifs.length);
+                var overlayId = 'gifOverlay' + Date.now();
+                var overlay = document.createElement('div');
+                overlay.id = overlayId;
+                function showGif(index) {
+                  overlay.innerHTML = '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' + encodeURIComponent(gifs[index]) + '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">SPACE to exit | ← → to navigate (' + (index+1) + '/' + gifs.length + ')</div>';
+                }
+                showGif(currentIndex);
+                overlay.setAttribute('tabindex', '0');
+                overlay.style.outline = 'none';
+                document.body.appendChild(overlay);
+                overlay.focus();
+                var closeGif = function() { overlay.remove(); document.removeEventListener('keydown', keyHandler); };
+                var keyHandler = function(e) {
+                  if (e.key === ' ') { e.preventDefault(); closeGif(); }
+                  else if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % gifs.length; showGif(currentIndex); }
+                  else if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + gifs.length) % gifs.length; showGif(currentIndex); }
+                };
+                document.addEventListener('keydown', keyHandler);
+                overlay.addEventListener('click', closeGif);
+            });
             return '';
         }
     };
@@ -484,8 +525,10 @@
             var t = e.clientY - termDragState.offsetY;
             l = Math.max(-termWin.offsetWidth + 60, Math.min(l, window.innerWidth - 60));
             t = Math.max(0, Math.min(t, window.innerHeight - 50));
-            termWin.style.left = l + 'px';
-            termWin.style.top = t + 'px';
+            window.__domWrite(function() {
+                termWin.style.left = l + 'px';
+                termWin.style.top = t + 'px';
+            });
         }
     });
     document.addEventListener('mouseup', function() {
@@ -570,35 +613,9 @@
         }
     });
 
-    if (termTaskbarEntry) {
-        termTaskbarEntry.addEventListener('click', function() {
-            if (document.body.classList.contains('mobile-mode')) {
-                if (termWin.classList.contains('active')) {
-                    termWin.classList.remove('active');
-                    termTaskbarEntry.classList.remove('active');
-                } else {
-                    document.querySelectorAll('.window').forEach(function(w) {
-                        w.classList.remove('active');
-                    });
-                    document.querySelectorAll('.taskbar-item').forEach(function(t) {
-                        t.classList.remove('active');
-                    });
-                    termWin.classList.add('active');
-                    termTaskbarEntry.classList.add('active');
-                    termBringToFront();
-                }
-                return;
-            }
-            if (termMinimized || termWin.style.display === 'none') {
-                showTerminal();
-            } else {
-                termBringToFront();
-            }
-        });
-    }
-
     var terminalFirstOpen = true;
     function showTerminal() {
+        createTaskbarEntry();
         if (termMinimized) {
             termMinimized = false;
             termWin.style.display = '';
@@ -638,7 +655,7 @@
         termPrevRect = { left: termWin.style.left, top: termWin.style.top, width: termWin.style.width, height: termWin.style.height };
         termMinimized = true;
         termWin.style.display = 'none';
-        if (termTaskbarEntry) termTaskbarEntry.classList.remove('active');
+        removeTaskbarEntry();
     }
 
     window.showTerminal = showTerminal;
