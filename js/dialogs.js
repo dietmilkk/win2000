@@ -16,6 +16,7 @@
     var type = options.type || "alert";
     var defaultValue = options.defaultValue || "";
     var callback = options.callback || function() {};
+    var width = options.width || "";
 
     if (dialogOverlay) {
       dialogOverlay.remove();
@@ -53,6 +54,10 @@
       case "N":
         iconSvg =
           '<svg viewBox="0 0 32 32" width="32" height="32"><text x="8" y="24" font-size="20" font-family="Arial" fill="#444" font-weight="bold">N</text></svg>';
+        break;
+      case "i":
+        iconSvg =
+          '<svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">i</text></svg>';
         break;
       default:
         iconSvg =
@@ -104,6 +109,24 @@
 
     document.body.appendChild(dialogOverlay);
 
+    var taskbarItems = document.querySelector(".taskbar-items");
+    var tbEntry = null;
+    if (taskbarItems) {
+      tbEntry = document.createElement("div");
+      tbEntry.className = "taskbar-item active";
+      tbEntry.textContent = title;
+      taskbarItems.appendChild(tbEntry);
+      tbEntry.addEventListener("click", function() {
+        if (dialogOverlay) {
+    document.body.appendChild(dialogOverlay);
+
+    if (width) {
+      document.getElementById("xpDialogBox").style.maxWidth = width;
+    }
+        }
+      });
+    }
+
     var closeBtn = document.getElementById("xpDialogClose");
     var okBtn = document.getElementById("xpDialogOk");
     var cancelBtn = document.getElementById("xpDialogCancel");
@@ -112,6 +135,9 @@
       if (dialogOverlay) {
         dialogOverlay.remove();
         dialogOverlay = null;
+      }
+      if (tbEntry && tbEntry.parentNode) {
+        tbEntry.parentNode.removeChild(tbEntry);
       }
     }
 
