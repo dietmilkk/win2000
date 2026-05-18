@@ -16,11 +16,11 @@
     location: "Pernambuco, Brasil",
     education: {
       course: "Systems Engineering (Engenharia de Sistemas)",
-      university: "Universidade Federal de Pernambuco (UFPE)",
+      university: "Federal University of Pernambuco (UFPE)",
       status: "currently studying",
     },
     background:
-      "Background in Mechatronics and Systems Engineering at UFPE. Systemic view of complex systems — from hardware constraints to cloud-native architectures. Builds fullstack applications and AI-powered tools: workflow automation, document intelligence, connecting legacy systems to modern APIs. At UFPE, deepens knowledge in software design, distributed algorithms, and web applications.",
+      "Background in Mechatronics and Systems Engineering at Federal University of Pernambuco (UFPE). Systemic view of complex systems — from hardware constraints to cloud-native architectures. Builds fullstack applications and AI-powered tools: workflow automation, document intelligence, connecting legacy systems to modern APIs. At Federal University of Pernambuco (UFPE), deepens knowledge in software design, distributed algorithms, and web applications.",
     differential:
       "Uses AI agents to accelerate the entire development process, monitored by him, ensuring quality and faster delivery. Every line is reviewed and optimized by an experienced developer.",
     stats: {
@@ -84,6 +84,7 @@ RULES:
 - One paragraph max unless the user asks for details.
 - No formatting, lists, or emojis. Plain text only.
 - Do not invent information — use only the knowledge base.
+- Avoid technical jargon. Talk in terms of business value and practical outcomes — describe what things do, not what tech they use underneath.
 
 KNOWLEDGE BASE:
 ${JSON.stringify(ENDRYO_DB, null, 2)}`;
@@ -107,6 +108,26 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
   var chatDragState = null;
   chatTaskbarEntry.classList.add("active");
   chatBringToFront();
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () {
+      if (!document.body.classList.contains("mobile-mode")) return;
+      var diff = window.innerHeight - window.visualViewport.height;
+      if (diff > 100) {
+        chatWin.style.bottom = diff + "px";
+        chatWin.style.top = "0";
+        chatWin.style.height = "auto";
+      } else {
+        chatWin.style.bottom = "34px";
+        chatWin.style.top = "0";
+        chatWin.style.height = "auto";
+      }
+      setTimeout(function () {
+        var msgs = document.getElementById("chatMessages");
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
+      }, 100);
+    });
+  }
 
   function chatBringToFront() {
     var all = document.querySelectorAll(".window");
