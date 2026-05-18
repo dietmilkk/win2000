@@ -47,7 +47,7 @@
     projects: [
       {
         name: "Twitter Clone",
-        desc: "Full Twitter clone with authentication, timeline, likes, replies, and profile. Built with Next.js 14, TypeScript, and modern React patterns.",
+        desc: "Fully functional Twitter/X copy — user accounts, feed, likes, replies, profiles, and navigation. A complete social media experience, rebuilt from scratch.",
         techs: ["Next.js", "TypeScript", "React", "Tailwind"],
         link: "/p/twitter/out/",
       },
