@@ -149,65 +149,57 @@
      RANDOM GIF VIEWER
      ================================================================ */
 
+  var _gifList = null;
+
+  window.loadGifList = function(cb) {
+    if (_gifList) { cb(_gifList); return; }
+    fetch('/api/gifs')
+      .then(function(r) { if (!r.ok) throw Error(); return r.json(); })
+      .then(function(list) { _gifList = list; cb(list); })
+      .catch(function() {
+        fetch('assets/gifs/list.json')
+          .then(function(r) { return r.json(); })
+          .then(function(list) { _gifList = list; cb(list); })
+          .catch(function() { cb([]); });
+      });
+  };
+
   window.openRandomGif = function() {
-    var gifs = [
-      "khanh2k6.gif",
-      "Working Chis Sweet Home GIF.gif",
-      "Apple Fruit GIF.gif",
-      "Gif.gif",
-      "Cat Festival GIF by W&W.gif",
-      "Baby Niche GIF.gif",
-      "gif.gif",
-      "Skeleton GIF.gif",
-      "Dance Skeleton GIF.gif",
-      "Bye Bye Skeleton GIF.gif",
-      "Sad Break Time GIF by BlueStacks.gif",
-      "Danse Macabre Fun GIF by Kiszkiloszki.gif",
-      "chuunibyou demo koi ga shitai dance GIF.gif",
-      "taiga aisaka t GIF.gif",
-      "cute anime GIF.gif",
-      "Anime Girl GIF.gif",
-      "gif(1).gif",
-      "Spinner Fern GIF.gif",
-      "Spinner Spinning GIF.gif",
-      "dancing GIF.gif",
-      "Animated GIF.gif",
-      "Sad Scream GIF.gif",
-      "tears crying GIF.gif",
-      "Om Nom Eating GIF.gif",
-    ];
-    var currentIndex = Math.floor(Math.random() * gifs.length);
-    var overlay = document.createElement("div");
-    overlay.id = "randomGifOverlay";
-    function showGif(index) {
-      overlay.innerHTML =
-        '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' +
-        encodeURIComponent(gifs[index]) +
-        '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">SPACE to exit | ← → to navigate (' +
-        (index + 1) +
-        "/" +
-        gifs.length +
-        ")</div>";
-    }
-    showGif(currentIndex);
-    overlay.setAttribute("tabindex", "0");
-    overlay.style.outline = "none";
-    document.body.appendChild(overlay);
-    overlay.focus();
-    overlay.addEventListener("keydown", function(e) {
-      if (e.key === " ") {
-        e.preventDefault();
-        overlay.remove();
-      } else if (e.key === "ArrowRight") {
-        currentIndex = (currentIndex + 1) % gifs.length;
-        showGif(currentIndex);
-      } else if (e.key === "ArrowLeft") {
-        currentIndex = (currentIndex - 1 + gifs.length) % gifs.length;
-        showGif(currentIndex);
+    window.loadGifList(function(gifs) {
+      if (!gifs.length) return;
+      var currentIndex = Math.floor(Math.random() * gifs.length);
+      var overlay = document.createElement("div");
+      overlay.id = "randomGifOverlay";
+      function showGif(index) {
+        overlay.innerHTML =
+          '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' +
+          encodeURIComponent(gifs[index]) +
+          '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">SPACE to exit | ← → to navigate (' +
+          (index + 1) +
+          "/" +
+          gifs.length +
+          ")</div>";
       }
-    });
-    overlay.addEventListener("click", function() {
-      overlay.remove();
+      showGif(currentIndex);
+      overlay.setAttribute("tabindex", "0");
+      overlay.style.outline = "none";
+      document.body.appendChild(overlay);
+      overlay.focus();
+      overlay.addEventListener("keydown", function(e) {
+        if (e.key === " ") {
+          e.preventDefault();
+          overlay.remove();
+        } else if (e.key === "ArrowRight") {
+          currentIndex = (currentIndex + 1) % gifs.length;
+          showGif(currentIndex);
+        } else if (e.key === "ArrowLeft") {
+          currentIndex = (currentIndex - 1 + gifs.length) % gifs.length;
+          showGif(currentIndex);
+        }
+      });
+      overlay.addEventListener("click", function() {
+        overlay.remove();
+      });
     });
   };
 })();
