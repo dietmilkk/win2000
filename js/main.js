@@ -31,7 +31,8 @@
       .addEventListener("click", function () {
         overlay.style.display = "none";
         sessionStorage.setItem("xpMobileMode", "desktop");
-        document.querySelector("meta[name=viewport]").content = "width=1024";
+        document.querySelector("meta[name=viewport]").content =
+          "width=1024, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no";
         window.scrollTo(0, 0);
         goFullscreen();
       });
@@ -75,16 +76,23 @@
     }
   }
 
-  setTimeout(function () {
-    goFullscreen();
-  }, 100);
+  var fsActivated = false;
 
-  document.addEventListener("click", function () {
+  document.addEventListener(
+    "click",
+    function fsFirst(e) {
+      if (fsActivated) return;
+      fsActivated = true;
+      e.stopPropagation();
+      goFullscreen();
+    },
+    true,
+  );
+
+  document.addEventListener("click", function (e) {
+    if (e.target.closest("a")) return;
     var overlay = document.getElementById("mobileOverlay");
     if (overlay && overlay.style.display !== "none") return;
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      goFullscreen();
-    }
   });
 
   /* ================================================================
@@ -385,7 +393,6 @@
 
   var deskIcons = document.querySelectorAll(".desk-icon");
   var selectedIcon = null;
-  var iconDragState = null;
   var desktopIcons = document.querySelector(".desktop-icons");
 
   function deselectAllIcons() {
@@ -432,7 +439,6 @@
   for (var i = 0; i < deskIcons.length; i++) {
     (function (icon) {
       icon.addEventListener("click", function (e) {
-        if (iconDragState) return;
         deselectAllIcons();
         icon.classList.add("selected");
         selectedIcon = icon;
@@ -442,35 +448,8 @@
         deselectAllIcons();
         openDesktopIcon(icon.getAttribute("data-action"));
       });
-      icon.addEventListener("mousedown", function (e) {
-        var rect = desktopIcons.getBoundingClientRect();
-        var iconRect = icon.getBoundingClientRect();
-        iconDragState = {
-          offsetX: e.clientX - iconRect.left,
-          offsetY: e.clientY - iconRect.top,
-          startLeft: iconRect.left - rect.left,
-          startTop: iconRect.top - rect.top,
-        };
-      });
     })(deskIcons[i]);
   }
-
-  document.addEventListener("mousemove", function (e) {
-    if (!iconDragState) return;
-    var rect = desktopIcons.getBoundingClientRect();
-    var newLeft = e.clientX - rect.left - iconDragState.offsetX;
-    var newTop = e.clientY - rect.top - iconDragState.offsetY;
-    newLeft = Math.max(0, Math.min(newLeft, rect.width - 70));
-    newTop = Math.max(0, Math.min(newTop, rect.height - 56));
-    if (selectedIcon) {
-      selectedIcon.style.position = "relative";
-      selectedIcon.style.left = newLeft + "px";
-      selectedIcon.style.top = newTop + "px";
-    }
-  });
-  document.addEventListener("mouseup", function () {
-    iconDragState = null;
-  });
 
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".desk-icon")) {
@@ -515,44 +494,28 @@
       case "randomgif":
         openRandomGif();
         break;
-      case "help":
+      case "about":
         xpDialog({
-          title: "Help & Support",
-          icon: "?",
+          title: "About",
+          icon: "i",
+          width: "620px",
           message:
-            "Portifolio\n\n" +
-            "A retro-styled portfolio page inspired by Windows 2000.\n" +
-            "Built with pure HTML, CSS, and JavaScript.\n\n" +
-            "Features:\n" +
-            "  - AI Chat Assistant\n" +
-            "  - Terminal with fun commands\n" +
-            "  - Random GIF gallery\n" +
-            "  - Draggable & Resizable Windows\n\n" +
-            "Terminal commands: help, cls, time, dir, echo, fortune, cowsay, matrix, 8ball, joke, ascii, hack, gif, doom\n\n" +
-            "System: Windows 2000 build 2195",
-        });
-        break;
-      case "run":
-        xpDialog({
-          title: "Run",
-          icon: ">",
-          type: "prompt",
-          message:
-            "Type the name of a program, folder, document, or Internet resource to open:",
-          defaultValue: "",
-          callback: function (cmd) {
-            if (cmd) {
-              xpDialog({
-                title: "Run",
-                icon: ">",
-                message:
-                  "Running: " +
-                  cmd +
-                  "\n\n(Just a demo — no actual programs are installed.)\n\nTo run a real command, use the terminal.",
-                callback: function () {},
-              });
-            }
-          },
+            "<b>Portifolio</b> — Endryo's showcase of digital work<br>" +
+            "Built with clean, handcrafted code — no shortcuts, no drag-and-drop builders.<br><br>" +
+            "<b>Quick Actions:</b><br>" +
+            "<button class='xp-dialog-btn' style='margin:2px' onclick='document.getElementById(\"taskbarEntry\")?.click()'>Portfolio</button>" +
+            "<button class='xp-dialog-btn' style='margin:2px' onclick='document.getElementById(\"chatTaskbarEntry\")?.click()'>AI Chat</button>" +
+            "<button class='xp-dialog-btn' style='margin:2px' onclick='showTerminal()'>Terminal</button>" +
+            "<button class='xp-dialog-btn' style='margin:2px' onclick='openRandomGif()'>GIF Gallery</button>" +
+            "<button class='xp-dialog-btn' style='margin:2px' onclick='xpDialog({title:\"Help\",icon:\"?\",message:\"Just explore! Click around, open the Start menu, try the terminal, or chat with the AI.\"})'>Help</button><br><br>" +
+            "<details style='font-size:13px;cursor:pointer'>" +
+            "<summary style='font-weight:600'>Behind the Scenes</summary>" +
+            "<div style='margin:6px 0 0 4px;line-height:1.7;font-size:13px'>" +
+            "Every piece of this site is handcrafted — the interface, the retro look, the interactive features. " +
+            "The AI assistant runs on a language model and knows Endryo's background, skills, and projects inside out. " +
+            "The GIF gallery automatically picks up any new file added to the folder — no coding needed. " +
+            "The terminal is a fully interactive mini operating system running in your browser, built just for fun. " +
+            "This portfolio includes a full profile with stats and project showcase, an AI chat that answers questions about Endryo's work, a retro terminal with various commands, a GIF viewer with keyboard controls, desktop icons with a context menu, a taskbar that controls open windows, and draggable windows you can resize and arrange freely.</div></details>",
         });
         break;
       case "shutdown":
@@ -621,14 +584,7 @@
         xpDialog({
           title: "Desktop Properties",
           icon: "i",
-          message:
-            "Windows 2000 Portfolio Theme\n\n" +
-            "Wallpaper: Classic Green\n" +
-            "Color scheme: Windows Classic\n" +
-            "Font: MS Sans Serif\n" +
-            "Font size: Normal (96 DPI)\n\n" +
-            "Screen saver: None\n" +
-            "Desktop icons: My Computer, Email, Recycle Bin",
+          message: "Windows 2000 Portfolio Theme\n\n" + "Make with love ^^",
         });
         break;
     }
@@ -795,13 +751,14 @@
      STARTUP ERROR MESSAGE
      ================================================================ */
 
-  setTimeout(function() {
-    var overlay = document.createElement('div');
-    overlay.id = 'gifOverlay';
-    overlay.innerHTML = '<img src="assets/enter.gif" style="position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:999999;">';
+  setTimeout(function () {
+    var overlay = document.createElement("div");
+    overlay.id = "gifOverlay";
+    overlay.innerHTML =
+      '<img src="assets/enter.gif" style="position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:999999;">';
     document.body.appendChild(overlay);
-    setTimeout(function() { overlay.remove(); }, 3000);
+    setTimeout(function () {
+      overlay.remove();
+    }, 3000);
   }, 1500);
-
-
 })();
