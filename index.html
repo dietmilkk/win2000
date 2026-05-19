@@ -207,16 +207,6 @@
 
         </div>
 
-        <div class="resize-edge" data-edge="t"></div>
-        <div class="resize-edge" data-edge="b"></div>
-        <div class="resize-edge" data-edge="l"></div>
-        <div class="resize-edge" data-edge="r"></div>
-        <div class="resize-corner" data-edge="tl"></div>
-        <div class="resize-corner" data-edge="tr"></div>
-        <div class="resize-corner" data-edge="bl"></div>
-        <div class="resize-corner" data-edge="br"></div>
-        <div class="resize-handle" id="resizeHandle"></div>
-
     </div>
 
     <!-- ===== AI CHAT WINDOW ===== -->
@@ -244,23 +234,14 @@
                     <div class="chat-msg bot">
                         <span class="msg-sender">AI Chat</span>
                         <span class="msg-text">Hi! I can tell you about Endryo's work — systems, automation, AI agents, and past projects. What do you need?</span>
-                    </div>
-                </div>
+        </div>
+        </div>
                 <div class="chat-input-area">
                     <input type="text" id="chatInput" class="chat-input" placeholder="Ask about Endryo..." autocomplete="off">
                     <button id="chatSendBtn" class="chat-send-btn">Send</button>
                 </div>
             </div>
         </div>
-        <div class="resize-edge" data-edge="t"></div>
-        <div class="resize-edge" data-edge="b"></div>
-        <div class="resize-edge" data-edge="l"></div>
-        <div class="resize-edge" data-edge="r"></div>
-        <div class="resize-corner" data-edge="tl"></div>
-        <div class="resize-corner" data-edge="tr"></div>
-        <div class="resize-corner" data-edge="bl"></div>
-        <div class="resize-corner" data-edge="br"></div>
-        <div class="resize-handle" id="chatResizeHandle"></div>
     </div>
 
     <!-- ===== TERMINAL WINDOW ===== -->
@@ -310,7 +291,7 @@
             <span class="start-text">Start</span>
         </div>
         <div class="quick-launch">
-            <span class="ql-icon" id="qlShowDesktop" title="Show Desktop">
+            <span class="ql-icon" id="qlShowDesktop">
                 <svg viewBox="0 0 16 16" width="16" height="16">
                     <rect x="1" y="2" width="14" height="10" fill="#c8c4bc" stroke="#666" stroke-width="2"/>
                     <rect x="1" y="2" width="14" height="3" fill="#0a2a6a"/>
@@ -491,6 +472,7 @@
 <script src="js/dialogs.js"></script>
 <script src="js/clocks.js"></script>
 <script src="js/cursor.js"></script>
+<script src="js/window-manager.js"></script>
 <script src="js/terminal.js"></script>
 <script src="js/main.js"></script>
 <script src="js/chat.js"></script>

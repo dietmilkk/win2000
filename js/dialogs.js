@@ -8,6 +8,7 @@
   var dialogOverlay = null;
   var dialogBox = null;
   var dialogCallback = null;
+  var dialogTbEntry = null;
 
   function xpDialog(options) {
     var title = options.title || "Dialog";
@@ -19,7 +20,11 @@
     var width = options.width || "";
 
     if (dialogOverlay) {
+      if (dialogTbEntry && dialogTbEntry.parentNode) {
+        dialogTbEntry.parentNode.removeChild(dialogTbEntry);
+      }
       dialogOverlay.remove();
+      dialogOverlay = null;
     }
 
     dialogOverlay = document.createElement("div");
@@ -89,7 +94,7 @@
       '<span class="xp-dialog-title-text">' +
       title +
       '</span>' +
-      '<span id="xpDialogClose" class="xp-dialog-close">×</span>' +
+      '<span id="xpDialogClose" class="xp-dialog-close"><img src="assets/icons/win-close.svg" alt="X" class="win-btn-icon"></span>' +
       '</div>' +
       '<div class="xp-dialog-body">' +
       '<div class="xp-dialog-icon-area">' +
@@ -109,14 +114,30 @@
 
     document.body.appendChild(dialogOverlay);
 
+    var dialogBoxEl = document.getElementById("xpDialogBox");
+    if (dialogBoxEl) {
+      dialogBoxEl.style.transform = 'scale(0.95)';
+      dialogBoxEl.style.opacity = '0';
+      dialogBoxEl.style.transition = 'transform 0.2s steps(2), opacity 0.2s steps(2)';
+      requestAnimationFrame(function() {
+        dialogBoxEl.style.transform = 'scale(1)';
+        dialogBoxEl.style.opacity = '1';
+      });
+      setTimeout(function() {
+        dialogBoxEl.style.transition = '';
+        dialogBoxEl.style.transform = '';
+        dialogBoxEl.style.opacity = '';
+      }, 250);
+    }
+
     var taskbarItems = document.querySelector(".taskbar-items");
-    var tbEntry = null;
+    dialogTbEntry = null;
     if (taskbarItems) {
-      tbEntry = document.createElement("div");
-      tbEntry.className = "taskbar-item active";
-      tbEntry.textContent = title;
-      taskbarItems.appendChild(tbEntry);
-      tbEntry.addEventListener("click", function() {
+      dialogTbEntry = document.createElement("div");
+      dialogTbEntry.className = "taskbar-item active";
+      dialogTbEntry.textContent = title;
+      taskbarItems.appendChild(dialogTbEntry);
+      dialogTbEntry.addEventListener("click", function() {
         if (dialogOverlay) {
     document.body.appendChild(dialogOverlay);
 
@@ -127,17 +148,48 @@
       });
     }
 
+    dialogOverlay.addEventListener("click", function(e) {
+      if (e.target === dialogOverlay) {
+        var box = document.getElementById("xpDialogBox");
+        if (box) {
+          box.classList.add("window-shake");
+          setTimeout(function() { box.classList.remove("window-shake"); }, 300);
+        }
+      }
+    });
+
     var closeBtn = document.getElementById("xpDialogClose");
     var okBtn = document.getElementById("xpDialogOk");
     var cancelBtn = document.getElementById("xpDialogCancel");
 
     function closeDialog() {
       if (dialogOverlay) {
-        dialogOverlay.remove();
-        dialogOverlay = null;
-      }
-      if (tbEntry && tbEntry.parentNode) {
-        tbEntry.parentNode.removeChild(tbEntry);
+        var box = document.getElementById("xpDialogBox");
+        if (box) {
+          box.style.transition = 'transform 0.2s steps(2), opacity 0.2s steps(2)';
+          box.style.transform = 'scale(0.95)';
+          box.style.opacity = '0';
+          setTimeout(function() {
+            dialogOverlay.remove();
+            dialogOverlay = null;
+            if (dialogTbEntry && dialogTbEntry.parentNode) {
+              dialogTbEntry.parentNode.removeChild(dialogTbEntry);
+              dialogTbEntry = null;
+            }
+          }, 200);
+        } else {
+          dialogOverlay.remove();
+          dialogOverlay = null;
+          if (dialogTbEntry && dialogTbEntry.parentNode) {
+            dialogTbEntry.parentNode.removeChild(dialogTbEntry);
+            dialogTbEntry = null;
+          }
+        }
+      } else {
+        if (dialogTbEntry && dialogTbEntry.parentNode) {
+          dialogTbEntry.parentNode.removeChild(dialogTbEntry);
+          dialogTbEntry = null;
+        }
       }
     }
 

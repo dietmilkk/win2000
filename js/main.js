@@ -15,6 +15,8 @@
     var mode = sessionStorage.getItem("xpMobileMode");
     if (mode === "desktop") {
       document.querySelector("meta[name=viewport]").content = "width=1024";
+      document.documentElement.style.minWidth = "1024px";
+      document.documentElement.style.overflowX = "hidden";
       return;
     }
     if (mode === "simple") {
@@ -33,6 +35,8 @@
         sessionStorage.setItem("xpMobileMode", "desktop");
         document.querySelector("meta[name=viewport]").content =
           "width=1024, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no";
+        document.documentElement.style.minWidth = "1024px";
+        document.documentElement.style.overflowX = "hidden";
         window.scrollTo(0, 0);
         goFullscreen();
       });
@@ -150,242 +154,32 @@
     }
   })();
 
-  /* ================================================================
-       DRAGGING — DOM writes batched at 10fps via __domWrite
-       ================================================================ */
-
-  var dragState = null;
-
-  handle.addEventListener("mousedown", function (e) {
-    if (e.target.classList.contains("win-btn")) return;
-    var rect = win.getBoundingClientRect();
-    dragState = {
-      offsetX: e.clientX - rect.left,
-      offsetY: e.clientY - rect.top,
-      startX: rect.left,
-      startY: rect.top,
-    };
-    win.style.cursor = "move";
+  var winControls = createWindowControls(win, {
+    dragHandle: handle,
+    taskbarEntry: document.getElementById("taskbarEntry"),
+    btnClose: document.getElementById("btnClose"),
+    btnMinimize: document.getElementById("btnMinimize"),
+    btnMaximize: document.getElementById("btnMaximize"),
+    minW: 400,
+    minH: 300,
   });
 
-  handle.addEventListener("dblclick", function (e) {
-    if (e.target.classList.contains("win-btn")) return;
-    document.getElementById("btnMaximize").click();
-  });
+  var _showDesktop = false;
 
-  document.addEventListener("mousemove", function (e) {
-    if (!dragState) return;
-    if (!maximized) {
-      var snap = 12;
-      if (e.clientY < snap) {
-        document.getElementById("btnMaximize").click();
-        dragState = null;
-        win.style.cursor = "";
-        return;
-      }
-    } else {
-      if (e.clientY > dragState.offsetY + 8) {
-        document.getElementById("btnMaximize").click();
-        dragState.offsetX = e.clientX - parseInt(win.style.left);
-        dragState.offsetY = e.clientY - parseInt(win.style.top);
-      }
-    }
-    var l = e.clientX - dragState.offsetX;
-    var t = e.clientY - dragState.offsetY;
-    l = Math.max(-win.offsetWidth + 60, Math.min(l, window.innerWidth - 60));
-    t = Math.max(0, Math.min(t, window.innerHeight - 50));
-    window.__domWrite(function () {
-      win.style.left = l + "px";
-      win.style.top = t + "px";
-    });
-  });
-
-  document.addEventListener("mouseup", function () {
-    if (dragState) {
-      dragState = null;
-      win.style.cursor = "";
-    }
-  });
-
-  /* ================================================================
-       WINDOW CONTROLS
-       ================================================================ */
-
-  var minimized = false;
-  var maximized = false;
-  var prevRect = null;
-
-  function saveRect() {
-    prevRect = {
-      left: win.style.left,
-      top: win.style.top,
-      width: win.style.width,
-      height: win.style.height,
-    };
-  }
-
-  document.getElementById("btnClose").addEventListener("click", function () {
-    if (minimized) return;
-    saveRect();
-    minimized = true;
-    win.style.display = "none";
-    document.getElementById("taskbarEntry").classList.remove("active");
-  });
-
-  document.getElementById("btnMinimize").addEventListener("click", function () {
-    if (maximized) {
-      saveRect();
-      minimized = true;
-      win.style.display = "none";
-      document.getElementById("taskbarEntry").classList.remove("active");
-      return;
-    }
-    minimizeWindow();
-  });
-
-  function minimizeWindow() {
-    if (minimized) return;
-    var tbEntry = document.getElementById("taskbarEntry");
-    if (!tbEntry) {
-      minimized = true;
-      win.style.display = "none";
-      return;
-    }
-    var winRect = win.getBoundingClientRect();
-    var tbRect = tbEntry.getBoundingClientRect();
-    var sx = winRect.left,
-      sy = winRect.top;
-    var sw = winRect.width,
-      sh = winRect.height;
-    var tx = tbRect.left + 4,
-      ty = tbRect.top + 2;
-    var tw = Math.max(20, tbRect.width - 8),
-      th = Math.max(4, tbRect.height - 4);
-    minimized = true;
-    saveRect();
-    tbEntry.classList.remove("active");
-    win.style.transition = "none";
-    win.style.left = sx + "px";
-    win.style.top = sy + "px";
-    win.style.width = sw + "px";
-    win.style.height = sh + "px";
-    requestAnimationFrame(function () {
-      win.style.transition = "all 0.2s steps(4)";
-      win.style.left = tx + "px";
-      win.style.top = ty + "px";
-      win.style.width = tw + "px";
-      win.style.height = th + "px";
-      setTimeout(function () {
-        win.style.display = "none";
-        win.style.transition = "";
-        win.style.left = sx + "px";
-        win.style.top = sy + "px";
-        win.style.width = sw + "px";
-        win.style.height = sh + "px";
-      }, 300);
-    });
-  }
-
-  function restoreWindow() {
-    if (!minimized) return;
-    minimized = false;
-    var tbEntry = document.getElementById("taskbarEntry");
-    var tbRect = tbEntry.getBoundingClientRect();
-    var tx = tbRect.left + 4,
-      ty = tbRect.top + 2;
-    var tw = Math.max(20, tbRect.width - 8),
-      th = Math.max(4, tbRect.height - 4);
-    var cx = prevRect ? parseInt(prevRect.left) : 200;
-    var cy = prevRect ? parseInt(prevRect.top) : 80;
-    var cw = prevRect ? parseInt(prevRect.width) : 600;
-    var ch = prevRect ? parseInt(prevRect.height) : 400;
-    win.style.display = "";
-    win.style.transition = "none";
-    win.style.left = tx + "px";
-    win.style.top = ty + "px";
-    win.style.width = tw + "px";
-    win.style.height = th + "px";
-    requestAnimationFrame(function () {
-      win.style.transition = "all 0.2s steps(4)";
-      win.style.left = cx + "px";
-      win.style.top = cy + "px";
-      win.style.width = cw + "px";
-      win.style.height = ch + "px";
-      setTimeout(function () {
-        win.style.transition = "";
-        tbEntry.classList.add("active");
-      }, 300);
-    });
-  }
-
-  document.getElementById("btnMaximize").addEventListener("click", function () {
-    if (maximized) {
-      win.style.left = prevRect.left;
-      win.style.top = prevRect.top;
-      win.style.width = prevRect.width;
-      win.style.height = prevRect.height;
-      win.classList.remove("window-maximized");
-      maximized = false;
-    } else {
-      saveRect();
-      var tb = document.querySelector(".taskbar");
-      var taskbarH = tb ? tb.offsetHeight : 40;
-      win.style.left = "0";
-      win.style.top = "0";
-      win.style.width = "100vw";
-      win.style.height = "calc(100vh - 40px)";
-      win.classList.add("window-maximized");
-      maximized = true;
-    }
-  });
-
-  document
-    .getElementById("taskbarEntry")
-    .addEventListener("click", function () {
-      if (document.body.classList.contains("mobile-mode")) {
-        if (win.classList.contains("active")) {
-          win.classList.remove("active");
-          document.getElementById("taskbarEntry").classList.remove("active");
-        } else {
-          document.querySelectorAll(".window").forEach(function (w) {
-            w.classList.remove("active");
-          });
-          document.querySelectorAll(".taskbar-item").forEach(function (t) {
-            t.classList.remove("active");
-          });
-          win.classList.add("active");
-          document.getElementById("taskbarEntry").classList.add("active");
-        }
-        return;
-      }
-      if (minimized || win.style.display === "none") {
-        restoreWindow();
-      }
-      bringToFront();
-    });
-
-  document
-    .getElementById("qlShowDesktop")
-    .addEventListener("click", function () {
-      if (!minimized) minimizeWindow();
+  function toggleShowDesktop() {
+    _showDesktop = !_showDesktop;
+    if (_showDesktop) {
+      winControls.minimize();
       if (typeof chatMinimizeWindow !== "undefined") chatMinimizeWindow();
       if (typeof termMinimizeWindow !== "undefined") termMinimizeWindow();
-    });
-
-  /* ================================================================
-       BRING TO FRONT
-       ================================================================ */
-
-  function bringToFront() {
-    var all = document.querySelectorAll(".window");
-    var maxZ = 100;
-    for (var i = 0; i < all.length; i++) {
-      var z = parseInt(all[i].style.zIndex) || 0;
-      if (z > maxZ) maxZ = z;
+    } else {
+      winControls.restore();
+      if (typeof chatShowWindow !== "undefined") chatShowWindow();
+      if (typeof termShowWindow !== "undefined" && (!window.termHasEntry || window.termHasEntry())) termShowWindow();
     }
-    win.style.zIndex = maxZ + 1;
   }
-  win.addEventListener("mousedown", bringToFront);
+
+  document.getElementById("qlShowDesktop").addEventListener("click", toggleShowDesktop);
 
   /* ================================================================
        DESKTOP ICONS — select, drag, double-click
@@ -479,10 +273,10 @@
     var action = item.getAttribute("data-action");
     switch (action) {
       case "portfolio":
-        if (minimized || win.style.display === "none") {
-          restoreWindow();
+        if (winControls.isMinimized() || win.style.display === "none") {
+          winControls.restore();
         }
-        bringToFront();
+        winControls.bringToFront();
         break;
       case "chat":
         var ce = document.getElementById("chatTaskbarEntry");
@@ -506,16 +300,15 @@
             "<button class='xp-dialog-btn' style='margin:2px' onclick='document.getElementById(\"taskbarEntry\")?.click()'>Portfolio</button>" +
             "<button class='xp-dialog-btn' style='margin:2px' onclick='document.getElementById(\"chatTaskbarEntry\")?.click()'>AI Chat</button>" +
             "<button class='xp-dialog-btn' style='margin:2px' onclick='showTerminal()'>Terminal</button>" +
-            "<button class='xp-dialog-btn' style='margin:2px' onclick='openRandomGif()'>GIF Gallery</button>" +
-            "<button class='xp-dialog-btn' style='margin:2px' onclick='xpDialog({title:\"Help\",icon:\"?\",message:\"Just explore! Click around, open the Start menu, try the terminal, or chat with the AI.\"})'>Help</button><br><br>" +
+            "<button class='xp-dialog-btn' style='margin:2px' onclick='openRandomGif()'>GIF Gallery</button><br><br>" +
             "<details style='font-size:13px;cursor:pointer'>" +
             "<summary style='font-weight:600'>Behind the Scenes</summary>" +
             "<div style='margin:6px 0 0 4px;line-height:1.7;font-size:13px'>" +
-            "Every piece of this site is handcrafted — the interface, the retro look, the interactive features. " +
-            "The AI assistant runs on a language model and knows Endryo's background, skills, and projects inside out. " +
-            "The GIF gallery automatically picks up any new file added to the folder — no coding needed. " +
-            "The terminal is a fully interactive mini operating system running in your browser, built just for fun. " +
-            "This portfolio includes a full profile with stats and project showcase, an AI chat that answers questions about Endryo's work, a retro terminal with various commands, a GIF viewer with keyboard controls, desktop icons with a context menu, a taskbar that controls open windows, and draggable windows you can resize and arrange freely.</div></details>",
+            "This is not a template. It's a full Windows 2000 desktop recreated in the browser — from scratch, vanilla HTML/CSS/JS, zero frameworks. " +
+            "Draggable windows, taskbar, start menu, desktop icons with context menu, retro CRT scanlines, custom cursors, XP-style dialogs, FPS locked at 10 for the authentic feel. " +
+            "The AI chat knows Endryo inside out and can guide you around. The terminal runs real commands (help, dir, matrix, hack, doom...). " +
+            "The GIF gallery auto-updates when you drop files in the folder. " +
+            "Endryo builds this kind of work with AI agents in his editor — delivering fast, any tech needed. Contact: contato.endryo@gmail.com</div></details>",
         });
         break;
       case "shutdown":
@@ -577,8 +370,7 @@
         });
         break;
       case "showdesktop":
-        if (!minimized) minimizeWindow();
-        if (typeof chatMinimizeWindow !== "undefined") chatMinimizeWindow();
+        toggleShowDesktop();
         break;
       case "properties":
         xpDialog({
@@ -624,7 +416,7 @@
     var body = document.querySelector(".window-body");
     if (!body) return;
 
-    var STEP = 40;
+    var STEP = 80;
     var ticking = false;
     var pendingScroll = 0;
 
@@ -644,107 +436,6 @@
       },
       { passive: false },
     );
-  })();
-
-  /* ================================================================
-       RESIZE — edge & corner dragging
-       ================================================================ */
-
-  (function () {
-    var edges = win.querySelectorAll(".resize-edge, .resize-corner");
-    if (!edges.length) return;
-
-    var MIN_W = 400,
-      MIN_H = 300;
-    var resizeState = null;
-
-    function startResize(e, edge) {
-      e.preventDefault();
-      e.stopPropagation();
-      var rect = win.getBoundingClientRect();
-      resizeState = {
-        edge: edge,
-        startX: e.clientX,
-        startY: e.clientY,
-        startLeft: rect.left,
-        startTop: rect.top,
-        startW: rect.width,
-        startH: rect.height,
-      };
-    }
-
-    function doResize(e) {
-      if (!resizeState) return;
-      var s = resizeState;
-      var dx = e.clientX - s.startX;
-      var dy = e.clientY - s.startY;
-      var edge = s.edge;
-      var newL = s.startLeft,
-        newT = s.startTop;
-      var newW = s.startW,
-        newH = s.startH;
-
-      // horizontal
-      if (edge.indexOf("l") !== -1) {
-        newL = s.startLeft + dx;
-        newW = s.startW - dx;
-        if (newW < MIN_W) {
-          newW = MIN_W;
-          newL = s.startLeft + s.startW - MIN_W;
-        }
-        newL = Math.max(0, newL);
-        newW = Math.min(newW, window.innerWidth - newL);
-      } else if (edge.indexOf("r") !== -1) {
-        newW = s.startW + dx;
-        newW = Math.max(MIN_W, Math.min(newW, window.innerWidth - s.startLeft));
-      }
-
-      // vertical
-      if (edge.indexOf("t") !== -1) {
-        newT = s.startTop + dy;
-        newH = s.startH - dy;
-        if (newH < MIN_H) {
-          newH = MIN_H;
-          newT = s.startTop + s.startH - MIN_H;
-        }
-        newT = Math.max(0, newT);
-        newH = Math.min(newH, window.innerHeight - newT - 40);
-      } else if (edge.indexOf("b") !== -1) {
-        newH = s.startH + dy;
-        newH = Math.max(
-          MIN_H,
-          Math.min(newH, window.innerHeight - s.startTop - 40),
-        );
-      }
-
-      window.__domWrite(function () {
-        win.style.left = newL + "px";
-        win.style.top = newT + "px";
-        win.style.width = newW + "px";
-        win.style.height = newH + "px";
-      });
-    }
-
-    function endResize() {
-      if (resizeState) {
-        resizeState = null;
-        if (maximized) {
-          maximized = false;
-          win.classList.remove("window-maximized");
-        }
-      }
-    }
-
-    for (var i = 0; i < edges.length; i++) {
-      (function (el) {
-        el.addEventListener("mousedown", function (e) {
-          startResize(e, el.getAttribute("data-edge"));
-        });
-      })(edges[i]);
-    }
-
-    document.addEventListener("mousemove", doResize);
-    document.addEventListener("mouseup", endResize);
   })();
 
   /* ================================================================

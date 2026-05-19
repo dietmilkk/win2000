@@ -48,11 +48,6 @@
       }
     }
 
-    var termMinimized = true;
-    var termMaximized = false;
-    var termPrevRect = null;
-    var termDragState = null;
-
     var currentDir = 'C:\\';
     var cmdHistory = [];
     var historyIndex = -1;
@@ -506,126 +501,78 @@
         termInput.focus();
     });
 
-    termDragHandle.addEventListener('mousedown', function(e) {
-        if (e.target.classList.contains('win-btn')) return;
-        var rect = termWin.getBoundingClientRect();
-        termDragState = {
-            offsetX: e.clientX - rect.left,
-            offsetY: e.clientY - rect.top,
-            startX: rect.left,
-            startY: rect.top
-        };
-        termWin.style.cursor = 'move';
+    var termMinimized = true;
+    var termMaximized = false;
+    var termPrevRect = null;
+
+    var termControls = createWindowControls(termWin, {
+        dragHandle: termDragHandle,
+        btnMinimize: termBtnMinimize,
+        btnMaximize: termBtnMaximize,
+        minW: 350,
+        minH: 250,
     });
 
-    document.addEventListener('mousemove', function(e) {
-        if (!termDragState) return;
-        if (!termMaximized) {
-            var l = e.clientX - termDragState.offsetX;
-            var t = e.clientY - termDragState.offsetY;
-            l = Math.max(-termWin.offsetWidth + 60, Math.min(l, window.innerWidth - 60));
-            t = Math.max(0, Math.min(t, window.innerHeight - 50));
-            window.__domWrite(function() {
-                termWin.style.left = l + 'px';
-                termWin.style.top = t + 'px';
-            });
-        }
-    });
-    document.addEventListener('mouseup', function() {
-        termDragState = null;
-        termWin.style.cursor = '';
+    termBtnClose.addEventListener('click', function() {
+        if (termControls.isMinimized()) return;
+        termControls.hide();
+        removeTaskbarEntry();
     });
 
-    function termBringToFront() {
-        var all = document.querySelectorAll('.window');
-        var maxZ = 100;
-        for (var i = 0; i < all.length; i++) {
-            var z = parseInt(all[i].style.zIndex) || 0;
-            if (z > maxZ) maxZ = z;
-        }
-        termWin.style.zIndex = maxZ + 1;
-    }
-    termWin.addEventListener('mousedown', termBringToFront);
+    window.termMinimizeWindow = function() { termControls.minimize(); };
+    window.termShowWindow = termControls.restore;
 
-    termBtnClose.addEventListener('click', hideTerminal);
-    termBtnMinimize.addEventListener('click', function() {
-        if (termMaximized) {
-            hideTerminal();
-            return;
-        }
-        minimizeTerminal();
-    });
-
-    function minimizeTerminal() {
-        if (termMinimized) return;
-        var tbEntry = termTaskbarEntry;
-        var winRect = termWin.getBoundingClientRect();
-        var tbRect = tbEntry.getBoundingClientRect();
-        var sx = winRect.left, sy = winRect.top;
-        var sw = winRect.width, sh = winRect.height;
-        var tx = tbRect.left + 4, ty = tbRect.top + 2;
-        var tw = Math.max(20, tbRect.width - 8), th = Math.max(4, tbRect.height - 4);
-        termMinimized = true;
-        termPrevRect = { left: termWin.style.left, top: termWin.style.top, width: termWin.style.width, height: termWin.style.height };
-        tbEntry.classList.remove('active');
-        termWin.style.transition = 'none';
-        termWin.style.left = sx + 'px';
-        termWin.style.top = sy + 'px';
-        termWin.style.width = sw + 'px';
-        termWin.style.height = sh + 'px';
-        requestAnimationFrame(function() {
-            termWin.style.transition = 'all 0.2s steps(4)';
-            termWin.style.left = tx + 'px';
-            termWin.style.top = ty + 'px';
-            termWin.style.width = tw + 'px';
-            termWin.style.height = th + 'px';
-            setTimeout(function() {
-                termWin.style.display = 'none';
-                termWin.style.transition = '';
-                termWin.style.left = sx + 'px';
-                termWin.style.top = sy + 'px';
-                termWin.style.width = sw + 'px';
-                termWin.style.height = sh + 'px';
-            }, 300);
+    function createTaskbarEntry() {
+        if (termTaskbarEntry) return;
+        var container = document.querySelector('.taskbar-items');
+        if (!container) return;
+        termTaskbarEntry = document.createElement('div');
+        termTaskbarEntry.className = 'taskbar-item';
+        termTaskbarEntry.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#111" stroke="#333" stroke-width="2"/><text x="8" y="11" text-anchor="middle" fill="#0f0" font-size="7" font-weight="bold">C:\\</text></svg> Terminal';
+        container.appendChild(termTaskbarEntry);
+        termControls.setTaskbarEntry(termTaskbarEntry);
+        termTaskbarEntry.addEventListener('click', function() {
+            if (document.body.classList.contains('mobile-mode')) {
+                if (termWin.classList.contains('active')) {
+                    termWin.classList.remove('active');
+                    termTaskbarEntry.classList.remove('active');
+                } else {
+                    document.querySelectorAll('.window').forEach(function(w) { w.classList.remove('active'); });
+                    document.querySelectorAll('.taskbar-item').forEach(function(t) { t.classList.remove('active'); });
+                    termWin.classList.add('active');
+                    termTaskbarEntry.classList.add('active');
+                    termControls.bringToFront();
+                }
+                return;
+            }
+            if (termControls.isMinimized() || termWin.style.display === 'none') {
+                showTerminal();
+            } else {
+                termControls.minimize();
+            }
         });
     }
 
-    termBtnMaximize.addEventListener('click', function() {
-        if (termMaximized) {
-            termMaximized = false;
-            termWin.classList.remove('window-maximized');
-            if (termPrevRect) {
-                termWin.style.left = termPrevRect.left;
-                termWin.style.top = termPrevRect.top;
-                termWin.style.width = termPrevRect.width;
-                termWin.style.height = termPrevRect.height;
-            }
-        } else {
-            termPrevRect = { left: termWin.style.left, top: termWin.style.top, width: termWin.style.width, height: termWin.style.height };
-            termMaximized = true;
-            termWin.classList.add('window-maximized');
-            var tb = document.querySelector('.taskbar');
-            var th = tb ? tb.offsetHeight : 40;
-            termWin.style.left = '0';
-            termWin.style.top = '0';
-            termWin.style.width = '100vw';
-            termWin.style.height = 'calc(100vh - 40px)';
+    function removeTaskbarEntry() {
+        if (termTaskbarEntry) {
+            termTaskbarEntry.remove();
+            termTaskbarEntry = null;
         }
-    });
+    }
 
     var terminalFirstOpen = true;
     function showTerminal() {
         createTaskbarEntry();
-        if (termMinimized) {
-            termMinimized = false;
+        if (termControls.isMinimized() || termWin.style.display === 'none') {
             termWin.style.display = '';
             termWin.style.left = '80px';
             termWin.style.top = '60px';
             termWin.style.width = '580px';
             termWin.style.height = '380px';
             if (termTaskbarEntry) termTaskbarEntry.classList.add('active');
-            termBringToFront();
+            termControls.bringToFront();
             termInput.focus();
+            termControls.setMinimized(false);
             if (terminalFirstOpen) {
                 terminalFirstOpen = false;
                 termOutput.innerHTML = '';
@@ -643,23 +590,14 @@
             }
         } else {
             termWin.style.display = '';
-            termMinimized = false;
             if (termTaskbarEntry) termTaskbarEntry.classList.add('active');
-            termBringToFront();
+            termControls.bringToFront();
             termInput.focus();
         }
     }
 
-    function hideTerminal() {
-        if (termMinimized) return;
-        termPrevRect = { left: termWin.style.left, top: termWin.style.top, width: termWin.style.width, height: termWin.style.height };
-        termMinimized = true;
-        termWin.style.display = 'none';
-        removeTaskbarEntry();
-    }
-
     window.showTerminal = showTerminal;
-    window.termMinimizeWindow = minimizeTerminal;
+    window.termHasEntry = function() { return termTaskbarEntry !== null; };
     termWin.style.display = 'none';
-    termMinimized = true;
+    termControls.setMinimized(true);
 })();
