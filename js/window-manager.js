@@ -524,8 +524,8 @@
       }
     })();
 
+    _init();
     if (opts.startVisible) {
-      _init();
       show();
     }
 
