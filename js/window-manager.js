@@ -544,6 +544,16 @@
     };
   }
 
+  global.windowRegistry = [];
+
+  global.registerWindow = function(desc) {
+    global.windowRegistry.push({
+      minimize: desc.minimize,
+      show: desc.show,
+      hasEntry: desc.hasEntry,
+    });
+  };
+
   global.WindowBehavior = WindowBehavior;
   global.flashWindow = function(win) {
     win.classList.remove('window-interacting');

@@ -33,6 +33,14 @@
 
     window.showSettings = function () { behavior.show(); };
 
+    if (window.registerWindow) {
+      registerWindow({
+        minimize: function () { behavior.minimize(); },
+        show: function () { behavior.show(); },
+        hasEntry: function () { return behavior.hasTaskbarEntry(); },
+      });
+    }
+
     wallpaperInput.addEventListener('change', function () {
         var file = wallpaperInput.files[0];
         if (!file) return;

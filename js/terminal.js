@@ -501,4 +501,12 @@
     window.termShowWindow = termBehavior.show;
     window.termHasEntry = function() { return termBehavior.hasTaskbarEntry(); };
     window.showTerminal = function() { termBehavior.show(); };
+
+    if (window.registerWindow) {
+      registerWindow({
+        minimize: function() { termBehavior.minimize(); },
+        show: function() { termBehavior.show(); },
+        hasEntry: function() { return termBehavior.hasTaskbarEntry(); },
+      });
+    }
 })();

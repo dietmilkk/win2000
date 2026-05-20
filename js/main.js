@@ -43,23 +43,27 @@
        ================================================================ */
 
   var _showDesktop = false;
-  var _sdState = {};
+  var _sdState = [];
+
+  if (window.windowRegistry) {
+    registerWindow({
+      minimize: function() { winBehavior.minimize(); },
+      show: function() { winBehavior.show(); },
+      hasEntry: function() { return winBehavior.hasTaskbarEntry(); },
+    });
+  }
 
   function toggleShowDesktop() {
     _showDesktop = !_showDesktop;
+    var reg = window.windowRegistry || [];
     if (_showDesktop) {
-      _sdState = {
-        chatWasOpen: window.chatHasEntry ? window.chatHasEntry() : false,
-        termWasOpen: window.termHasEntry ? window.termHasEntry() : false,
-      };
-      winBehavior.minimize();
-      if (typeof chatMinimizeWindow !== "undefined") chatMinimizeWindow();
-      if (typeof termMinimizeWindow !== "undefined") termMinimizeWindow();
+      _sdState = reg.map(function(w) { return { wasOpen: w.hasEntry() }; });
+      reg.forEach(function(w) { w.minimize(); });
     } else {
-      if (_sdState.chatWasOpen && typeof chatShowWindow !== "undefined") chatShowWindow();
-      if (_sdState.termWasOpen && typeof termShowWindow !== "undefined") termShowWindow();
-      winBehavior.restore();
-      _sdState = {};
+      reg.forEach(function(w, i) {
+        if (_sdState[i] && _sdState[i].wasOpen) w.show();
+      });
+      _sdState = [];
     }
   }
 
@@ -152,23 +156,6 @@
         break;
       case "settings":
         if (typeof window.showSettings !== "undefined") window.showSettings();
-        break;
-      case "about":
-        xpDialog({
-          title: "Sobre",
-          icon: "i",
-          width: "380px",
-          message:
-            "<b>Win2K Desktop</b><br><br>" +
-            "feito por um maluco com HTML/CSS/JS puro.<br><br>" +
-            "• janelas que arrastam, redimensionam, minimizam<br>" +
-            "• barra de tarefas com icones dinâmicos<br>" +
-            "• menu iniciar + icones na area de trabalho<br>" +
-            "• chat IA que conversa de boa<br>" +
-            "• terminal com comandos de verdade<br>" +
-            "• galeria de GIF + scanlines CRT<br><br>" +
-            "só isso. se divirta :)",
-        });
         break;
       case "shutdown":
         xpDialog({
