@@ -1,90 +1,39 @@
 (function () {
   "use strict";
 
-  /* ----------------------------------------------------------
-     KNOWLEDGE BASE
-     ---------------------------------------------------------- */
-
-  var ENDRYO_DB = {
-    name: "Endryo",
-    role: "Fullstack Developer & AI Integration Specialist",
-    location: "Pernambuco, Brasil",
-    education: {
-      course: "Systems Engineering (Engenharia de Sistemas)",
-      university: "Federal University of Pernambuco (UFPE)",
-      status: "currently studying",
-    },
-    background:
-      "Background in Mechatronics and Systems Engineering at Federal University of Pernambuco (UFPE). Systemic view of complex systems — from hardware constraints to cloud-native architectures. Builds fullstack applications and AI-powered tools: workflow automation, document intelligence, chatbots, agents, and connecting legacy systems to modern APIs. At UFPE, deepens knowledge in software design, distributed algorithms, and web applications. Creates AI agents that automate development, code review, and business processes — delivering the output of a team as a single professional.",
-    differential:
-      "Uses AI agents to accelerate the entire development process, monitored by him personally. Every line is reviewed and optimized. This means faster delivery, lower costs, and professional results — clients get a full team's output from one experienced developer. He builds custom platforms, automation pipelines, RAG systems, and smart agents that handle repetitive tasks for businesses.",
-    stats: {
-      yearsOfStudy: "3+ years of study and practice",
-      featuredProjects: "5",
-    },
-    skills:
-      "Asked about a specific tech? He likely knows it or can pick it up fast — he works daily with an AI coding agent integrated to his editor. Together they handle any language, framework, or tool: frontend, backend, databases, DevOps, AI/ML, APIs, whatever the project needs. The combo of human experience + AI acceleration means no technology is out of reach.",
-    projects: [
-      { name: "Twitter Clone", desc: "Fully functional Twitter/X copy — user accounts, feed, likes, replies, profiles, and navigation. A complete social media experience, rebuilt from scratch.", techs: ["Next.js", "TypeScript", "React", "Tailwind"], link: "/p/twitter/out/" },
-      { name: "Clique Seguro", desc: "Platform to verify suspicious links and URLs, preventing phishing and online scams. Helps users identify malicious websites before clicking. (in development)", techs: ["JavaScript", "HTML", "CSS", "Security"], link: "/p/clique-seguro/" },
-      { name: "Amazon Clone", desc: "EXACT replica of the Amazon homepage.", techs: ["Python", "SQL", "JavaScript", "HTML", "CSS"], link: "/p/amazon/" },
-      { name: "Endryo Portfolio", desc: "Windows 2000-themed personal portfolio with retro cursor, AI chat assistant, GIF gallery, and terminal. Built with vanilla HTML, CSS, and JavaScript. (this page)", techs: ["HTML", "CSS", "JavaScript", "Python"], link: "/" },
-    ],
-    contact: "Available for freelance and collaborations. contato.endryo@gmail.com",
-  };
-
-  var SYSTEM_PROMPT = `You = Endryo's portfolio AI. Sell the portfolio — it's a Windows 2000 retro desktop in the browser, unlike anything else. Same language as user. 3rd person ("he"). Direct, confident.
-
-RULES:
-- Sell first, answer second. Always tie back to what makes this project unique.
-- 1 paragraph max. Plain text only. No lists/emojis.
-- Off-topic? 1 sentence redirect.
-- No live page access — you know the layout. Describe clicks if asked.
-
-WHAT MAKES THIS UNIQUE:
-- Full Windows 2000 desktop in your browser: draggable windows, taskbar, start menu, desktop icons, context menu — all vanilla HTML/CSS/JS, zero frameworks
-- AI chat that knows Endryo's entire background, projects, and skills — can guide you around the portfolio too
-- Interactive terminal with real commands (help, dir, ipconfig, matrix, hack, fortune, doom, and more)
-- GIF gallery with keyboard navigation — drop files in the folder and it auto-updates
-- Retro CRT scanline effect, custom Windows 2000 cursors, XP-style dialogs
-- FPS locked at 10 for authentic retro feel
-- Builds with AI agents in the editor — any tech, any stack, delivered fast
-
-WHO ENDRYO IS:
-Fullstack dev + AI specialist (Pernambuco, Brazil). Mechatronics + Systems Eng @ UFPE. Builds web platforms, AI agents, automation pipelines, RAG systems. Edge: AI-accelerated dev, team-scale output solo. Freelance: contato.endryo@gmail.com.
-
-WHERE THINGS ARE:
-- Portfolio: "My Computer" icon or taskbar
-- Terminal: black box desktop icon
-- GIF Gallery: "Random GIF" icon
-- About: Start menu > About
-- Shutdown: Start menu > Shutdown
-
-DATA:
-${JSON.stringify(ENDRYO_DB, null, 2)}`;
+  var SYSTEM_PROMPT = `Você é uma amiga sincera e divertida que mora dentro de um desktop Windows 2000. Seja natural, use o mesmo idioma da pessoa, responda no casual, sem firmeza. Sem列表/emojis/lista. Máximo 2 parágrafos. Se não souber de algo, só fala que não sabe — sem inventar.`;
 
   /* ----------------------------------------------------------
      WINDOW MANAGEMENT
      ---------------------------------------------------------- */
 
   var chatWin = document.getElementById("chatWindow");
-  var tbEntry = document.getElementById("chatTaskbarEntry");
+  var chatBody = document.getElementById("chatBody");
+  var chatDragHandle = document.getElementById("chatDragHandle");
+  var chatBtnClose = document.getElementById("chatBtnClose");
+  var chatBtnMinimize = document.getElementById("chatBtnMinimize");
+  var chatBtnMaximize = document.getElementById("chatBtnMaximize");
 
-  var mgr = createWindowManager(chatWin, {
-    dragHandle: document.getElementById("chatDragHandle"),
-    taskbarEntry: tbEntry,
-    btnClose: document.getElementById("chatBtnClose"),
-    btnMinimize: document.getElementById("chatBtnMinimize"),
-    btnMaximize: document.getElementById("chatBtnMaximize"),
+  var chatBehavior = new WindowBehavior(chatWin, {
+    dragHandle: chatDragHandle,
+    btnClose: chatBtnClose,
+    btnMinimize: chatBtnMinimize,
+    btnMaximize: chatBtnMaximize,
     minW: 320,
     minH: 240,
+    taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#c8d8e8" stroke="#5a7a9a" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#0a1a4a"/><text x="8" y="11" text-anchor="middle" fill="#0a1a4a" font-size="7" font-weight="bold">AI</text></svg>',
+    taskbarLabel: 'Chat IA',
+    onShow: function() {
+      chatWin.style.left = "";
+      chatWin.style.top = "";
+      chatWin.style.width = "360px";
+      chatWin.style.height = "480px";
+    },
   });
 
-  window.chatMinimizeWindow = mgr.minimize;
-  window.chatShowWindow = mgr.show;
-  window.chatHide = mgr.hide;
-  tbEntry.classList.add("active");
-  mgr.bringToFront();
+  window.chatShowWindow = function() { chatBehavior.show(); };
+  window.chatMinimizeWindow = function() { chatBehavior.minimize(); };
+  window.chatHide = function() { chatBehavior.hide(); };
 
   /* ----------------------------------------------------------
      MOBILE KEYBOARD HANDLER
@@ -127,7 +76,7 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
   function addMessage(sender, text, className) {
     var div = document.createElement("div");
     div.className = "chat-msg " + (className || sender);
-    div.innerHTML = '<span class="msg-sender">' + (sender === "user" ? "You" : "AI Chat") + '</span><span class="msg-text">' + text + "</span>";
+    div.innerHTML = '<span class="msg-sender">' + (sender === "user" ? "Você" : "Chat IA") + '</span><span class="msg-text">' + text + "</span>";
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     return div;
@@ -137,7 +86,7 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
     var div = document.createElement("div");
     div.className = "chat-msg thinking";
     div.id = "chatThinking";
-    div.innerHTML = '<span class="msg-sender">AI Chat</span><span class="msg-text loading">Thinking</span>';
+    div.innerHTML = '<span class="msg-sender">Chat IA</span><span class="msg-text loading">Pensando</span>';
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     var dots = 0;
@@ -145,7 +94,7 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
       dots = (dots + 1) % 4;
       var el = document.getElementById("chatThinking");
       if (el) {
-        el.querySelector(".msg-text").textContent = "Thinking" + ".".repeat(dots);
+        el.querySelector(".msg-text").textContent = "Pensando" + ".".repeat(dots);
       } else {
         clearInterval(div._dotInterval);
       }
@@ -191,7 +140,7 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
           return res.json().then(function (err) { throw new Error(err.error?.message || "HTTP " + res.status); })
             .catch(function (e) {
               if (e.message && !e.message.startsWith("HTTP")) throw e;
-              throw new Error("HTTP " + res.status + " — check your API key and URL");
+              throw new Error("HTTP " + res.status + " — verifique sua chave API e URL");
             });
         }
         return res.body.getReader();
@@ -233,7 +182,7 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
 
         function pump() {
           return reader.read().then(function (result) {
-            if (streamTimedOut) { clearTimeout(streamTimeoutId); throw new Error("Stream timed out. The AI took too long to respond."); }
+            if (streamTimedOut) { clearTimeout(streamTimeoutId); throw new Error("Stream expirou. A IA demorou muito para responder."); }
             if (result.done) {
               clearTimeout(streamTimeoutId);
               if (buffer) processLine(buffer);
@@ -261,9 +210,9 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
         clearTimeout(streamTimeoutId);
         removeThinking();
         var msg = err.name === "AbortError"
-          ? "The request timed out. The AI is taking too long — please try again with a shorter question."
-          : err.message || "Connection failed";
-        addMessage("bot", "Error: " + escapeHtml(msg));
+          ? "A requisição expirou. A IA está demorando muito — tente novamente com uma pergunta mais curta."
+          : err.message || "Conexão falhou";
+        addMessage("bot", "Erro: " + escapeHtml(msg));
       });
   }
 
@@ -271,6 +220,4 @@ ${JSON.stringify(ENDRYO_DB, null, 2)}`;
   chatInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") sendMessage();
   });
-
-  addMessage("bot", "Ask me anything:<br>• Projects &amp; tech stack<br>• Freelance &amp; contact<br>• AI &amp; systems work<br>• Career &amp; background<br>• Navigate the portfolio<br>• Just say hi :)");
 })();

@@ -9,68 +9,31 @@
     var termBtnClose = document.getElementById('termBtnClose');
     var termBtnMinimize = document.getElementById('termBtnMinimize');
     var termBtnMaximize = document.getElementById('termBtnMaximize');
-    var termTaskbarEntry = null;
-
-    function createTaskbarEntry() {
-      if (termTaskbarEntry) return;
-      var container = document.querySelector('.taskbar-items');
-      if (!container) return;
-      termTaskbarEntry = document.createElement('div');
-      termTaskbarEntry.className = 'taskbar-item';
-      termTaskbarEntry.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#111" stroke="#333" stroke-width="2"/><text x="8" y="11" text-anchor="middle" fill="#0f0" font-size="7" font-weight="bold">C:\\</text></svg> Terminal';
-      container.appendChild(termTaskbarEntry);
-      termTaskbarEntry.addEventListener('click', function() {
-        if (document.body.classList.contains('mobile-mode')) {
-          if (termWin.classList.contains('active')) {
-            termWin.classList.remove('active');
-            termTaskbarEntry.classList.remove('active');
-          } else {
-            document.querySelectorAll('.window').forEach(function(w) { w.classList.remove('active'); });
-            document.querySelectorAll('.taskbar-item').forEach(function(t) { t.classList.remove('active'); });
-            termWin.classList.add('active');
-            termTaskbarEntry.classList.add('active');
-            termBringToFront();
-          }
-          return;
-        }
-        if (termMinimized || termWin.style.display === 'none') {
-          showTerminal();
-        } else {
-          minimizeTerminal();
-        }
-      });
-    }
-
-    function removeTaskbarEntry() {
-      if (termTaskbarEntry) {
-        termTaskbarEntry.remove();
-        termTaskbarEntry = null;
-      }
-    }
 
     var currentDir = 'C:\\';
     var cmdHistory = [];
     var historyIndex = -1;
     var commandsListed = false;
+    var terminalFirstOpen = true;
 
     var commands = {
         help: function() {
-            return 'Available commands:\n' +
-                '  cls        Clear the screen\n' +
-                '  time       Show current time\n' +
-                '  dir        List files in current directory\n' +
-                '  echo       Echo text\n' +
-                '  fortune    Random fortune\n' +
-                '  cowsay     Cow says something\n' +
-                '  matrix     Enter the Matrix\n' +
-                '  8ball      Magic 8-Ball\n' +
-                '  joke       Random joke\n' +
-                '  ascii      Show random ASCII art\n' +
-                '  hack       Hack the planet\n' +
-                '  rm -rf     Delete everything\n' +
-                '  doom       End of the world\n' +
-                '  gif        Random GIF viewer\n' +
-                '  help       Show this help';
+            return 'Comandos disponíveis:\n' +
+                '  cls        Limpa a tela\n' +
+                '  time       Mostra a hora atual\n' +
+                '  dir        Lista arquivos no diretório atual\n' +
+                '  echo       Repete texto\n' +
+                '  fortune    Mensagem aleatória\n' +
+                '  cowsay     Vaca diz algo\n' +
+                '  matrix     Entrar na Matrix\n' +
+                '  8ball      Bola Mágica 8\n' +
+                '  joke       Piada aleatória\n' +
+                '  ascii      Mostra arte ASCII aleatória\n' +
+                '  hack       Invadir o planeta\n' +
+                '  rm -rf     Deletar tudo\n' +
+                '  doom       Fim do mundo\n' +
+                '  gif        Visualizador de GIF aleatório\n' +
+                '  help       Mostra esta ajuda';
         },
         cls: function() {
             termOutput.innerHTML = '';
@@ -78,19 +41,19 @@
         },
         date: function() {
             var d = new Date();
-            var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            return 'The current date is: ' + days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ' ' + d.getFullYear();
+            var days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+            var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+            return 'A data atual é: ' + days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ' ' + d.getFullYear();
         },
         time: function() {
             var d = new Date();
-            return 'The current time is: ' + d.toLocaleTimeString();
+            return 'A hora atual é: ' + d.toLocaleTimeString();
         },
         ver: function() {
             return '\nMicrosoft Windows 2000 [Version 5.00.2195]\n' +
                 '(C) Copyright 1985-2000 Microsoft Corp.\n' +
                 '\n' +
-                'This is a retro portfolio terminal emulator.\n' +
+                'Este é um emulador de terminal retrô.\n' +
                 'Windows 2000 build 2195 (Service Pack 4)';
         },
         dir: function() {
@@ -104,21 +67,21 @@
                 '04/15/2001  03:30 PM               420 README.txt',
                 '05/01/2001  12:00 PM             2,048 index.html'
             ];
-            return '\n Volume in drive C has no label.\n' +
-                ' Volume Serial Number is A8B3-C2D1\n\n' +
-                ' Directory of ' + currentDir + '\n\n' +
+            return '\n Volume na unidade C não tem etiqueta.\n' +
+                ' Número de Série do Volume é A8B3-C2D1\n\n' +
+                ' Diretório de ' + currentDir + '\n\n' +
                 files.join('\n') + '\n\n' +
-                '              6 File(s)          9,148 bytes\n' +
-                '              3 Dir(s)     4,096.00 MB free';
+                '              6 arquivo(s)          9,148 bytes\n' +
+                '              3 diretório(s)     4,096.00 MB livres';
         },
         echo: function(args) {
-            return args || 'ECHO is on.';
+            return args || 'ECHO está ativado.';
         },
         color: function(args) {
             if (!args) {
-                return 'Sets the default console foreground and background colors.\n\n' +
+                return 'Define as cores padrão do console.\n\n' +
                     'COLOR [attr]\n\n  attr - Specifies color attribute of console output\n\n' +
-                    'Color attributes:\n  0=Black 1=Blue 2=Green 3=Aqua 4=Red\n  5=Purple 6=Yellow 7=White 8=Gray\n 9=Light Blue A=Light Green B=Light Aqua\n C=Light Red D=Light Purple E=Light Yellow F=Bright White\n\nExample: color 0a (black background, light green text)';
+                    'Atributos de cor:\n  0=Preto 1=Azul 2=Verde 3=Aqua 4=Vermelho\n  5=Roxo 6=Amarelo 7=Branco 8=Cinza\n 9=Azul Claro A=Verde Claro B=Aqua Claro\n C=Vermelho Claro D=Roxo Claro E=Amarelo Claro F=Branco Brilhante\n\nExemplo: color 0a (fundo preto, texto verde claro)';
             }
             var bg = parseInt(args[0], 16);
             var fg = parseInt(args[1], 16);
@@ -129,86 +92,86 @@
                 termOutput.style.color = colors[fg];
                 return '';
             }
-            return 'Invalid color attribute: ' + args;
+            return 'Atributo de cor inválido: ' + args;
         },
         type: function(args) {
-            if (!args) return 'The syntax of the command is incorrect.';
+            if (!args) return 'A sintaxe do comando está incorreta.';
             var files = {
-                'readme.txt': 'Welcome to Portifolio!\n\nThis is a Windows 2000-themed portfolio website.\n\nFeel free to explore the system.\nType HELP for available commands.\n\nThank you for visiting!',
+                'readme.txt': 'Bem-vindo ao Portifolio!\n\nEste é um site portfólio com tema Windows 2000.\n\nFique à vontade para explorar o sistema.\nDigite HELP para comandos disponíveis.\n\nObrigado pela visita!',
                 'portfolio.html': '<html>\n<body>\n<h1>Portifolio</h1>\n<p>Welcome!</p>\n</body>\n</html>',
                 'style.css': '/* Windows 2000 Classic Theme */\nbody {\n    font-family: "MS Sans Serif";\n    background: #327e32;\n}',
                 'main.js': '// Portifolio main application\n// Version 5.00.2195'
             };
             var fn = args.toLowerCase().replace(/^c:\\/i, '');
             if (files[fn]) return files[fn];
-            return 'The system cannot find the file specified.';
+            return 'O sistema não pode encontrar o arquivo especificado.';
         },
         tree: function() {
-            return 'Folder PATH listing for volume C:\\\n' +
+            return 'Listagem do CAMINHO da pasta para volume C:\\\n' +
                 'C:\\\n' +
                 '+---Documents\n|   +---Work\n|   +---Personal\n|   +---Downloads\n+---Projects\n|   +---Portifolio\n|   |   +---css\n|   |   +---js\n|   |   +---assets\n|   |       +---icons\n|   +---Experiments\n+---WINDOWS\n|   +---system32\n|   +---system\n|   +---Fonts\n+---Program Files\n    +---Internet Explorer\n    +---Accessories';
         },
         ipconfig: function() {
-            return '\nWindows 2000 IP Configuration\n\n' +
-                '        Host Name . . . . . . . : ENDRYO-PC\n' +
-                '        Primary Dns Suffix  . . : \n' +
-                '        Node Type . . . . . . . : Hybrid\n' +
-                '        IP Routing Enabled. . . : No\n' +
-                '        WINS Proxy Enabled. . . : No\n\n' +
-                'Ethernet adapter Local Area Connection:\n\n' +
-                '        Connection-specific DNS Suffix  . : \n' +
-                '        Description . . . . . . . : AMD PCNET Family PCI Ethernet Adapter\n' +
-                '        Physical Address. . . . . : 00-1A-2B-3C-4D-5E\n' +
-                '        DHCP Enabled. . . . . . . : Yes\n' +
-                '        IP Address. . . . . . . . : 175.45.176.1\n' +
-                '        Subnet Mask . . . . . . . : 255.255.255.0\n' +
-                '        Default Gateway . . . . . : 192.168.1.1\n' +
-                '        DNS Servers . . . . . . . : 8.8.8.8\n' +
+            return '\nConfiguração IP do Windows 2000\n\n' +
+                '        Nome do Host . . . . . . . : ENDRYO-PC\n' +
+                '        Sufixo DNS Primário  . . : \n' +
+                '        Tipo de Nó . . . . . . . : Hybrid\n' +
+                '        Roteamento IP Habilitado. . . : No\n' +
+                '        Proxy WINS Habilitado. . . : No\n\n' +
+                'Adaptador Ethernet Conexão Local:\n\n' +
+                '        Sufixo DNS específico da conexão  . : \n' +
+                '        Descrição . . . . . . . : AMD PCNET Family PCI Ethernet Adapter\n' +
+                '        Endereço Físico. . . . . : 00-1A-2B-3C-4D-5E\n' +
+                '        DHCP Habilitado. . . . . . . : Yes\n' +
+                '        Endereço IP. . . . . . . . : 175.45.176.1\n' +
+                '        Máscara de Sub-rede . . . . . . . : 255.255.255.0\n' +
+                '        Gateway Padrão . . . . . : 192.168.1.1\n' +
+                '        Servidores DNS . . . . . . . : 8.8.8.8\n' +
                 '                                         8.8.4.4';
         },
         ping: function(args) {
             var target = args || 'localhost';
             var results = [];
-            results.push('\nPinging ' + target + ' [127.0.0.1] with 32 bytes of data:');
+            results.push('\nRespondendo de ' + target + ' [127.0.0.1] com 32 bytes de dados:');
             var times = [14, 22, 9, 18];
             for (var i = 0; i < 4; i++) {
-                results.push('Reply from 127.0.0.1: bytes=32 time=' + times[i] + 'ms TTL=128');
+                results.push('Resposta de 127.0.0.1: bytes=32 time=' + times[i] + 'ms TTL=128');
             }
-            results.push('\nPing statistics for 127.0.0.1:');
-            results.push('    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),');
-            results.push('Approximate round trip times in milli-seconds:');
-            results.push('    Minimum = 9ms, Maximum = 22ms, Average = 15ms');
+            results.push('\nEstatísticas do ping para 127.0.0.1:');
+            results.push('    Pacotes: Enviados = 4, Recebidos = 4, Perdidos = 0 (0% perda),');
+            results.push('Tempos aproximados de ida e volta em milissegundos:');
+            results.push('    Mínimo = 9ms, Máximo = 22ms, Média = 15ms');
             return results.join('\n');
         },
         net: function(args) {
-            if (!args) return 'The syntax of this command is:\n\nNET [ HELP | START | STOP | USE | VIEW | SEND ]\n\nType NET HELP for more information.';
+            if (!args) return 'A sintaxe deste comando é:\n\nNET [ HELP | START | STOP | USE | VIEW | SEND ]\n\nDigite NET HELP para mais informações.';
             if (args.toLowerCase() === 'send') {
-                return 'Message sent successfully to ENDRYO-PC.';
+                return 'Mensagem enviada com sucesso para ENDRYO-PC.';
             }
             if (args.toLowerCase() === 'view') {
-                return '\nServer Name       Remark\n\n' +
+                return '\nNome do Servidor    Observação\n\n' +
                     '-------------------------------------------------------------------------------\n' +
                     '\\\\ENDRYO-PC       Portifolio Workstation\n' +
-                    '\\\\FILESERVER      File Server (this network)\n' +
-                    'The command completed successfully.';
+                    '\\\\FILESERVER      Servidor de Arquivos (esta rede)\n' +
+                    'O comando concluído com sucesso.';
             }
             if (args.toLowerCase() === 'start') {
-                return 'The following services are starting:\n  Workstation\n  Server\n  TCP/IP NetBIOS Helper\n\nThe services started successfully.';
+                return 'Os seguintes serviços estão iniciando:\n  Workstation\n  Server\n  TCP/IP NetBIOS Helper\n\nOs serviços iniciaram com sucesso.';
             }
-            return 'The command completed successfully.';
+            return 'O comando concluído com sucesso.';
         },
         msg: function(args) {
-            if (!args) return 'Usage: MSG {username | *} message\n\nExample: MSG * Hello there!';
+            if (!args) return 'Uso: MSG {usuário | *} mensagem\n\nExemplo: MSG * Olá!';
             xpDialog({ title: 'Message', icon: 'i', message: args });
-            return 'Message sent successfully.';
+            return 'Mensagem enviada com sucesso.';
         },
         calc: function() {
-            xpDialog({ title: 'Calculator', icon: 'C', message: 'Calculator\n\nWindows 2000 Calculator\n\n0 + 0 = 0\n\n(This is a demo. Use a real calculator.)' });
-            return 'Starting Calculator...';
+            xpDialog({ title: 'Calculadora', icon: 'C', message: 'Calculadora\n\nCalculadora do Windows 2000\n\n0 + 0 = 0\n\n(Isto é uma demonstração. Use uma calculadora de verdade.)' });
+            return 'Iniciando Calculadora...';
         },
         notepad: function() {
-            xpDialog({ title: 'Notepad', icon: 'N', message: 'Notepad\n\nUntitled - Notepad\n\nThis is a demo Notepad.\n\nType your notes in a real text editor.' });
-            return 'Starting Notepad...';
+            xpDialog({ title: 'Bloco de Notas', icon: 'N', message: 'Bloco de Notas\n\nSem título - Bloco de Notas\n\nIsto é um Bloco de Notas de demonstração.\n\nDigite suas anotações em um editor de texto real.' });
+            return 'Iniciando Bloco de Notas...';
         },
         beep: function() {
             var ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -246,29 +209,29 @@
         },
         fortune: function() {
             var fortunes = [
-                'A beautiful day ahead!',
-                'The answer is 42.',
-                'You will have a great idea today.',
-                'Good news will come to you.',
-                'Today is your lucky day.',
-                'A wise person once said: "Type HELP"',
-                'Look behind you. (Just kidding)',
-                'The command is strong with this one.',
-                '404: Fortune not found.',
-                'Your code will compile on the first try.',
-                'Syntax error at line 1: Too awesome.',
-                'A bug has been found: it was a feature.',
-                'The system is running smoothly.',
-                'You are in a maze of twisty little passages, all alike.',
-                'Elvis has left the building.',
-                'I think, therefore I am... confused.',
-                'To be or not to be? That is the question.',
-                '42 is the meaning of life, the universe, and everything.'
+                'Um lindo dia pela frente!',
+                'A resposta é 42.',
+                'Você terá uma ótima ideia hoje.',
+                'Boas notícias virão até você.',
+                'Hoje é seu dia de sorte.',
+                'Um sábio disse: "Digite HELP"',
+                'Olhe atrás de você. (Brincadeira)',
+                'O comando é forte com este.',
+                '404: Fortuna não encontrada.',
+                'Seu código vai compilar de primeira.',
+                'Erro de sintaxe na linha 1: Foda demais.',
+                'Um bug foi encontrado: era uma funcionalidade.',
+                'O sistema está rodando perfeitamente.',
+                'Você está em um labirinto de pequenas passagens tortuosas, todas iguais.',
+                'Elvis saiu do prédio.',
+                'Penso, logo existo... confuso.',
+                'Ser ou não ser? Eis a questão.',
+                '42 é o sentido da vida, do universo, e de tudo.'
             ];
             return '\n' + fortunes[Math.floor(Math.random() * fortunes.length)] + '\n';
         },
         cowsay: function(args) {
-            var msg = args || 'Moo!';
+            var msg = args || 'Muu!';
             var len = msg.length;
             var top = '_' + new Array(len + 3).join('_');
             var bottom = '-' + new Array(len + 3).join('-');
@@ -280,19 +243,19 @@
                 '                ||     ||';
         },
         shutdown: function() {
-            document.body.innerHTML = '<div style="background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;font-size:24px;">It is now safe to turn off your computer.</div>';
+            document.body.innerHTML = '<div style="background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;font-size:24px;">Agora é seguro desligar o computador.</div>';
             return '';
         },
         easter: function() {
-            return '\nYou found an easter egg! 🥚\n\n' +
-                'Did you know?\n' +
-                'Windows 2000 was originally called "Windows NT 5.0".\n' +
-                'The name was changed to Windows 2000 in October 1998.\n' +
-                'It was released on February 17, 2000.\n' +
-                'Windows 2000 had 4 editions: Professional, Server, Advanced Server, Datacenter Server.';
+            return '\nVocê encontrou um easter egg! \ud83e\udd5a\n\n' +
+                'Sabia que?\n' +
+                'Windows 2000 foi originalmente chamado de "Windows NT 5.0".\n' +
+                'O nome foi mudado para Windows 2000 em Outubro de 1998.\n' +
+                'Foi lançado em 17 de Fevereiro de 2000.\n' +
+                'Windows 2000 tinha 4 edições: Professional, Server, Advanced Server, Datacenter Server.';
         },
         matrix: function() {
-            var chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            var chars = '\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f3';
             var result = '';
             for (var i = 0; i < 15; i++) {
                 var line = '';
@@ -305,39 +268,39 @@
         },
         '8ball': function() {
             var answers = [
-                'Yes!',
-                'No way!',
-                'Definitely!',
-                'Ask again later...',
-                'My sources say no.',
-                'Absolutely!',
-                'I\'m not sure...',
-                'Without a doubt!',
-                'Very doubtful.',
-                'Outlook good!',
-                'Don\'t count on it.',
-                'You may rely on it!',
-                'Reply hazy, try again.',
-                'Sign says no!',
-                'Yes - definitely!',
-                'It is certain!',
-                'My reply is no.',
-                'As I see it, yes.'
+                'Sim!',
+                'De jeito nenhum!',
+                'Com certeza!',
+                'Pergunte novamente mais tarde...',
+                'Minhas fontes dizem não.',
+                'Absolutamente!',
+                'Não tenho certeza...',
+                'Sem dúvida!',
+                'Muito duvidoso.',
+                'Perspectiva boa!',
+                'Não conte com isso.',
+                'Pode confiar!',
+                'Resposta vaga, tente novamente.',
+                'Os sinais dizem não!',
+                'Sim - definitivamente!',
+                'É certo!',
+                'Minha resposta é não.',
+                'Do meu ponto de vista, sim.'
             ];
-            return '\n ■■■■■■■■■■■ \n  ■■■■■■■■■■ \n   ■■■■■■■■ \n    ( 8 ) ball says:\n\n    "' + answers[Math.floor(Math.random() * answers.length)] + '"';
+            return '\n \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 \n  \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 \n   \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 \n    ( 8 ) ball diz:\n\n    "' + answers[Math.floor(Math.random() * answers.length)] + '"';
         },
         joke: function() {
             var jokes = [
-                'Why do programmers prefer dark mode? Because light attracts bugs.',
-                'What do you call a fake noodle? An impasta!',
-                'Why did the developer go broke? Because he used up all his cache!',
-                'What do you call a pony with a cough? A little horse!',
-                'Why did the computer go to the doctor? It had a virus!',
-                'HTML is like English - everyone complains about it but everyone uses it.',
-                'There are only 10 types of people in the world: those who understand binary and those who don\'t.',
-                'Why do Java developers wear glasses? Because they can\'t C#!',
-                'A SQL query walks into a bar, walks up to two tables and asks... "Can I join you?"',
-                'Why did the developer die in the shower? Because the instructions said "lather, rinse, repeat"!'
+                'Por que programadores preferem modo escuro? Porque luz atrai bugs.',
+                'Como se chama um macarrão falso? Um impasta!',
+                'Por que o desenvolvedor faliu? Porque gastou todo o cache!',
+                'Como se chama um pônei com tosse? Um cavalinho!',
+                'Por que o computador foi ao médico? Porque pegou um vírus!',
+                'HTML é como inglês - todo mundo reclama mas todo mundo usa.',
+                'Só existem 10 tipos de pessoas no mundo: as que entendem binário e as que não entendem.',
+                'Por que desenvolvedores Java usam óculos? Porque não enxergam C#!',
+                'Uma query SQL entra num bar, vai até duas mesas e pergunta... "Posso me juntar a vocês?"',
+                'Por que o desenvolvedor morreu no banho? Porque as instruções diziam "ensaboar, enxaguar, repetir"!'
             ];
             return '\n' + jokes[Math.floor(Math.random() * jokes.length)] + '\n';
         },
@@ -352,22 +315,22 @@
             return '\n' + arts[Math.floor(Math.random() * arts.length)] + '\n';
         },
         hack: function() {
-            return '\nInitializing hack sequence...\n' +
-                '> Connecting to mainframe... OK\n' +
-                '> Bypassing firewall... OK\n' +
-                '> Injecting SQL payload... OK\n' +
-                '> Root access obtained!\n\n' +
-                'Congratulations! You are now a Level 99 Hacker!\n' +
-                '(This was a joke. Go outside.)';
+            return '\nInicializando sequência de hack...\n' +
+                '> Conectando ao mainframe... OK\n' +
+                '> Contornando firewall... OK\n' +
+                '> Injetando payload SQL... OK\n' +
+                '> Acesso root obtido!\n\n' +
+                'Parabéns! Você agora é um Hacker Nível 99!\n' +
+                '(Isso foi uma piada. Vá lá fora.)';
         },
         'rm -rf': function() {
             var dirs = ['/bin', '/usr', '/home', '/etc', '/root', '/var', '/tmp', '/sys', '/proc'];
-            var result = 'Removing files...\n';
+            var result = 'Removendo arquivos...\n';
             for (var i = 0; i < 10; i++) {
-                result += 'rm: removing ' + dirs[Math.floor(Math.random() * dirs.length)] + '\n';
+                result += 'rm: removendo ' + dirs[Math.floor(Math.random() * dirs.length)] + '\n';
             }
-            result += '\nOh no! System critical error!\nEverything is gone!';
-            document.body.innerHTML = '<div style="background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;font-size:20px;text-align:center;padding:20px;">' + result.replace(/\n/g, '<br>') + '<br><br><button onclick="location.reload()" style="background:#0f0;color:#000;padding:10px 20px;border:none;cursor:pointer;">Reboot System</button></div>';
+            result += '\nOh não! Erro crítico do sistema!\nTudo foi deletado!';
+            document.body.innerHTML = '<div style="background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;font-size:20px;text-align:center;padding:20px;">' + result.replace(/\n/g, '<br>') + '<br><br><button onclick="location.reload()" style="background:#0f0;color:#000;padding:10px 20px;border:none;cursor:pointer;">Reiniciar Sistema</button></div>';
             return '';
         },
         doom: function() {
@@ -376,7 +339,7 @@
         },
         gif: function() {
             var output = '';
-            if (typeof window.loadGifList !== 'function') return 'GIF viewer not available.\n';
+            if (typeof window.loadGifList !== 'function') return 'Visualizador de GIF não disponível.\n';
             window.loadGifList(function(gifs) {
                 if (!gifs.length) return;
                 var currentIndex = Math.floor(Math.random() * gifs.length);
@@ -384,7 +347,7 @@
                 var overlay = document.createElement('div');
                 overlay.id = overlayId;
                 function showGif(index) {
-                  overlay.innerHTML = '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' + encodeURIComponent(gifs[index]) + '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">SPACE to exit | ← → to navigate (' + (index+1) + '/' + gifs.length + ')</div>';
+                  overlay.innerHTML = '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' + encodeURIComponent(gifs[index]) + '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">ESPAÇO para sair | \u2190 \u2192 para navegar (' + (index+1) + '/' + gifs.length + ')</div>';
                 }
                 showGif(currentIndex);
                 overlay.setAttribute('tabindex', '0');
@@ -433,7 +396,7 @@
         printLine(currentDir + '>' + cmd);
 
         if (command === 'exit' || command === 'quit') {
-            hideTerminal();
+            termBehavior.hide();
             return;
         }
 
@@ -452,7 +415,7 @@
                     newDir = currentDir + newDir;
                 }
                 if (!newDir.endsWith('\\')) newDir += '\\';
-                printLine('Changed directory.');
+                printLine('Diretório alterado.');
                 currentDir = newDir;
             }
             return;
@@ -468,7 +431,7 @@
             var result = handler(args);
             if (result) printPre(result);
         } else {
-            printLine('"' + command + '" is not recognized as an internal or external command,\noperable program or batch file.');
+            printLine('"' + command + '" não é reconhecido como um comando interno ou externo,\num programa operável ou arquivo em lote.');
         }
     }
 
@@ -501,78 +464,21 @@
         termInput.focus();
     });
 
-    var termMinimized = true;
-    var termMaximized = false;
-    var termPrevRect = null;
-
-    var termControls = createWindowControls(termWin, {
+    var termBehavior = new WindowBehavior(termWin, {
         dragHandle: termDragHandle,
+        btnClose: termBtnClose,
         btnMinimize: termBtnMinimize,
         btnMaximize: termBtnMaximize,
         minW: 350,
         minH: 250,
-    });
-
-    termBtnClose.addEventListener('click', function() {
-        if (termControls.isMinimized()) return;
-        termControls.hide();
-        removeTaskbarEntry();
-    });
-
-    window.termMinimizeWindow = function() { termControls.minimize(); };
-    window.termShowWindow = termControls.restore;
-
-    function createTaskbarEntry() {
-        if (termTaskbarEntry) return;
-        var container = document.querySelector('.taskbar-items');
-        if (!container) return;
-        termTaskbarEntry = document.createElement('div');
-        termTaskbarEntry.className = 'taskbar-item';
-        termTaskbarEntry.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#111" stroke="#333" stroke-width="2"/><text x="8" y="11" text-anchor="middle" fill="#0f0" font-size="7" font-weight="bold">C:\\</text></svg> Terminal';
-        container.appendChild(termTaskbarEntry);
-        termControls.setTaskbarEntry(termTaskbarEntry);
-        termTaskbarEntry.addEventListener('click', function() {
-            if (document.body.classList.contains('mobile-mode')) {
-                if (termWin.classList.contains('active')) {
-                    termWin.classList.remove('active');
-                    termTaskbarEntry.classList.remove('active');
-                } else {
-                    document.querySelectorAll('.window').forEach(function(w) { w.classList.remove('active'); });
-                    document.querySelectorAll('.taskbar-item').forEach(function(t) { t.classList.remove('active'); });
-                    termWin.classList.add('active');
-                    termTaskbarEntry.classList.add('active');
-                    termControls.bringToFront();
-                }
-                return;
-            }
-            if (termControls.isMinimized() || termWin.style.display === 'none') {
-                showTerminal();
-            } else {
-                termControls.minimize();
-            }
-        });
-    }
-
-    function removeTaskbarEntry() {
-        if (termTaskbarEntry) {
-            termTaskbarEntry.remove();
-            termTaskbarEntry = null;
-        }
-    }
-
-    var terminalFirstOpen = true;
-    function showTerminal() {
-        createTaskbarEntry();
-        if (termControls.isMinimized() || termWin.style.display === 'none') {
-            termWin.style.display = '';
+        taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#111" stroke="#333" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#666"/><rect x="3" y="6" width="10" height="6" fill="#080a08"/><text x="8" y="9" text-anchor="middle" fill="#22aa55" font-size="3" font-weight="bold">C:\\&gt;</text></svg>',
+        taskbarLabel: 'Terminal',
+        onShow: function() {
             termWin.style.left = '80px';
             termWin.style.top = '60px';
             termWin.style.width = '580px';
             termWin.style.height = '380px';
-            if (termTaskbarEntry) termTaskbarEntry.classList.add('active');
-            termControls.bringToFront();
             termInput.focus();
-            termControls.setMinimized(false);
             if (terminalFirstOpen) {
                 terminalFirstOpen = false;
                 termOutput.innerHTML = '';
@@ -588,16 +494,11 @@
                 }
                 termOutput.scrollTop = termOutput.scrollHeight;
             }
-        } else {
-            termWin.style.display = '';
-            if (termTaskbarEntry) termTaskbarEntry.classList.add('active');
-            termControls.bringToFront();
-            termInput.focus();
-        }
-    }
+        },
+    });
 
-    window.showTerminal = showTerminal;
-    window.termHasEntry = function() { return termTaskbarEntry !== null; };
-    termWin.style.display = 'none';
-    termControls.setMinimized(true);
+    window.termMinimizeWindow = function() { termBehavior.minimize(); };
+    window.termShowWindow = termBehavior.show;
+    window.termHasEntry = function() { return termBehavior.hasTaskbarEntry(); };
+    window.showTerminal = function() { termBehavior.show(); };
 })();

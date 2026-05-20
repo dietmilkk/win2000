@@ -118,7 +118,7 @@
     if (dialogBoxEl) {
       dialogBoxEl.style.transform = 'scale(0.95)';
       dialogBoxEl.style.opacity = '0';
-      dialogBoxEl.style.transition = 'transform 0.2s steps(2), opacity 0.2s steps(2)';
+      dialogBoxEl.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
       requestAnimationFrame(function() {
         dialogBoxEl.style.transform = 'scale(1)';
         dialogBoxEl.style.opacity = '1';
@@ -166,7 +166,7 @@
       if (dialogOverlay) {
         var box = document.getElementById("xpDialogBox");
         if (box) {
-          box.style.transition = 'transform 0.2s steps(2), opacity 0.2s steps(2)';
+          box.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
           box.style.transform = 'scale(0.95)';
           box.style.opacity = '0';
           setTimeout(function() {

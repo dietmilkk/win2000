@@ -6,7 +6,7 @@
 
     var dragHandle   = opts.dragHandle   || win.querySelector('.title-bar');
     var tbEntry      = opts.taskbarEntry || null;
-    var btnClose     = opts.btnClose     || win.querySelector('.win-btn[title="Close"]');
+    var btnClose     = opts.btnClose === false ? null : (opts.btnClose || win.querySelector('.win-btn[title="Close"]'));
     var btnMinimize  = opts.btnMinimize  || win.querySelector('.win-btn[title="Minimize"]');
     var btnMaximize  = opts.btnMaximize  || win.querySelector('.win-btn[title="Maximize"]');
     var minW         = opts.minW || 400;
@@ -19,6 +19,13 @@
     var dragState = null;
     var resizeState = null;
     var prevRect = null;
+
+    function flashWindow() {
+        win.classList.remove('window-interacting');
+        void win.offsetWidth;
+        win.classList.add('window-interacting');
+        setTimeout(function() { win.classList.remove('window-interacting'); }, 400);
+    }
 
     function getTb() { return tbEntry; }
 
@@ -111,7 +118,7 @@
       win.style.width = sw + 'px';
       win.style.height = sh + 'px';
       requestAnimationFrame(function() {
-        win.style.transition = 'all 0.2s steps(2)';
+        win.style.transition = 'all 0.2s ease';
         win.style.left = tx + 'px';
         win.style.top = ty + 'px';
         win.style.width = tw + 'px';
@@ -148,7 +155,7 @@
         win.style.width = tw + 'px';
         win.style.height = th + 'px';
         requestAnimationFrame(function() {
-          win.style.transition = 'all 0.2s steps(2)';
+          win.style.transition = 'all 0.2s ease';
           win.style.left = cx + 'px';
           win.style.top = cy + 'px';
           win.style.width = cw + 'px';
@@ -168,7 +175,7 @@
     function hide() {
       if (minimized) return;
       saveRect();
-      win.style.transition = 'opacity 0.2s steps(2)';
+      win.style.transition = 'opacity 0.2s ease';
       win.style.opacity = '0';
       if (tbEntry) tbEntry.classList.remove('active');
       setTimeout(function() {
@@ -384,4 +391,164 @@
   }
 
   global.createWindowControls = createWindowControls;
+
+  /* ================================================================
+     WindowBehavior — unified window lifecycle with lazy init,
+     dynamic taskbar entry, and standard show/hide/close.
+
+     opts:
+       dragHandle, btnClose, btnMinimize, btnMaximize,
+       taskbarIcon (SVG string for taskbar entry), taskbarLabel,
+       minW, minH,
+       startVisible (default false),
+       onShow(behavior), onHide(behavior), onInit(controls)
+  ================================================================ */
+
+  function WindowBehavior(win, opts) {
+    opts = opts || {};
+
+    var _initialized = false;
+    var tbEntry = null;
+    var controls = null;
+
+    function flash() {
+        win.classList.remove('window-interacting');
+        void win.offsetWidth;
+        win.classList.add('window-interacting');
+        setTimeout(function() { win.classList.remove('window-interacting'); }, 400);
+    }
+
+    function _init() {
+      if (_initialized) return;
+      _initialized = true;
+
+      var ctrlOpts = {};
+      for (var k in opts) { if (opts.hasOwnProperty(k)) ctrlOpts[k] = opts[k]; }
+      ctrlOpts.btnClose = false;
+      controls = createWindowControls(win, ctrlOpts);
+
+      if (!opts.startVisible) {
+        win.style.display = 'none';
+        controls.setMinimized(true);
+      }
+
+      if (opts.onInit) opts.onInit(controls);
+    }
+
+    function createTaskbarEntry() {
+      if (tbEntry) return;
+      var container = document.querySelector('.taskbar-items');
+      if (!container) return;
+      tbEntry = document.createElement('div');
+      tbEntry.className = 'taskbar-item active';
+      tbEntry.innerHTML = (opts.taskbarIcon || '') + ' ' + (opts.taskbarLabel || 'Window');
+      container.appendChild(tbEntry);
+      controls.setTaskbarEntry(tbEntry);
+      tbEntry.addEventListener('click', function() {
+        if (controls.isMinimized() || win.style.display === 'none') {
+          show();
+        } else if (win.classList.contains('active')) {
+          controls.minimize();
+        } else {
+          controls.bringToFront();
+        }
+      });
+      tbEntry.addEventListener('dblclick', function() {
+        controls.bringToFront();
+      });
+    }
+
+    function removeTaskbarEntry() {
+      if (tbEntry) {
+        tbEntry.remove();
+        tbEntry = null;
+      }
+    }
+
+    function show() {
+      _init();
+      createTaskbarEntry();
+      win.style.display = '';
+      if (tbEntry) tbEntry.classList.add('active');
+      controls.bringToFront();
+      controls.setMinimized(false);
+      if (opts.onShow) opts.onShow(this);
+    }
+
+    function hide() {
+      if (controls && controls.isMinimized()) return;
+      if (controls) controls.hide();
+      removeTaskbarEntry();
+      if (opts.onHide) opts.onHide(this);
+    }
+
+    function minimize() {
+      _init();
+      controls.minimize();
+    }
+
+    function restore() {
+      _init();
+      controls.restore();
+    }
+
+    function bringToFront() {
+      _init();
+      controls.bringToFront();
+    }
+
+    function isMinimized() {
+      return controls ? controls.isMinimized() : true;
+    }
+
+    function isMaximized() {
+      return controls ? controls.isMaximized() : false;
+    }
+
+    function setMinimized(v) {
+      if (controls) controls.setMinimized(v);
+    }
+
+    function hasTaskbarEntry() {
+      return tbEntry !== null;
+    }
+
+    // Wire close button to hide + remove taskbar
+    (function() {
+      var closeBtn = opts.btnClose || win.querySelector('.win-btn[title="Close"]');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+          if (controls && controls.isMinimized()) return;
+          hide();
+        });
+      }
+    })();
+
+    if (opts.startVisible) {
+      _init();
+      show();
+    }
+
+    return {
+      show: show,
+      hide: hide,
+      minimize: minimize,
+      restore: restore,
+      bringToFront: bringToFront,
+      isMinimized: isMinimized,
+      isMaximized: isMaximized,
+      setMinimized: setMinimized,
+      flash: flash,
+      hasTaskbarEntry: hasTaskbarEntry,
+      getControls: function() { return controls; },
+    };
+  }
+
+  global.WindowBehavior = WindowBehavior;
+  global.flashWindow = function(win) {
+    win.classList.remove('window-interacting');
+    void win.offsetWidth;
+    win.classList.add('window-interacting');
+    setTimeout(function() { win.classList.remove('window-interacting'); }, 400);
+  };
 })(window);

@@ -1,0 +1,95 @@
+(function () {
+    'use strict';
+
+    var win = document.getElementById('settingsWindow');
+    var dragHandle = document.getElementById('settingsDragHandle');
+    var btnClose = document.getElementById('settingsBtnClose');
+    var btnMinimize = document.getElementById('settingsBtnMinimize');
+    var btnMaximize = document.getElementById('settingsBtnMaximize');
+
+    var wallpaperInput = document.getElementById('wallpaperInput');
+    var wallpaperFileName = document.getElementById('wallpaperFileName');
+    var wallpaperPreview = document.getElementById('wallpaperPreview');
+    var applyBtn = document.getElementById('settingsApplyBtn');
+
+    var selectedFile = null;
+
+    var behavior = new WindowBehavior(win, {
+        dragHandle: dragHandle,
+        btnClose: btnClose,
+        btnMinimize: btnMinimize,
+        btnMaximize: btnMaximize,
+        minW: 520,
+        minH: 380,
+        taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="2" width="12" height="3" fill="#000080"/><circle cx="8" cy="9" r="2" fill="#666"/><path d="M8 7 L8 11 M6 9 L10 9" stroke="#fff" stroke-width="1"/></svg>',
+        taskbarLabel: 'Configurações',
+        onShow: function () {
+            win.style.left = Math.round((window.innerWidth - 520) / 2) + 'px';
+            win.style.top = '60px';
+            win.style.width = '520px';
+            win.style.height = '400px';
+        },
+    });
+
+    window.showSettings = function () { behavior.show(); };
+
+    wallpaperInput.addEventListener('change', function () {
+        var file = wallpaperInput.files[0];
+        if (!file) return;
+        selectedFile = file;
+        wallpaperFileName.textContent = file.name;
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            wallpaperPreview.innerHTML = '<img src="' + e.target.result + '" class="settings-wallpaper-img">';
+            wallpaperPreview.style.background = 'none';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    applyBtn.addEventListener('click', function () {
+        if (!selectedFile) {
+            xpDialog({
+                title: 'Configurações',
+                icon: 'i',
+                message: 'Selecione uma imagem primeiro.',
+            });
+            return;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var desktop = document.querySelector('.desktop');
+            desktop.style.backgroundImage = 'url("' + e.target.result + '")';
+            desktop.style.backgroundSize = '100% 100%';
+            desktop.style.backgroundPosition = 'center';
+            desktop.style.backgroundRepeat = 'no-repeat';
+
+            xpDialog({
+                title: 'Configurações',
+                icon: 'i',
+                message: 'Wallpaper aplicado com sucesso!',
+            });
+        };
+        reader.readAsDataURL(selectedFile);
+    });
+
+    var categories = document.querySelectorAll('.settings-category');
+    for (var i = 0; i < categories.length; i++) {
+        (function (cat) {
+            cat.addEventListener('click', function () {
+                for (var j = 0; j < categories.length; j++) {
+                    categories[j].classList.remove('active');
+                }
+                cat.classList.add('active');
+
+                var panels = document.querySelectorAll('.settings-panel');
+                for (var k = 0; k < panels.length; k++) {
+                    panels[k].classList.remove('active');
+                }
+                var target = document.querySelector('.settings-panel[data-category="' + cat.getAttribute('data-category') + '"]');
+                if (target) target.classList.add('active');
+            });
+        })(categories[i]);
+    }
+})();
