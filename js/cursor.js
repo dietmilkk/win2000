@@ -2,7 +2,7 @@
    cursor.js — Retro cursor and random GIF viewer
    ============================================================ */
 
-(function() {
+(function () {
   "use strict";
 
   /* ================================================================
@@ -10,7 +10,7 @@
      ================================================================ */
 
   if (!("ontouchstart" in window)) {
-    (function() {
+    (function () {
       var el = document.createElement("div");
       el.id = "retroCursor";
       el.innerHTML =
@@ -48,13 +48,22 @@
         busy: { x: -10, y: -10 },
         work: { x: -10, y: -10 },
         unavailable: { x: -10, y: -10 },
-        help: { x: -10, y: -10 }
+        help: { x: -10, y: -10 },
       };
 
       var cursorMap = {
-        arrow: arr, hand: hand, text: text, move: move,
-        vresize: vresize, hresize: hresize, d1: d1, d2: d2,
-        busy: busy, work: work, unavailable: unavailable, help: help
+        arrow: arr,
+        hand: hand,
+        text: text,
+        move: move,
+        vresize: vresize,
+        hresize: hresize,
+        d1: d1,
+        d2: d2,
+        busy: busy,
+        work: work,
+        unavailable: unavailable,
+        help: help,
       };
 
       var fps = 20,
@@ -66,10 +75,14 @@
       var selHand =
         "button,a,input,select,textarea,[role=button],[onclick],.desk-icon,.win-btn,.start-btn,.ql-icon,.taskbar-item,.start-menu-item,.ctx-menu-item,.xp-dialog-close,.xp-dialog-btn,.chat-send-btn,.mobile-btn";
       var selText = "pre,code,.terminal-output,.terminal-input";
-      var selResizeV = '.resize-edge[data-edge="t"],.resize-edge[data-edge="b"]';
-      var selResizeH = '.resize-edge[data-edge="l"],.resize-edge[data-edge="r"]';
-      var selResizeD1 = '.resize-corner[data-edge="tl"],.resize-corner[data-edge="br"]';
-      var selResizeD2 = '.resize-corner[data-edge="tr"],.resize-corner[data-edge="bl"]';
+      var selResizeV =
+        '.resize-edge[data-edge="t"],.resize-edge[data-edge="b"]';
+      var selResizeH =
+        '.resize-edge[data-edge="l"],.resize-edge[data-edge="r"]';
+      var selResizeD1 =
+        '.resize-corner[data-edge="tl"],.resize-corner[data-edge="br"]';
+      var selResizeD2 =
+        '.resize-corner[data-edge="tr"],.resize-corner[data-edge="bl"]';
       var selMove = '[data-move="true"],.dragging,.window-moving';
       var selBusy = ".loading,.busy";
       var selWork = ".working";
@@ -77,7 +90,7 @@
 
       var inside = false;
 
-      document.addEventListener("mousemove", function(e) {
+      document.addEventListener("mousemove", function (e) {
         mx = e.clientX;
         my = e.clientY;
         if (!inside) {
@@ -86,12 +99,12 @@
         }
       });
 
-      document.documentElement.addEventListener("mouseleave", function() {
+      document.documentElement.addEventListener("mouseleave", function () {
         inside = false;
         el.style.visibility = "hidden";
       });
 
-      document.documentElement.addEventListener("mouseenter", function() {
+      document.documentElement.addEventListener("mouseenter", function () {
         inside = true;
         el.style.visibility = "visible";
       });
@@ -151,21 +164,37 @@
 
   var _gifList = null;
 
-  window.loadGifList = function(cb) {
-    if (_gifList) { cb(_gifList); return; }
-    fetch('/api/gifs')
-      .then(function(r) { if (!r.ok) throw Error(); return r.json(); })
-      .then(function(list) { _gifList = list; cb(list); })
-      .catch(function() {
-        fetch('assets/gifs/list.json')
-          .then(function(r) { return r.json(); })
-          .then(function(list) { _gifList = list; cb(list); })
-          .catch(function() { cb([]); });
+  window.loadGifList = function (cb) {
+    if (_gifList) {
+      cb(_gifList);
+      return;
+    }
+    fetch("/api/gifs")
+      .then(function (r) {
+        if (!r.ok) throw Error();
+        return r.json();
+      })
+      .then(function (list) {
+        _gifList = list;
+        cb(list);
+      })
+      .catch(function () {
+        fetch("assets/gifs/list.json")
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (list) {
+            _gifList = list;
+            cb(list);
+          })
+          .catch(function () {
+            cb([]);
+          });
       });
   };
 
-  window.openRandomGif = function() {
-    window.loadGifList(function(gifs) {
+  window.openRandomGif = function () {
+    window.loadGifList(function (gifs) {
       if (!gifs.length) return;
       var currentIndex = Math.floor(Math.random() * gifs.length);
       var overlay = document.createElement("div");
@@ -185,7 +214,7 @@
       overlay.style.outline = "none";
       document.body.appendChild(overlay);
       overlay.focus();
-      overlay.addEventListener("keydown", function(e) {
+      overlay.addEventListener("keydown", function (e) {
         if (e.key === " ") {
           e.preventDefault();
           overlay.remove();
@@ -197,7 +226,7 @@
           showGif(currentIndex);
         }
       });
-      overlay.addEventListener("click", function() {
+      overlay.addEventListener("click", function () {
         overlay.remove();
       });
     });

@@ -34,6 +34,7 @@
   window.chatShowWindow = function() { chatBehavior.show(); };
   window.chatMinimizeWindow = function() { chatBehavior.minimize(); };
   window.chatHide = function() { chatBehavior.hide(); };
+  window.chatHasEntry = function() { return chatBehavior.hasTaskbarEntry(); };
 
   /* ----------------------------------------------------------
      MOBILE KEYBOARD HANDLER

@@ -31,7 +31,7 @@
     minH: 300,
     startVisible: true,
     taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="3" width="12" height="10" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="3" width="12" height="3" fill="#000080"/><text x="8" y="11" text-anchor="middle" fill="#000080" font-size="8" font-weight="bold">P</text></svg>',
-    taskbarLabel: 'Program Manager',
+    taskbarLabel: 'Portifolio',
     onInit: function(controls) {
       // Ensure initial position
       controls.setMinimized(false);
@@ -43,17 +43,23 @@
        ================================================================ */
 
   var _showDesktop = false;
+  var _sdState = {};
 
   function toggleShowDesktop() {
     _showDesktop = !_showDesktop;
     if (_showDesktop) {
+      _sdState = {
+        chatWasOpen: window.chatHasEntry ? window.chatHasEntry() : false,
+        termWasOpen: window.termHasEntry ? window.termHasEntry() : false,
+      };
       winBehavior.minimize();
       if (typeof chatMinimizeWindow !== "undefined") chatMinimizeWindow();
       if (typeof termMinimizeWindow !== "undefined") termMinimizeWindow();
     } else {
+      if (_sdState.chatWasOpen && typeof chatShowWindow !== "undefined") chatShowWindow();
+      if (_sdState.termWasOpen && typeof termShowWindow !== "undefined") termShowWindow();
       winBehavior.restore();
-      if (typeof chatShowWindow !== "undefined") chatShowWindow();
-      if (typeof termShowWindow !== "undefined" && (!window.termHasEntry || window.termHasEntry())) termShowWindow();
+      _sdState = {};
     }
   }
 
