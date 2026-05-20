@@ -152,8 +152,10 @@
       if (e.target === dialogOverlay) {
         var box = document.getElementById("xpDialogBox");
         if (box) {
-          box.classList.add("window-shake");
-          setTimeout(function() { box.classList.remove("window-shake"); }, 300);
+          box.classList.add("window-interacting");
+          setTimeout(function() {
+            box.classList.remove("window-interacting");
+          }, 1300);
         }
       }
     });

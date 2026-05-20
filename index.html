@@ -458,9 +458,13 @@
                                     <svg viewBox="0 0 16 16" width="14" height="14"><rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="4" y="6" width="8" height="6" fill="#327e32"/><rect x="4" y="6" width="8" height="2" fill="#2255cc"/></svg>
                                     Aparência
                                 </div>
+                                <div class="settings-category" data-category="about">
+                                    <svg viewBox="0 0 16 16" width="14" height="14"><circle cx="8" cy="8" r="7" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/><text x="8" y="12" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">i</text></svg>
+                                    Sobre
+                                </div>
                             </div>
                             <div class="settings-content">
-                                <div class="settings-panel" data-category="appearance">
+                                <div class="settings-panel active" data-category="appearance">
                                     <div class="settings-panel-header">Wallpaper</div>
                                     <p class="settings-desc">Escolha uma imagem do seu computador para usar como papel de parede.</p>
                                     <div class="settings-wallpaper-preview" id="wallpaperPreview">
@@ -471,10 +475,24 @@
                                         <label for="wallpaperInput" class="settings-file-btn">Selecionar Imagem</label>
                                         <span class="settings-file-name" id="wallpaperFileName">Nenhum arquivo selecionado</span>
                                     </div>
+                                    <div class="settings-panel-footer">
+                                        <button class="settings-btn" id="settingsApplyBtn">Aplicar</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="settings-footer">
-                                <button class="settings-btn" id="settingsApplyBtn">Aplicar</button>
+                                <div class="settings-panel" data-category="about">
+                                    <div class="settings-panel-header">Sobre</div>
+                                    <p class="settings-desc" style="line-height:1.8">
+                                        <b>Win2K Desktop</b><br><br>
+                                        feito por um maluco com HTML/CSS/JS puro.<br><br>
+                                        • janelas que arrastam, redimensionam, minimizam<br>
+                                        • barra de tarefas com icones dinâmicos<br>
+                                        • menu iniciar + icones na area de trabalho<br>
+                                        • chat IA que conversa de boa<br>
+                                        • terminal com comandos de verdade<br>
+                                        • galeria de GIF + scanlines CRT<br><br>
+                                        só isso. se divirta :)
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -757,10 +775,6 @@
                         <div class="start-menu-item" data-action="settings">
                             <svg viewBox="0 0 16 16" width="16" height="16"><rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="2" width="12" height="3" fill="#000080"/><circle cx="8" cy="9" r="2" fill="#666"/><path d="M8 7 L8 11 M6 9 L10 9" stroke="#fff" stroke-width="1"/></svg>
                             <span>Configurações</span>
-                        </div>
-                        <div class="start-menu-item" data-action="about">
-                            <svg viewBox="0 0 16 16" width="16" height="16"><circle cx="8" cy="8" r="7" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/><text x="8" y="12" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">i</text></svg>
-                            <span>Sobre</span>
                         </div>
                         <div class="start-menu-separator"></div>
                         <div class="start-menu-item" data-action="shutdown">
