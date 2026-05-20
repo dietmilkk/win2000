@@ -29,7 +29,7 @@
     btnMaximize: document.getElementById("btnMaximize"),
     minW: 400,
     minH: 300,
-    startVisible: true,
+    startVisible: false,
     taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="3" width="12" height="10" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="3" width="12" height="3" fill="#000080"/><text x="8" y="11" text-anchor="middle" fill="#000080" font-size="8" font-weight="bold">P</text></svg>',
     taskbarLabel: 'Portifolio',
     onInit: function(controls) {
@@ -157,23 +157,17 @@
         xpDialog({
           title: "Sobre",
           icon: "i",
-          width: "620px",
+          width: "380px",
           message:
-            "<b>Windows 2000 Desktop</b><br>" +
-            "Um desktop Windows 2000 completo recriado no navegador.<br><br>" +
-            "Feito com código limpo e artesanal — HTML/CSS/JS puro, zero frameworks.<br><br>" +
-            "<b>Funcionalidades:</b><br>" +
-            "• Janelas arrastáveis e redimensionáveis com minimizar/maximizar/fechar<br>" +
-            "• Barra de tarefas com entradas dinâmicas de janelas<br>" +
-            "• Menu Iniciar com lançador de programas<br>" +
-            "• Ícones de área de trabalho com menu de contexto<br>" +
-            "• Assistente de Chat IA<br>" +
-            "• Terminal interativo com comandos reais<br>" +
-            "• Galeria de GIFs com navegação por teclado<br>" +
-            "• Scanlines CRT retrô e cursores personalizados<br>" +
-            "• Diálogos estilo XP e efeitos de janela<br><br>" +
-            "Feito como projeto hobby — divertido, extensível e bem estruturado.<br>" +
-            "Contato: contato.endryo@gmail.com",
+            "<b>Win2K Desktop</b><br><br>" +
+            "feito por um maluco com HTML/CSS/JS puro.<br><br>" +
+            "• janelas que arrastam, redimensionam, minimizam<br>" +
+            "• barra de tarefas com icones dinâmicos<br>" +
+            "• menu iniciar + icones na area de trabalho<br>" +
+            "• chat IA que conversa de boa<br>" +
+            "• terminal com comandos de verdade<br>" +
+            "• galeria de GIF + scanlines CRT<br><br>" +
+            "só isso. se divirta :)",
         });
         break;
       case "shutdown":
