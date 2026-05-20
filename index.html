@@ -172,12 +172,12 @@
                     <div class="window-body">
                         <div class="content-area">
                             <p
-                                    style="
-                                        margin: 0 0 16px;
-                                        line-height: 1.5;
-                                        font-size: 13px;
-                                        color: #111;
-                                    "
+                                style="
+                                    margin: 0 0 16px;
+                                    line-height: 1.5;
+                                    font-size: 13px;
+                                    color: #111;
+                                "
                             >
                                 Cada projeto aqui foi construído do zero —
                                 alguns são cópias fiéis de serviços reais,
@@ -410,8 +410,8 @@
                                 <div class="chat-msg bot">
                                     <span class="msg-sender">AI Chat</span>
                                     <span class="msg-text"
-                                        >Oi! Tô aqui se quiser conversar sobre
-                                        o que tiver na telha. É só chamar.</span
+                                        >Oi! Tô aqui se quiser conversar sobre o
+                                        que tiver na telha. É só chamar.</span
                                     >
                                 </div>
                             </div>
@@ -420,11 +420,11 @@
                                     type="text"
                                     id="chatInput"
                                     class="chat-input"
-                                    placeholder="Pergunte o que quiser..."
+                                    placeholder="Digite o que quiser..."
                                     autocomplete="off"
                                 />
                                 <button id="chatSendBtn" class="chat-send-btn">
-                                    Enviar
+                                    Enter
                                 </button>
                             </div>
                         </div>
@@ -432,64 +432,207 @@
                 </div>
 
                 <!-- ===== SETTINGS WINDOW ===== -->
-                <div class="window" id="settingsWindow" style="display:none">
+                <div class="window" id="settingsWindow" style="display: none">
                     <div class="title-bar" id="settingsDragHandle">
                         <span class="title-bar-text">
                             <span class="icon">
                                 <svg viewBox="0 0 16 16" width="14" height="14">
-                                    <rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/>
-                                    <rect x="2" y="2" width="12" height="3" fill="#000080"/>
-                                    <circle cx="8" cy="9" r="2" fill="#666"/>
-                                    <path d="M8 7 L8 11 M6 9 L10 9" stroke="#fff" stroke-width="1"/>
+                                    <rect
+                                        x="2"
+                                        y="2"
+                                        width="12"
+                                        height="12"
+                                        fill="#d4d0c8"
+                                        stroke="#666"
+                                        stroke-width="2"
+                                    />
+                                    <rect
+                                        x="2"
+                                        y="2"
+                                        width="12"
+                                        height="3"
+                                        fill="#000080"
+                                    />
+                                    <circle cx="8" cy="9" r="2" fill="#666" />
+                                    <path
+                                        d="M8 7 L8 11 M6 9 L10 9"
+                                        stroke="#fff"
+                                        stroke-width="1"
+                                    />
                                 </svg>
                             </span>
                             Configurações
                         </span>
                         <span class="title-bar-buttons">
-                            <span class="win-btn" id="settingsBtnMinimize" title="Minimizar"><img src="assets/icons/win-minimize.svg" alt="-" class="win-btn-icon"></span>
-                            <span class="win-btn" id="settingsBtnMaximize" title="Maximizar"><img src="assets/icons/win-maximize.svg" alt="[]" class="win-btn-icon"></span>
-                            <span class="win-btn" id="settingsBtnClose" title="Fechar"><img src="assets/icons/win-close.svg" alt="X" class="win-btn-icon"></span>
+                            <span
+                                class="win-btn"
+                                id="settingsBtnMinimize"
+                                title="Minimizar"
+                                ><img
+                                    src="assets/icons/win-minimize.svg"
+                                    alt="-"
+                                    class="win-btn-icon"
+                            /></span>
+                            <span
+                                class="win-btn"
+                                id="settingsBtnMaximize"
+                                title="Maximizar"
+                                ><img
+                                    src="assets/icons/win-maximize.svg"
+                                    alt="[]"
+                                    class="win-btn-icon"
+                            /></span>
+                            <span
+                                class="win-btn"
+                                id="settingsBtnClose"
+                                title="Fechar"
+                                ><img
+                                    src="assets/icons/win-close.svg"
+                                    alt="X"
+                                    class="win-btn-icon"
+                            /></span>
                         </span>
                     </div>
                     <div class="window-body">
                         <div class="settings-layout">
                             <div class="settings-sidebar">
-                                <div class="settings-category active" data-category="appearance">
-                                    <svg viewBox="0 0 16 16" width="14" height="14"><rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="4" y="6" width="8" height="6" fill="#327e32"/><rect x="4" y="6" width="8" height="2" fill="#2255cc"/></svg>
+                                <div
+                                    class="settings-category active"
+                                    data-category="appearance"
+                                >
+                                    <svg
+                                        viewBox="0 0 16 16"
+                                        width="14"
+                                        height="14"
+                                    >
+                                        <rect
+                                            x="2"
+                                            y="2"
+                                            width="12"
+                                            height="12"
+                                            fill="#d4d0c8"
+                                            stroke="#666"
+                                            stroke-width="2"
+                                        />
+                                        <rect
+                                            x="4"
+                                            y="6"
+                                            width="8"
+                                            height="6"
+                                            fill="#327e32"
+                                        />
+                                        <rect
+                                            x="4"
+                                            y="6"
+                                            width="8"
+                                            height="2"
+                                            fill="#2255cc"
+                                        />
+                                    </svg>
                                     Aparência
                                 </div>
-                                <div class="settings-category" data-category="about">
-                                    <svg viewBox="0 0 16 16" width="14" height="14"><circle cx="8" cy="8" r="7" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/><text x="8" y="12" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">i</text></svg>
+                                <div
+                                    class="settings-category"
+                                    data-category="about"
+                                >
+                                    <svg
+                                        viewBox="0 0 16 16"
+                                        width="14"
+                                        height="14"
+                                    >
+                                        <circle
+                                            cx="8"
+                                            cy="8"
+                                            r="7"
+                                            fill="#2255aa"
+                                            stroke="#0a2a6a"
+                                            stroke-width="2"
+                                        />
+                                        <text
+                                            x="8"
+                                            y="12"
+                                            text-anchor="middle"
+                                            fill="#fff"
+                                            font-size="11"
+                                            font-weight="bold"
+                                        >
+                                            i
+                                        </text>
+                                    </svg>
                                     Sobre
                                 </div>
                             </div>
                             <div class="settings-content">
-                                <div class="settings-panel active" data-category="appearance">
-                                    <div class="settings-panel-header">Wallpaper</div>
-                                    <p class="settings-desc">Escolha uma imagem do seu computador para usar como papel de parede.</p>
-                                    <div class="settings-wallpaper-preview" id="wallpaperPreview">
-                                        <span class="settings-no-wallpaper">Nenhum wallpaper personalizado</span>
+                                <div
+                                    class="settings-panel active"
+                                    data-category="appearance"
+                                >
+                                    <div class="settings-panel-header">
+                                        Wallpaper
+                                    </div>
+                                    <p class="settings-desc">
+                                        Escolha uma imagem do seu computador
+                                        para usar como papel de parede.
+                                    </p>
+                                    <div
+                                        class="settings-wallpaper-preview"
+                                        id="wallpaperPreview"
+                                    >
+                                        <span class="settings-no-wallpaper"
+                                            >Nenhum wallpaper
+                                            personalizado</span
+                                        >
                                     </div>
                                     <div class="settings-file-row">
-                                        <input type="file" id="wallpaperInput" accept="image/*" class="settings-file-input">
-                                        <label for="wallpaperInput" class="settings-file-btn">Selecionar Imagem</label>
-                                        <span class="settings-file-name" id="wallpaperFileName">Nenhum arquivo selecionado</span>
+                                        <input
+                                            type="file"
+                                            id="wallpaperInput"
+                                            accept="image/*"
+                                            class="settings-file-input"
+                                        />
+                                        <label
+                                            for="wallpaperInput"
+                                            class="settings-file-btn"
+                                            >Selecionar Imagem</label
+                                        >
+                                        <span
+                                            class="settings-file-name"
+                                            id="wallpaperFileName"
+                                            >Nenhum arquivo selecionado</span
+                                        >
                                     </div>
                                     <div class="settings-panel-footer">
-                                        <button class="settings-btn" id="settingsApplyBtn">Aplicar</button>
+                                        <button
+                                            class="settings-btn"
+                                            id="settingsApplyBtn"
+                                        >
+                                            Aplicar
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="settings-panel" data-category="about">
-                                    <div class="settings-panel-header">Sobre</div>
-                                    <p class="settings-desc" style="line-height:1.8">
-                                        <b>Win2K Desktop</b><br><br>
-                                        feito por um maluco com HTML/CSS/JS puro.<br><br>
-                                        • janelas que arrastam, redimensionam, minimizam<br>
-                                        • barra de tarefas com icones dinâmicos<br>
-                                        • menu iniciar + icones na area de trabalho<br>
-                                        • chat IA que conversa de boa<br>
-                                        • terminal com comandos de verdade<br>
-                                        • galeria de GIF + scanlines CRT<br><br>
+                                <div
+                                    class="settings-panel"
+                                    data-category="about"
+                                >
+                                    <div class="settings-panel-header">
+                                        Sobre
+                                    </div>
+                                    <p
+                                        class="settings-desc"
+                                        style="line-height: 1.8"
+                                    >
+                                        <b>Win2K Desktop</b><br /><br />
+                                        feito por um maluco com HTML/CSS/JS
+                                        puro.<br /><br />
+                                        • janelas que arrastam, redimensionam,
+                                        minimizam<br />
+                                        • barra de tarefas com icones
+                                        dinâmicos<br />
+                                        • menu iniciar + icones na area de
+                                        trabalho<br />
+                                        • chat IA que conversa de boa<br />
+                                        • terminal com comandos de verdade<br />
+                                        • galeria de GIF + scanlines CRT<br /><br />
                                         só isso. se divirta :)
                                     </p>
                                 </div>
@@ -756,29 +899,177 @@
                 <div class="start-menu" id="startMenu">
                     <div class="start-menu-body">
                         <div class="start-menu-item" data-action="chat">
-                            <svg viewBox="0 0 16 16" width="16" height="16"><rect x="1" y="3" width="14" height="10" fill="#c8d8e8" stroke="#5a7a9a" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#0a1a4a"/><text x="8" y="11" text-anchor="middle" fill="#0a1a4a" font-size="7" font-weight="bold">AI</text></svg>
+                            <svg viewBox="0 0 16 16" width="16" height="16">
+                                <rect
+                                    x="1"
+                                    y="3"
+                                    width="14"
+                                    height="10"
+                                    fill="#c8d8e8"
+                                    stroke="#5a7a9a"
+                                    stroke-width="2"
+                                />
+                                <rect
+                                    x="1"
+                                    y="3"
+                                    width="14"
+                                    height="3"
+                                    fill="#0a1a4a"
+                                />
+                                <text
+                                    x="8"
+                                    y="11"
+                                    text-anchor="middle"
+                                    fill="#0a1a4a"
+                                    font-size="7"
+                                    font-weight="bold"
+                                >
+                                    AI
+                                </text>
+                            </svg>
                             <span>Chat IA</span>
                         </div>
                         <div class="start-menu-item" data-action="terminal">
-                            <svg viewBox="0 0 16 16" width="16" height="16"><rect x="1" y="2" width="14" height="11" fill="#444" stroke="#222" stroke-width="2"/><rect x="1" y="2" width="14" height="3" fill="#666"/><rect x="3" y="6" width="10" height="6" fill="#080a08"/><text x="8" y="9" text-anchor="middle" fill="#22aa55" font-size="3" font-weight="bold">C:\&gt;</text></svg>
+                            <svg viewBox="0 0 16 16" width="16" height="16">
+                                <rect
+                                    x="1"
+                                    y="2"
+                                    width="14"
+                                    height="11"
+                                    fill="#444"
+                                    stroke="#222"
+                                    stroke-width="2"
+                                />
+                                <rect
+                                    x="1"
+                                    y="2"
+                                    width="14"
+                                    height="3"
+                                    fill="#666"
+                                />
+                                <rect
+                                    x="3"
+                                    y="6"
+                                    width="10"
+                                    height="6"
+                                    fill="#080a08"
+                                />
+                                <text
+                                    x="8"
+                                    y="9"
+                                    text-anchor="middle"
+                                    fill="#22aa55"
+                                    font-size="3"
+                                    font-weight="bold"
+                                >
+                                    C:\&gt;
+                                </text>
+                            </svg>
                             <span>Terminal</span>
                         </div>
                         <div class="start-menu-item" data-action="programs">
-                            <svg viewBox="0 0 16 16" width="16" height="16"><rect x="2" y="3" width="12" height="10" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="3" width="12" height="3" fill="#000080"/><text x="8" y="11" text-anchor="middle" fill="#000080" font-size="8" font-weight="bold">P</text></svg>
+                            <svg viewBox="0 0 16 16" width="16" height="16">
+                                <rect
+                                    x="2"
+                                    y="3"
+                                    width="12"
+                                    height="10"
+                                    fill="#d4d0c8"
+                                    stroke="#666"
+                                    stroke-width="2"
+                                />
+                                <rect
+                                    x="2"
+                                    y="3"
+                                    width="12"
+                                    height="3"
+                                    fill="#000080"
+                                />
+                                <text
+                                    x="8"
+                                    y="11"
+                                    text-anchor="middle"
+                                    fill="#000080"
+                                    font-size="8"
+                                    font-weight="bold"
+                                >
+                                    P
+                                </text>
+                            </svg>
                             <span>Portifolio</span>
                         </div>
                         <div class="start-menu-item" data-action="randomgif">
-                            <svg viewBox="0 0 16 16" width="16" height="16"><rect x="1" y="3" width="14" height="10" fill="#ff6" stroke="#cc0" stroke-width="2"/><rect x="3" y="5" width="10" height="6" fill="#000"/><circle cx="6" cy="8" r="1" fill="#f00"/><circle cx="10" cy="8" r="1" fill="#0f0"/></svg>
+                            <svg viewBox="0 0 16 16" width="16" height="16">
+                                <rect
+                                    x="1"
+                                    y="3"
+                                    width="14"
+                                    height="10"
+                                    fill="#ff6"
+                                    stroke="#cc0"
+                                    stroke-width="2"
+                                />
+                                <rect
+                                    x="3"
+                                    y="5"
+                                    width="10"
+                                    height="6"
+                                    fill="#000"
+                                />
+                                <circle cx="6" cy="8" r="1" fill="#f00" />
+                                <circle cx="10" cy="8" r="1" fill="#0f0" />
+                            </svg>
                             <span>GIF Aleatório</span>
                         </div>
                         <div class="start-menu-separator"></div>
                         <div class="start-menu-item" data-action="settings">
-                            <svg viewBox="0 0 16 16" width="16" height="16"><rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="2" width="12" height="3" fill="#000080"/><circle cx="8" cy="9" r="2" fill="#666"/><path d="M8 7 L8 11 M6 9 L10 9" stroke="#fff" stroke-width="1"/></svg>
+                            <svg viewBox="0 0 16 16" width="16" height="16">
+                                <rect
+                                    x="2"
+                                    y="2"
+                                    width="12"
+                                    height="12"
+                                    fill="#d4d0c8"
+                                    stroke="#666"
+                                    stroke-width="2"
+                                />
+                                <rect
+                                    x="2"
+                                    y="2"
+                                    width="12"
+                                    height="3"
+                                    fill="#000080"
+                                />
+                                <circle cx="8" cy="9" r="2" fill="#666" />
+                                <path
+                                    d="M8 7 L8 11 M6 9 L10 9"
+                                    stroke="#fff"
+                                    stroke-width="1"
+                                />
+                            </svg>
                             <span>Configurações</span>
                         </div>
                         <div class="start-menu-separator"></div>
                         <div class="start-menu-item" data-action="shutdown">
-                            <svg viewBox="0 0 16 16" width="16" height="16"><circle cx="8" cy="8" r="6" fill="none" stroke="#cc3333" stroke-width="2"/><line x1="8" y1="2" x2="8" y2="8" stroke="#cc3333" stroke-width="2"/><circle cx="8" cy="12" r="2" fill="#cc3333"/></svg>
+                            <svg viewBox="0 0 16 16" width="16" height="16">
+                                <circle
+                                    cx="8"
+                                    cy="8"
+                                    r="6"
+                                    fill="none"
+                                    stroke="#cc3333"
+                                    stroke-width="2"
+                                />
+                                <line
+                                    x1="8"
+                                    y1="2"
+                                    x2="8"
+                                    y2="8"
+                                    stroke="#cc3333"
+                                    stroke-width="2"
+                                />
+                                <circle cx="8" cy="12" r="2" fill="#cc3333" />
+                            </svg>
                             <span>Desligar...</span>
                         </div>
                     </div>
@@ -816,6 +1107,6 @@
         <script src="js/terminal.js"></script>
         <script src="js/main.js"></script>
         <script src="js/chat.js"></script>
-<script src="js/settings.js"></script>
+        <script src="js/settings.js"></script>
     </body>
 </html>

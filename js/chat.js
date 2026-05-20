@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var SYSTEM_PROMPT = `Você é uma amiga sincera e divertida que mora dentro de um desktop Windows 2000. Seja natural, use o mesmo idioma da pessoa, responda no casual, sem firmeza. Sem列表/emojis/lista. Máximo 2 parágrafos. Se não souber de algo, só fala que não sabe — sem inventar.`;
+  var SYSTEM_PROMPT = `Você é uma amiga sincera e divertida que mora dentro de um desktop Windows 2000. Use o mesmo idioma da pessoa, no casual, sem firmeza. Sem emojis/lista/formatação, mas pode usar figuras tipo ^^ ou :P. Máximo 2 parágrafos. Se não tiver certeza de algo, só fala que não tem certeza.`;
 
   /* ----------------------------------------------------------
      WINDOW MANAGEMENT
@@ -21,9 +21,10 @@
     btnMaximize: chatBtnMaximize,
     minW: 320,
     minH: 240,
-    taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#c8d8e8" stroke="#5a7a9a" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#0a1a4a"/><text x="8" y="11" text-anchor="middle" fill="#0a1a4a" font-size="7" font-weight="bold">AI</text></svg>',
-    taskbarLabel: 'Chat IA',
-    onShow: function() {
+    taskbarIcon:
+      '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#c8d8e8" stroke="#5a7a9a" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#0a1a4a"/><text x="8" y="11" text-anchor="middle" fill="#0a1a4a" font-size="7" font-weight="bold">AI</text></svg>',
+    taskbarLabel: "Chat IA",
+    onShow: function () {
       chatWin.style.left = "";
       chatWin.style.top = "";
       chatWin.style.width = "360px";
@@ -31,16 +32,30 @@
     },
   });
 
-  window.chatShowWindow = function() { chatBehavior.show(); };
-  window.chatMinimizeWindow = function() { chatBehavior.minimize(); };
-  window.chatHide = function() { chatBehavior.hide(); };
-  window.chatHasEntry = function() { return chatBehavior.hasTaskbarEntry(); };
+  window.chatShowWindow = function () {
+    chatBehavior.show();
+  };
+  window.chatMinimizeWindow = function () {
+    chatBehavior.minimize();
+  };
+  window.chatHide = function () {
+    chatBehavior.hide();
+  };
+  window.chatHasEntry = function () {
+    return chatBehavior.hasTaskbarEntry();
+  };
 
   if (window.registerWindow) {
     registerWindow({
-      minimize: function() { chatBehavior.minimize(); },
-      show: function() { chatBehavior.show(); },
-      hasEntry: function() { return chatBehavior.hasTaskbarEntry(); },
+      minimize: function () {
+        chatBehavior.minimize();
+      },
+      show: function () {
+        chatBehavior.show();
+      },
+      hasEntry: function () {
+        return chatBehavior.hasTaskbarEntry();
+      },
     });
   }
 
@@ -85,7 +100,12 @@
   function addMessage(sender, text, className) {
     var div = document.createElement("div");
     div.className = "chat-msg " + (className || sender);
-    div.innerHTML = '<span class="msg-sender">' + (sender === "user" ? "Você" : "Chat IA") + '</span><span class="msg-text">' + text + "</span>";
+    div.innerHTML =
+      '<span class="msg-sender">' +
+      (sender === "user" ? "Você" : "Chat IA") +
+      '</span><span class="msg-text">' +
+      text +
+      "</span>";
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     return div;
@@ -95,7 +115,8 @@
     var div = document.createElement("div");
     div.className = "chat-msg thinking";
     div.id = "chatThinking";
-    div.innerHTML = '<span class="msg-sender">Chat IA</span><span class="msg-text loading">Pensando</span>';
+    div.innerHTML =
+      '<span class="msg-sender">Chat IA</span><span class="msg-text loading">Pensando</span>';
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     var dots = 0;
@@ -103,7 +124,8 @@
       dots = (dots + 1) % 4;
       var el = document.getElementById("chatThinking");
       if (el) {
-        el.querySelector(".msg-text").textContent = "Pensando" + ".".repeat(dots);
+        el.querySelector(".msg-text").textContent =
+          "Pensando" + ".".repeat(dots);
       } else {
         clearInterval(div._dotInterval);
       }
@@ -134,22 +156,40 @@
     showThinking();
 
     var controller = new AbortController();
-    var timeoutId = setTimeout(function() { controller.abort(); }, 55000);
+    var timeoutId = setTimeout(function () {
+      controller.abort();
+    }, 55000);
     var streamTimeoutId;
 
     fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " + API_KEY },
-      body: JSON.stringify({ model: API_MODEL, messages: messageHistory, temperature: 0.7, max_tokens: 1500, stream: true, enable_thinking: true }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + API_KEY,
+      },
+      body: JSON.stringify({
+        model: API_MODEL,
+        messages: messageHistory,
+        temperature: 0.7,
+        max_tokens: 1500,
+        stream: true,
+        enable_thinking: true,
+      }),
       signal: controller.signal,
     })
       .then(function (res) {
         clearTimeout(timeoutId);
         if (!res.ok) {
-          return res.json().then(function (err) { throw new Error(err.error?.message || "HTTP " + res.status); })
+          return res
+            .json()
+            .then(function (err) {
+              throw new Error(err.error?.message || "HTTP " + res.status);
+            })
             .catch(function (e) {
               if (e.message && !e.message.startsWith("HTTP")) throw e;
-              throw new Error("HTTP " + res.status + " — verifique sua chave API e URL");
+              throw new Error(
+                "HTTP " + res.status + " — verifique sua chave API e URL",
+              );
             });
         }
         return res.body.getReader();
@@ -164,7 +204,10 @@
 
         function resetStreamTimeout() {
           clearTimeout(streamTimeoutId);
-          streamTimeoutId = setTimeout(function () { streamTimedOut = true; reader.cancel(); }, 45000);
+          streamTimeoutId = setTimeout(function () {
+            streamTimedOut = true;
+            reader.cancel();
+          }, 45000);
         }
         resetStreamTimeout();
 
@@ -178,7 +221,10 @@
               if (delta.thinking) return false;
               var content = delta.content || "";
               if (content) {
-                if (!thinkingRemoved) { removeThinking(); thinkingRemoved = true; }
+                if (!thinkingRemoved) {
+                  removeThinking();
+                  thinkingRemoved = true;
+                }
                 reply += content;
                 msgDiv.querySelector(".msg-text").textContent = reply;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -191,7 +237,12 @@
 
         function pump() {
           return reader.read().then(function (result) {
-            if (streamTimedOut) { clearTimeout(streamTimeoutId); throw new Error("Stream expirou. A IA demorou muito para responder."); }
+            if (streamTimedOut) {
+              clearTimeout(streamTimeoutId);
+              throw new Error(
+                "Stream expirou. A IA demorou muito para responder.",
+              );
+            }
             if (result.done) {
               clearTimeout(streamTimeoutId);
               if (buffer) processLine(buffer);
@@ -218,9 +269,10 @@
         clearTimeout(timeoutId);
         clearTimeout(streamTimeoutId);
         removeThinking();
-        var msg = err.name === "AbortError"
-          ? "A requisição expirou. A IA está demorando muito — tente novamente com uma pergunta mais curta."
-          : err.message || "Conexão falhou";
+        var msg =
+          err.name === "AbortError"
+            ? "A requisição expirou. A IA está demorando muito — tente novamente com uma pergunta mais curta."
+            : err.message || "Conexão falhou";
         addMessage("bot", "Erro: " + escapeHtml(msg));
       });
   }

@@ -30,9 +30,10 @@
     minW: 400,
     minH: 300,
     startVisible: false,
-    taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="3" width="12" height="10" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="3" width="12" height="3" fill="#000080"/><text x="8" y="11" text-anchor="middle" fill="#000080" font-size="8" font-weight="bold">P</text></svg>',
-    taskbarLabel: 'Portifolio',
-    onInit: function(controls) {
+    taskbarIcon:
+      '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="3" width="12" height="10" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="3" width="12" height="3" fill="#000080"/><text x="8" y="11" text-anchor="middle" fill="#000080" font-size="8" font-weight="bold">P</text></svg>',
+    taskbarLabel: "Portifolio",
+    onInit: function (controls) {
       // Ensure initial position
       controls.setMinimized(false);
     },
@@ -47,9 +48,15 @@
 
   if (window.windowRegistry) {
     registerWindow({
-      minimize: function() { winBehavior.minimize(); },
-      show: function() { winBehavior.show(); },
-      hasEntry: function() { return winBehavior.hasTaskbarEntry(); },
+      minimize: function () {
+        winBehavior.minimize();
+      },
+      show: function () {
+        winBehavior.show();
+      },
+      hasEntry: function () {
+        return winBehavior.hasTaskbarEntry();
+      },
     });
   }
 
@@ -57,17 +64,23 @@
     _showDesktop = !_showDesktop;
     var reg = window.windowRegistry || [];
     if (_showDesktop) {
-      _sdState = reg.map(function(w) { return { wasOpen: w.hasEntry() }; });
-      reg.forEach(function(w) { w.minimize(); });
+      _sdState = reg.map(function (w) {
+        return { wasOpen: w.hasEntry() };
+      });
+      reg.forEach(function (w) {
+        w.minimize();
+      });
     } else {
-      reg.forEach(function(w, i) {
+      reg.forEach(function (w, i) {
         if (_sdState[i] && _sdState[i].wasOpen) w.show();
       });
       _sdState = [];
     }
   }
 
-  document.getElementById("qlShowDesktop").addEventListener("click", toggleShowDesktop);
+  document
+    .getElementById("qlShowDesktop")
+    .addEventListener("click", toggleShowDesktop);
 
   /* ================================================================
        DESKTOP ICONS — select, drag, double-click
@@ -92,7 +105,10 @@
         openRandomGif();
         break;
       case "wakatime":
-        window.open("https://wakatime.com/@530e7be4-0c7e-40cf-9389-1017373810c3", "_blank");
+        window.open(
+          "https://wakatime.com/@530e7be4-0c7e-40cf-9389-1017373810c3",
+          "_blank",
+        );
         break;
     }
   }
@@ -159,7 +175,7 @@
         break;
       case "shutdown":
         xpDialog({
-          title: "Desligar Windows",
+          title: "Desligar",
           icon: "!",
           type: "confirm",
           message: "Tem certeza que deseja desligar o computador?",
@@ -207,7 +223,7 @@
         break;
       case "paste":
         xpDialog({
-          title: "Área de Trabalho",
+          title: "Sistema",
           icon: "i",
           message: "Área de transferência vazia.\nNada para colar.",
         });
@@ -217,9 +233,11 @@
         break;
       case "properties":
         xpDialog({
-          title: "Propriedades da Área de Trabalho",
+          title: "Sistema",
           icon: "i",
-          message: "Windows 2000 Desktop\n\n" + "Um projeto hobby feito com HTML, CSS e JavaScript puros.",
+          message:
+            "Windows 2000 Desktop\n\n" +
+            "Um projeto hobby feito com HTML, CSS e JavaScript puros.",
         });
         break;
     }
@@ -304,14 +322,21 @@
     if (typeof window.chatShowWindow !== "undefined") {
       window.chatShowWindow();
     } else {
-      xpDialog({ title: "Chat IA", icon: "i", message: "Chat IA está carregando...\nAguarde um momento.", width: "400px" });
+      xpDialog({
+        title: "Chat IA",
+        icon: "i",
+        message: "Chat IA está carregando...\nAguarde um momento.",
+        width: "400px",
+      });
       var checkLoaded = setInterval(function () {
         if (typeof window.chatShowWindow !== "undefined") {
           clearInterval(checkLoaded);
           window.chatShowWindow();
         }
       }, 200);
-      setTimeout(function () { clearInterval(checkLoaded); }, 10000);
+      setTimeout(function () {
+        clearInterval(checkLoaded);
+      }, 10000);
     }
   };
 })();
