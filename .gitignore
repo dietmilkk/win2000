@@ -1,1 +1,16 @@
 server.py
+p/twitter/node_modules/
+p/twitter/.next/
+p/twitter/src/
+p/twitter/package.json
+p/twitter/package-lock.json
+p/twitter/tsconfig.json
+p/twitter/next.config.ts
+p/twitter/postcss.config.mjs
+p/twitter/eslint.config.mjs
+p/twitter/AGENTS.md
+p/twitter/CLAUDE.md
+p/twitter/README.md
+p/twitter/next-env.d.ts
+p/twitter/public/
+scripts/update-gifs.sh
