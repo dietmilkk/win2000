@@ -19,14 +19,12 @@
     btnClose: chatBtnClose,
     btnMinimize: chatBtnMinimize,
     btnMaximize: chatBtnMaximize,
-    minW: 320,
-    minH: 240,
+    minW: 360,
+    minH: 300,
     taskbarIcon:
       '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#c8d8e8" stroke="#5a7a9a" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#0a1a4a"/><text x="8" y="11" text-anchor="middle" fill="#0a1a4a" font-size="7" font-weight="bold">AI</text></svg>',
     taskbarLabel: "Chat IA",
     onShow: function () {
-      chatWin.style.left = "";
-      chatWin.style.top = "";
       chatWin.style.width = "360px";
       chatWin.style.height = "480px";
     },

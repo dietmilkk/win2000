@@ -159,76 +159,74 @@
   }
 
   /* ================================================================
-     RANDOM GIF VIEWER
+     GALERIA (Image Gallery Viewer)
      ================================================================ */
 
-  var _gifList = null;
+  var _galleryList = null;
+  var _galleryCache = {};
 
-  window.loadGifList = function (cb) {
-    if (_gifList) {
-      cb(_gifList);
-      return;
-    }
-    fetch("/api/gifs")
-      .then(function (r) {
-        if (!r.ok) throw Error();
-        return r.json();
-      })
-      .then(function (list) {
-        _gifList = list;
-        cb(list);
-      })
-      .catch(function () {
-        fetch("assets/gifs/list.json")
-          .then(function (r) {
-            return r.json();
-          })
-          .then(function (list) {
-            _gifList = list;
-            cb(list);
-          })
-          .catch(function () {
-            cb([]);
-          });
-      });
-  };
+  function _initGallery() {
+    if (_galleryList) return;
+    _galleryList = [ 
+"Among Us GIF.gif","Animated GIF.gif","Anime Girl GIF.gif","Apple Fruit GIF.gif","a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-4vs0wh5f8d0c1.webp","a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-6bs2wx9g8d0c1.webp","Baby Niche GIF.gif","Blue Cat GIF by Justin.gif","Bye Bye Skeleton GIF.gif","chuunibyou demo koi ga shitai dance GIF.gif","cute anime GIF.gif","Dance Skeleton GIF.gif","dancing GIF.gif","Danse Macabre Fun GIF by Kiszkiloszki.gif","gif.gif","Gif.gif","khanh2k6.gif","Om Nom Eating GIF.gif","Spinner Fern GIF.gif","taiga aisaka t GIF.gif","Working Chis Sweet Home GIF.gif"
+    ];
+  }
 
-  window.openRandomGif = function () {
-    window.loadGifList(function (gifs) {
-      if (!gifs.length) return;
-      var currentIndex = Math.floor(Math.random() * gifs.length);
-      var overlay = document.createElement("div");
-      overlay.id = "randomGifOverlay";
-      function showGif(index) {
-        overlay.innerHTML =
-          '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' +
-          encodeURIComponent(gifs[index]) +
-          '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">SPACE to exit | ← → to navigate (' +
-          (index + 1) +
-          "/" +
-          gifs.length +
-          ")</div>";
+  window.openGallery = function () {
+    _initGallery();
+    if (!_galleryList.length) return;
+    var currentIndex = Math.floor(Math.random() * _galleryList.length);
+
+    function preload(idx) {
+      var src = "assets/galery/" + encodeURIComponent(_galleryList[idx]);
+      if (!_galleryCache[src]) {
+        _galleryCache[src] = new Image();
+        _galleryCache[src].src = src;
       }
-      showGif(currentIndex);
-      overlay.setAttribute("tabindex", "0");
-      overlay.style.outline = "none";
-      document.body.appendChild(overlay);
-      overlay.focus();
-      overlay.addEventListener("keydown", function (e) {
-        if (e.key === " ") {
-          e.preventDefault();
-          overlay.remove();
-        } else if (e.key === "ArrowRight") {
-          currentIndex = (currentIndex + 1) % gifs.length;
-          showGif(currentIndex);
-        } else if (e.key === "ArrowLeft") {
-          currentIndex = (currentIndex - 1 + gifs.length) % gifs.length;
-          showGif(currentIndex);
-        }
-      });
-      overlay.addEventListener("click", function () {
+    }
+    preload(currentIndex);
+    preload((currentIndex + 1) % _galleryList.length);
+    preload((currentIndex - 1 + _galleryList.length) % _galleryList.length);
+
+    var overlay = document.createElement("div");
+    overlay.id = "galleryOverlay";
+    overlay.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;outline:none";
+    overlay.setAttribute("tabindex", "0");
+
+    var img = document.createElement("img");
+    img.style.cssText = "height:100vh;width:auto;max-width:100vw;display:block";
+    img.src = "assets/gifs/random/" + encodeURIComponent(_galleryList[currentIndex]);
+    overlay.appendChild(img);
+
+    var info = document.createElement("div");
+    info.style.cssText = "position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999";
+    info.textContent = "SPACE para sair | ← → para navegar (" + (currentIndex + 1) + "/" + _galleryList.length + ")";
+    overlay.appendChild(info);
+
+    document.body.appendChild(overlay);
+    overlay.focus();
+
+    function show(idx) {
+      currentIndex = idx;
+      var src = "assets/gifs/" + encodeURIComponent(_galleryList[idx]);
+      img.src = src;
+      info.textContent = "SPACE para sair | ← → para navegar (" + (idx + 1) + "/" + _galleryList.length + ")";
+      preload((idx + 1) % _galleryList.length);
+      preload((idx - 1 + _galleryList.length) % _galleryList.length);
+    }
+
+    overlay.addEventListener("keydown", function (e) {
+      if (e.key === " ") {
+        e.preventDefault();
         overlay.remove();
-      });
+      } else if (e.key === "ArrowRight") {
+        show((currentIndex + 1) % _galleryList.length);
+      } else if (e.key === "ArrowLeft") {
+        show((currentIndex - 1 + _galleryList.length) % _galleryList.length);
+      }
+    });
+    overlay.addEventListener("click", function () {
+      overlay.remove();
     });
   };
 })();

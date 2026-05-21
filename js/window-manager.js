@@ -9,7 +9,7 @@
     var btnClose     = opts.btnClose === false ? null : (opts.btnClose || win.querySelector('.win-btn[title="Close"]'));
     var btnMinimize  = opts.btnMinimize  || win.querySelector('.win-btn[title="Minimize"]');
     var btnMaximize  = opts.btnMaximize  || win.querySelector('.win-btn[title="Maximize"]');
-    var minW         = opts.minW || 400;
+    var minW         = opts.minW || 500;
     var minH         = opts.minH || 300;
     var onMinimize   = opts.onMinimize || null;
     var onRestore    = opts.onRestore || null;
@@ -445,7 +445,9 @@
       container.appendChild(tbEntry);
       controls.setTaskbarEntry(tbEntry);
       tbEntry.addEventListener('click', function() {
-        if (controls.isMinimized() || win.style.display === 'none') {
+        if (controls.isMinimized()) {
+          controls.restore();
+        } else if (win.style.display === 'none') {
           show();
         } else if (win.classList.contains('active')) {
           controls.minimize();
@@ -472,7 +474,16 @@
       if (tbEntry) tbEntry.classList.add('active');
       controls.bringToFront();
       controls.setMinimized(false);
-      if (opts.onShow) opts.onShow(this);
+      if (!opts._onShowFired) {
+        opts._onShowFired = true;
+        if (opts.onShow) {
+          opts.onShow(this);
+        }
+        var w = parseInt(win.style.width) || win.offsetWidth || 600;
+        var h = parseInt(win.style.height) || win.offsetHeight || 450;
+        win.style.left = Math.round((window.innerWidth - w) / 2) + 'px';
+        win.style.top = Math.max(4, Math.round((window.innerHeight - h) / 2.5)) + 'px';
+      }
     }
 
     function hide() {

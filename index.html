@@ -409,10 +409,7 @@
                             <div class="chat-messages" id="chatMessages">
                                 <div class="chat-msg bot">
                                     <span class="msg-sender">AI Chat</span>
-                                    <span class="msg-text"
-                                        >Oi! Tô aqui se quiser conversar sobre o
-                                        que tiver na telha. É só chamar.</span
-                                    >
+                                    <span class="msg-text">Oi! Tô aqui se quiser conversar sobre que tiver na telha. É só chamar.</span>
                                 </div>
                             </div>
                             <div class="chat-input-area">
@@ -632,7 +629,7 @@
                                         trabalho<br />
                                         • chat IA que conversa de boa<br />
                                         • terminal com comandos de verdade<br />
-                                        • galeria de GIF + scanlines CRT<br /><br />
+                                        • galeria de imagens + scanlines CRT<br /><br />
                                         só isso. se divirta :)
                                     </p>
                                 </div>
@@ -1019,7 +1016,7 @@
                                 <circle cx="6" cy="8" r="1" fill="#f00" />
                                 <circle cx="10" cy="8" r="1" fill="#0f0" />
                             </svg>
-                            <span>GIF Aleatório</span>
+                            <span>Galeria</span>
                         </div>
                         <div class="start-menu-separator"></div>
                         <div class="start-menu-item" data-action="settings">
@@ -1099,6 +1096,7 @@
 
         <div id="scanline"></div>
 
+        <script src="js/fullscreen.js"></script>
         <script src="js/fps-limiter.js"></script>
         <script src="js/dialogs.js"></script>
         <script src="js/clocks.js"></script>
@@ -1108,5 +1106,19 @@
         <script src="js/main.js"></script>
         <script src="js/chat.js"></script>
         <script src="js/settings.js"></script>
+        <script>
+        document.addEventListener('click', function fullscreenClick() {
+            if (!document.fullscreenElement && !window._fsAttempted) {
+                window._fsAttempted = true;
+                document.documentElement.requestFullscreen().catch(function(){});
+            }
+        }, { once: true });
+        document.addEventListener('touchstart', function fullscreenTouch() {
+            if (!document.fullscreenElement && !window._fsAttempted) {
+                window._fsAttempted = true;
+                document.documentElement.requestFullscreen().catch(function(){});
+            }
+        }, { once: true });
+        </script>
     </body>
 </html>

@@ -13,8 +13,36 @@
     var currentDir = 'C:\\';
     var cmdHistory = [];
     var historyIndex = -1;
-    var commandsListed = false;
     var terminalFirstOpen = true;
+    var _pageLoad = Date.now();
+
+    function getHostname() {
+        return window.location.hostname || 'localhost';
+    }
+
+    function getUptime() {
+        var elapsed = Math.floor((Date.now() - _pageLoad) / 1000);
+        var h = Math.floor(elapsed / 3600);
+        var m = Math.floor((elapsed % 3600) / 60);
+        var s = elapsed % 60;
+        return h + 'h ' + m + 'm ' + s + 's';
+    }
+
+    function getOS() {
+        var ua = navigator.userAgent;
+        if (ua.indexOf('Windows NT 10') !== -1) return 'Windows 10';
+        if (ua.indexOf('Windows NT 6.3') !== -1) return 'Windows 8.1';
+        if (ua.indexOf('Windows NT 6.2') !== -1) return 'Windows 8';
+        if (ua.indexOf('Windows NT 6.1') !== -1) return 'Windows 7';
+        if (ua.indexOf('Windows NT 6.0') !== -1) return 'Windows Vista';
+        if (ua.indexOf('Windows NT 5.1') !== -1) return 'Windows XP';
+        if (ua.indexOf('Windows NT 5.0') !== -1) return 'Windows 2000';
+        if (ua.indexOf('Mac') !== -1) return 'macOS';
+        if (ua.indexOf('Linux') !== -1) return 'Linux';
+        if (ua.indexOf('Android') !== -1) return 'Android';
+        if (ua.indexOf('iPhone') !== -1 || ua.indexOf('iPad') !== -1) return 'iOS';
+        return 'Desconhecido';
+    }
 
     var commands = {
         help: function() {
@@ -33,6 +61,13 @@
                 '  rm -rf     Deletar tudo\n' +
                 '  doom       Fim do mundo\n' +
                 '  gif        Visualizador de GIF aleatório\n' +
+                '  neofetch   Informações do sistema\n' +
+                '  sudo       Executar como root\n' +
+                '  pwd        Diretório atual\n' +
+                '  whoami     Nome do usuário\n' +
+                '  uptime     Tempo de atividade\n' +
+                '  reboot     Reiniciar o sistema\n' +
+                '  bsod       Tela azul da morte\n' +
                 '  help       Mostra esta ajuda';
         },
         cls: function() {
@@ -112,8 +147,9 @@
                 '+---Documents\n|   +---Work\n|   +---Personal\n|   +---Downloads\n+---Projects\n|   +---Portifolio\n|   |   +---css\n|   |   +---js\n|   |   +---assets\n|   |       +---icons\n|   +---Experiments\n+---WINDOWS\n|   +---system32\n|   +---system\n|   +---Fonts\n+---Program Files\n    +---Internet Explorer\n    +---Accessories';
         },
         ipconfig: function() {
+            var host = getHostname().toUpperCase();
             return '\nConfiguração IP do Windows 2000\n\n' +
-                '        Nome do Host . . . . . . . : ENDRYO-PC\n' +
+                '        Nome do Host . . . . . . . : ' + host + '\n' +
                 '        Sufixo DNS Primário  . . : \n' +
                 '        Tipo de Nó . . . . . . . : Hybrid\n' +
                 '        Roteamento IP Habilitado. . . : No\n' +
@@ -132,26 +168,33 @@
         ping: function(args) {
             var target = args || 'localhost';
             var results = [];
-            results.push('\nRespondendo de ' + target + ' [127.0.0.1] com 32 bytes de dados:');
-            var times = [14, 22, 9, 18];
+            results.push('\nRespondendo de ' + target + ' com 32 bytes de dados:');
+            var times = [];
             for (var i = 0; i < 4; i++) {
-                results.push('Resposta de 127.0.0.1: bytes=32 time=' + times[i] + 'ms TTL=128');
+                times.push(Math.floor(Math.random() * 40 + 5));
             }
-            results.push('\nEstatísticas do ping para 127.0.0.1:');
+            for (var i = 0; i < 4; i++) {
+                results.push('Resposta de ' + target + ': bytes=32 time=' + times[i] + 'ms TTL=128');
+            }
+            var min = Math.min.apply(null, times);
+            var max = Math.max.apply(null, times);
+            var avg = Math.floor(times.reduce(function(a, b) { return a + b; }, 0) / times.length);
+            results.push('\nEstatísticas do ping para ' + target + ':');
             results.push('    Pacotes: Enviados = 4, Recebidos = 4, Perdidos = 0 (0% perda),');
             results.push('Tempos aproximados de ida e volta em milissegundos:');
-            results.push('    Mínimo = 9ms, Máximo = 22ms, Média = 15ms');
+            results.push('    Mínimo = ' + min + 'ms, Máximo = ' + max + 'ms, Média = ' + avg + 'ms');
             return results.join('\n');
         },
         net: function(args) {
+            var host = getHostname().toUpperCase();
             if (!args) return 'A sintaxe deste comando é:\n\nNET [ HELP | START | STOP | USE | VIEW | SEND ]\n\nDigite NET HELP para mais informações.';
             if (args.toLowerCase() === 'send') {
-                return 'Mensagem enviada com sucesso para ENDRYO-PC.';
+                return 'Mensagem enviada com sucesso para ' + host + '.';
             }
             if (args.toLowerCase() === 'view') {
                 return '\nNome do Servidor    Observação\n\n' +
                     '-------------------------------------------------------------------------------\n' +
-                    '\\\\ENDRYO-PC       Portifolio Workstation\n' +
+                    '\\\\' + host + '       Portifolio Workstation\n' +
                     '\\\\FILESERVER      Servidor de Arquivos (esta rede)\n' +
                     'O comando concluído com sucesso.';
             }
@@ -323,14 +366,94 @@
                 'Parabéns! Você agora é um Hacker Nível 99!\n' +
                 '(Isso foi uma piada. Vá lá fora.)';
         },
-        'rm -rf': function() {
+        rm: function(args) {
+            if (!args || args.indexOf('-rf') === -1) {
+                return 'Uso: rm -rf <diretório>\nExemplo: rm -rf /';
+            }
             var dirs = ['/bin', '/usr', '/home', '/etc', '/root', '/var', '/tmp', '/sys', '/proc'];
-            var result = 'Removendo arquivos...\n';
+            var result = 'Removendo arquivos permanentemente...\n';
             for (var i = 0; i < 10; i++) {
                 result += 'rm: removendo ' + dirs[Math.floor(Math.random() * dirs.length)] + '\n';
             }
-            result += '\nOh não! Erro crítico do sistema!\nTudo foi deletado!';
-            document.body.innerHTML = '<div style="background:#000;color:#0f0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;font-size:20px;text-align:center;padding:20px;">' + result.replace(/\n/g, '<br>') + '<br><br><button onclick="location.reload()" style="background:#0f0;color:#000;padding:10px 20px;border:none;cursor:pointer;">Reiniciar Sistema</button></div>';
+            result += '\nAVISO: rm -rf / executado com sucesso!\n' +
+                'Felizmente, isto é apenas um navegador.\n' +
+                'Seu sistema real ainda está intacto. :)\n' +
+                'Mas se fosse real... tela azul!';
+            xpDialog({ title: 'rm -rf /', icon: '!', message: result });
+            return 'Comando executado. (Simulação segura)';
+        },
+        neofetch: function() {
+            var host = getHostname();
+            var arch = navigator.platform || 'desconhecido';
+            var screenRes = screen.width + 'x' + screen.height;
+            var os = getOS();
+            return '\n          ################\n        ####################\n      ####' +
+                '####################\n     ######              ######\n    ######    ########    ######\n    ######    ########    ' +
+                '######\n    ######    ########    ######\n     ######              ######\n      ##################' +
+                '##\n        ################\n          ################\n\n' +
+                '  SO: ' + os + '\n' +
+                '  Hostname: ' + host + '\n' +
+                '  Usuário: usuário\n' +
+                '  Arquitetura: ' + arch + '\n' +
+                '  Uptime: ' + getUptime() + '\n' +
+                '  Resolução: ' + screenRes + '\n' +
+                '  Shell: cmd.exe\n' +
+                '  Navegador: ' + navigator.userAgent.replace(/[\/][^\s]*/g, '') + '\n' +
+                '  Gerenciador de Janelas: Windows 2000 Explorer';
+        },
+        sudo: function(args) {
+            if (!args) return 'Uso: sudo <comando>\n\nPermissão negada.\nEste evento será registrado.';
+            if (args === 'rm -rf /') {
+                return 'Nice try.\nPermissão negada. Você não é root.\n(Sim, mesmo com sudo. Segurança primeiro.)';
+            }
+            if (args === 'apt install' || args === 'apt-get install') {
+                return 'Este não é um sistema Linux.\nTalvez você queira o Windows Update.';
+            }
+            if (args === 'su') {
+                return 'root\n# Por favor, seja cuidadoso.\n# Isto é um Windows 2000, não um servidor Unix.';
+            }
+            return 'Permissão negada.\n' + args + ' não pôde ser executado como root.\nContate o administrador do sistema.';
+        },
+        pwd: function() {
+            return currentDir;
+        },
+        whoami: function() {
+            return getHostname() + '\\usuário';
+        },
+        hostname: function() {
+            return getHostname();
+        },
+        uptime: function() {
+            return 'Tempo de atividade do sistema: ' + getUptime() + '\n' +
+                'O sistema está rodando perfeitamente.';
+        },
+        reboot: function() {
+            var steps = [
+                'Iniciando desligamento do sistema...',
+                'Salvando configurações do registro...',
+                'Encerrando serviços...',
+                'Sincronizando cache...',
+                'Aplicando atualizações pendentes... (1 de 5)',
+                'Aplicando atualizações pendentes... (2 de 5)',
+                'Aplicando atualizações pendentes... (3 de 5)',
+                'Aplicando atualizações pendentes... (4 de 5)',
+                'Aplicando atualizações pendentes... (5 de 5)',
+                'Reiniciando em 10... 9... 8... 7... 6... 5... 4... 3... 2... 1...'
+            ];
+            return '\n' + steps.join('\n') + '\n\nReinicialização concluída. (Simulação)';
+        },
+        bsod: function() {
+            return '\n' +
+                '*** STOP: 0x0000007B (0xF78D2524, 0xC0000034, 0x00000000, 0x00000000)\n\n' +
+                'INACCESSIBLE_BOOT_DEVICE\n\n' +
+                'Se esta é a primeira vez que você vê esta tela, reinicie o computador.\n' +
+                'Se este problema persistir, contate o administrador do sistema.\n\n' +
+                '*** ' + getHostname() + ' - Endereço base do driver: 0xA0000000, Datestamp: 4a5bc200\n\n' +
+                'Coletando informações de erro de despejo...\n' +
+                'Reinicie o computador.';
+        },
+        clear: function() {
+            termOutput.innerHTML = '';
             return '';
         },
         doom: function() {
@@ -338,32 +461,11 @@
             return '';
         },
         gif: function() {
-            var output = '';
-            if (typeof window.loadGifList !== 'function') return 'Visualizador de GIF não disponível.\n';
-            window.loadGifList(function(gifs) {
-                if (!gifs.length) return;
-                var currentIndex = Math.floor(Math.random() * gifs.length);
-                var overlayId = 'gifOverlay' + Date.now();
-                var overlay = document.createElement('div');
-                overlay.id = overlayId;
-                function showGif(index) {
-                  overlay.innerHTML = '<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;"><img src="assets/gifs/random/' + encodeURIComponent(gifs[index]) + '" style="height:100vh;width:auto;max-width:100vw;"></div><div style="position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999;">ESPAÇO para sair | \u2190 \u2192 para navegar (' + (index+1) + '/' + gifs.length + ')</div>';
-                }
-                showGif(currentIndex);
-                overlay.setAttribute('tabindex', '0');
-                overlay.style.outline = 'none';
-                document.body.appendChild(overlay);
-                overlay.focus();
-                var closeGif = function() { overlay.remove(); document.removeEventListener('keydown', keyHandler); };
-                var keyHandler = function(e) {
-                  if (e.key === ' ') { e.preventDefault(); closeGif(); }
-                  else if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % gifs.length; showGif(currentIndex); }
-                  else if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + gifs.length) % gifs.length; showGif(currentIndex); }
-                };
-                document.addEventListener('keydown', keyHandler);
-                overlay.addEventListener('click', closeGif);
-            });
-            return '';
+            if (typeof window.openGallery === 'function') {
+                window.openGallery();
+                return 'Abrindo galeria...';
+            }
+            return 'Visualizador de GIF não disponível.\n';
         }
     };
 
@@ -469,13 +571,11 @@
         btnClose: termBtnClose,
         btnMinimize: termBtnMinimize,
         btnMaximize: termBtnMaximize,
-        minW: 350,
-        minH: 250,
+        minW: 500,
+        minH: 300,
         taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#111" stroke="#333" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#666"/><rect x="3" y="6" width="10" height="6" fill="#080a08"/><text x="8" y="9" text-anchor="middle" fill="#22aa55" font-size="3" font-weight="bold">C:\\&gt;</text></svg>',
         taskbarLabel: 'Terminal',
         onShow: function() {
-            termWin.style.left = '80px';
-            termWin.style.top = '60px';
             termWin.style.width = '580px';
             termWin.style.height = '380px';
             termInput.focus();

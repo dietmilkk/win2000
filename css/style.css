@@ -14,14 +14,14 @@
         "Terminal", "Courier New", monospace !important;
 }
 .window-body,
+.window-body *,
 .xp-dialog-body,
+.xp-dialog-body *,
 .xp-dialog-content,
-.xp-dialog-msg,
-.chat-msg .msg-text,
+.xp-dialog-content *,
 .term-output,
-.term-input,
-.project-body p,
-.project-body h3 {
+.term-output *,
+.chat-msg .msg-text {
     user-select: text;
     -webkit-user-select: text;
     -moz-user-select: text;
@@ -116,7 +116,7 @@ body {
     overflow: hidden;
     background-color: #327e32;
     background-image: url("../assets/wallpaper-1920x1080.webp");
-    background-size: 100% 100%;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -1642,73 +1642,21 @@ body.mobile-mode #termWindow.active {
     }
 }
 
-/* ========== GLOBAL RETRO SCROLLBARS ========== */
+/* ========== GLOBAL CUSTOM SCROLLBARS (hidden native) ========== */
 
-::-webkit-scrollbar {
-    width: 16px;
-    height: 16px;
-    background: #c0c0c0;
+.window-body,
+.term-output,
+.chat-messages,
+.settings-content {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow: hidden;
 }
-::-webkit-scrollbar-track {
-    background: #c0c0c0;
-    border: 1px solid #8a8680;
-}
-::-webkit-scrollbar-thumb {
-    background: #d4d0c8;
-    border-top: 2px solid #fff;
-    border-left: 2px solid #fff;
-    border-right: 2px solid #505050;
-    border-bottom: 2px solid #505050;
-    min-height: 20px;
-}
-::-webkit-scrollbar-thumb:active {
-    border-top: 2px solid #505050;
-    border-left: 2px solid #505050;
-    border-right: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-}
-::-webkit-scrollbar-button {
-    display: block;
-    width: 16px;
-    height: 16px;
-    background: #d4d0c8;
-    border-top: 2px solid #fff;
-    border-left: 2px solid #fff;
-    border-right: 2px solid #505050;
-    border-bottom: 2px solid #505050;
-}
-::-webkit-scrollbar-button:active {
-    border-top: 2px solid #505050;
-    border-left: 2px solid #505050;
-    border-right: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-}
-::-webkit-scrollbar-button:vertical:start {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><polygon points='4,0 8,5 0,5' fill='%23505050'/></svg>");
-    background-repeat: no-repeat;
-    background-position: center;
-}
-::-webkit-scrollbar-button:vertical:end {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='5'><polygon points='0,0 8,0 4,5' fill='%23505050'/></svg>");
-    background-repeat: no-repeat;
-    background-position: center;
-}
-::-webkit-scrollbar-button:horizontal:start {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='8'><polygon points='5,0 0,4 5,8' fill='%23505050'/></svg>");
-    background-repeat: no-repeat;
-    background-position: center;
-}
-::-webkit-scrollbar-button:horizontal:end {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='8'><polygon points='0,0 5,4 0,8' fill='%23505050'/></svg>");
-    background-repeat: no-repeat;
-    background-position: center;
-}
-::-webkit-scrollbar-corner {
-    background: #c0c0c0;
-}
-
-/* Firefox retro fallback */
-html {
-    scrollbar-width: auto;
-    scrollbar-color: #d4d0c8 #c0c0c0;
+.window-body::-webkit-scrollbar,
+.term-output::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar,
+.settings-content::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
 }

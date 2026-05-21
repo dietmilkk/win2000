@@ -24,8 +24,6 @@
         taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="2" width="12" height="3" fill="#000080"/><circle cx="8" cy="9" r="2" fill="#666"/><path d="M8 7 L8 11 M6 9 L10 9" stroke="#fff" stroke-width="1"/></svg>',
         taskbarLabel: 'Configurações',
         onShow: function () {
-            win.style.left = Math.round((window.innerWidth - 520) / 2) + 'px';
-            win.style.top = '60px';
             win.style.width = '520px';
             win.style.height = '400px';
         },
@@ -69,7 +67,7 @@
         reader.onload = function (e) {
             var desktop = document.querySelector('.desktop');
             desktop.style.backgroundImage = 'url("' + e.target.result + '")';
-            desktop.style.backgroundSize = '100% 100%';
+            desktop.style.backgroundSize = 'cover';
             desktop.style.backgroundPosition = 'center';
             desktop.style.backgroundRepeat = 'no-repeat';
 

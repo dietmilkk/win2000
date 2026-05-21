@@ -27,8 +27,8 @@
     btnClose: document.getElementById("btnClose"),
     btnMinimize: document.getElementById("btnMinimize"),
     btnMaximize: document.getElementById("btnMaximize"),
-    minW: 400,
-    minH: 300,
+    minW: 500,
+    minH: 500,
     startVisible: false,
     taskbarIcon:
       '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="3" width="12" height="10" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="3" width="12" height="3" fill="#000080"/><text x="8" y="11" text-anchor="middle" fill="#000080" font-size="8" font-weight="bold">P</text></svg>',
@@ -102,7 +102,7 @@
         showTerminal();
         break;
       case "randomgif":
-        openRandomGif();
+        if (typeof window.openGallery !== "undefined") window.openGallery();
         break;
       case "wakatime":
         window.open(
@@ -168,7 +168,7 @@
         showTerminal();
         break;
       case "randomgif":
-        openRandomGif();
+        if (typeof window.openGallery !== "undefined") window.openGallery();
         break;
       case "settings":
         if (typeof window.showSettings !== "undefined") window.showSettings();
