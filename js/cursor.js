@@ -159,34 +159,48 @@
   }
 
   /* ================================================================
-     GALERIA (Image Gallery Viewer)
+     GALERIA (Image Gallery Viewer) — random shuffled order
      ================================================================ */
 
   var _galleryList = null;
   var _galleryCache = {};
+  var _shuffled = [];
+  var _shufflePos = 0;
+
+  function _reshuffle() {
+    _shuffled = _galleryList.slice();
+    for (var i = _shuffled.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = _shuffled[i];
+      _shuffled[i] = _shuffled[j];
+      _shuffled[j] = tmp;
+    }
+    _shufflePos = 0;
+  }
 
   function _initGallery() {
     if (_galleryList) return;
     _galleryList = [ 
 "Among Us GIF.gif","Animated GIF.gif","Anime Girl GIF.gif","Apple Fruit GIF.gif","a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-4vs0wh5f8d0c1.webp","a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-6bs2wx9g8d0c1.webp","Baby Niche GIF.gif","Blue Cat GIF by Justin.gif","Bye Bye Skeleton GIF.gif","chuunibyou demo koi ga shitai dance GIF.gif","cute anime GIF.gif","Dance Skeleton GIF.gif","dancing GIF.gif","Danse Macabre Fun GIF by Kiszkiloszki.gif","gif.gif","Gif.gif","khanh2k6.gif","Om Nom Eating GIF.gif","Spinner Fern GIF.gif","taiga aisaka t GIF.gif","Working Chis Sweet Home GIF.gif"
     ];
+    _reshuffle();
   }
 
   window.openGallery = function () {
     _initGallery();
     if (!_galleryList.length) return;
-    var currentIndex = Math.floor(Math.random() * _galleryList.length);
 
-    function preload(idx) {
-      var src = "assets/galery/" + encodeURIComponent(_galleryList[idx]);
+    if (_shufflePos >= _shuffled.length) _reshuffle();
+    var currentItem = _shuffled[_shufflePos];
+
+    function preload(name) {
+      var src = "assets/gallery/" + encodeURIComponent(name);
       if (!_galleryCache[src]) {
         _galleryCache[src] = new Image();
         _galleryCache[src].src = src;
       }
     }
-    preload(currentIndex);
-    preload((currentIndex + 1) % _galleryList.length);
-    preload((currentIndex - 1 + _galleryList.length) % _galleryList.length);
+    preload(currentItem);
 
     var overlay = document.createElement("div");
     overlay.id = "galleryOverlay";
@@ -195,24 +209,34 @@
 
     var img = document.createElement("img");
     img.style.cssText = "height:100vh;width:auto;max-width:100vw;display:block";
-    img.src = "assets/gifs/random/" + encodeURIComponent(_galleryList[currentIndex]);
+    img.src = "assets/gallery/" + encodeURIComponent(currentItem);
     overlay.appendChild(img);
 
+    var total = _galleryList.length;
     var info = document.createElement("div");
     info.style.cssText = "position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999";
-    info.textContent = "SPACE para sair | ← → para navegar (" + (currentIndex + 1) + "/" + _galleryList.length + ")";
+    info.textContent = "SPACE para sair | ← → para navegar (" + (_shufflePos + 1) + "/" + total + ")";
     overlay.appendChild(info);
 
     document.body.appendChild(overlay);
     overlay.focus();
 
-    function show(idx) {
-      currentIndex = idx;
-      var src = "assets/gifs/" + encodeURIComponent(_galleryList[idx]);
-      img.src = src;
-      info.textContent = "SPACE para sair | ← → para navegar (" + (idx + 1) + "/" + _galleryList.length + ")";
-      preload((idx + 1) % _galleryList.length);
-      preload((idx - 1 + _galleryList.length) % _galleryList.length);
+    function next() {
+      _shufflePos++;
+      if (_shufflePos >= _shuffled.length) _reshuffle();
+      var name = _shuffled[_shufflePos];
+      img.src = "assets/gallery/" + encodeURIComponent(name);
+      preload(name);
+      info.textContent = "SPACE para sair | ← → para navegar (" + (_shufflePos + 1) + "/" + total + ")";
+    }
+
+    function prev() {
+      _shufflePos--;
+      if (_shufflePos < 0) _shufflePos = _shuffled.length - 1;
+      var name = _shuffled[_shufflePos];
+      img.src = "assets/gallery/" + encodeURIComponent(name);
+      preload(name);
+      info.textContent = "SPACE para sair | ← → para navegar (" + (_shufflePos + 1) + "/" + total + ")";
     }
 
     overlay.addEventListener("keydown", function (e) {
@@ -220,9 +244,9 @@
         e.preventDefault();
         overlay.remove();
       } else if (e.key === "ArrowRight") {
-        show((currentIndex + 1) % _galleryList.length);
+        next();
       } else if (e.key === "ArrowLeft") {
-        show((currentIndex - 1 + _galleryList.length) % _galleryList.length);
+        prev();
       }
     });
     overlay.addEventListener("click", function () {

@@ -16,9 +16,11 @@
 
     var minimized = false;
     var maximized = false;
+    var snapped = false;
     var dragState = null;
     var resizeState = null;
     var prevRect = null;
+    var minimizeTimer = null;
 
     function flashWindow() {
         win.classList.remove('window-interacting');
@@ -30,11 +32,12 @@
     function getTb() { return tbEntry; }
 
     function saveRect() {
+      var r = win.getBoundingClientRect();
       prevRect = {
-        left: win.style.left,
-        top: win.style.top,
-        width: win.style.width,
-        height: win.style.height,
+        left: r.left + 'px',
+        top: r.top + 'px',
+        width: r.width + 'px',
+        height: r.height + 'px',
       };
     }
 
@@ -123,7 +126,8 @@
         win.style.top = ty + 'px';
         win.style.width = tw + 'px';
         win.style.height = th + 'px';
-        setTimeout(function() {
+        minimizeTimer = setTimeout(function() {
+          minimizeTimer = null;
           if (!minimized) { win.style.transition = ''; return; }
           win.style.display = 'none';
           win.style.transition = '';
@@ -138,7 +142,9 @@
 
     function restore() {
       if (!minimized) return;
+      if (minimizeTimer) { clearTimeout(minimizeTimer); minimizeTimer = null; }
       minimized = false;
+      snapped = false;
       var tb = getTb();
       if (tb) {
         var tbRect = tb.getBoundingClientRect();
@@ -235,6 +241,13 @@
     if (dragHandle) {
       dragHandle.addEventListener('mousedown', function(e) {
         if (e.target.classList.contains('win-btn')) return;
+        if (snapped && prevRect) {
+          snapped = false;
+          win.style.left = prevRect.left;
+          win.style.top = prevRect.top;
+          win.style.width = prevRect.width;
+          win.style.height = prevRect.height;
+        }
         var rect = win.getBoundingClientRect();
         dragState = {
           offsetX: e.clientX - rect.left,
@@ -251,6 +264,33 @@
       if (!maximized) {
         if (e.clientY < 12) {
           toggleMaximize();
+          dragState = null;
+          win.style.cursor = '';
+          return;
+        }
+        var _snapEdge = 60;
+        var _tb = document.querySelector('.taskbar');
+        var _th = _tb ? _tb.offsetHeight : 40;
+        var _mh = window.innerHeight - _th;
+        if (e.clientX < _snapEdge) {
+          saveRect();
+          snapped = true;
+          win.style.left = '0';
+          win.style.top = '0';
+          win.style.width = Math.round(window.innerWidth / 2) + 'px';
+          win.style.height = _mh + 'px';
+          dragState = null;
+          win.style.cursor = '';
+          return;
+        }
+        if (e.clientX > window.innerWidth - _snapEdge) {
+          saveRect();
+          snapped = true;
+          var _hw = Math.round(window.innerWidth / 2);
+          win.style.left = _hw + 'px';
+          win.style.top = '0';
+          win.style.width = _hw + 'px';
+          win.style.height = _mh + 'px';
           dragState = null;
           win.style.cursor = '';
           return;
@@ -303,6 +343,13 @@
         e.preventDefault();
         e.stopPropagation();
         bringToFront();
+        if (snapped && prevRect) {
+          snapped = false;
+          win.style.left = prevRect.left;
+          win.style.top = prevRect.top;
+          win.style.width = prevRect.width;
+          win.style.height = prevRect.height;
+        }
         var rect = win.getBoundingClientRect();
         resizeState = {
           edge: edge,
@@ -387,6 +434,7 @@
       isMaximized: function() { return maximized; },
       setMinimized: function(v) { minimized = v; },
       setTaskbarEntry: function(el) { tbEntry = el; },
+      clearSavedRect: function() { prevRect = null; },
     };
   }
 
@@ -479,8 +527,8 @@
         if (opts.onShow) {
           opts.onShow(this);
         }
-        var w = parseInt(win.style.width) || win.offsetWidth || 600;
-        var h = parseInt(win.style.height) || win.offsetHeight || 450;
+        var w = win.offsetWidth || parseInt(win.style.width) || 600;
+        var h = win.offsetHeight || parseInt(win.style.height) || 450;
         win.style.left = Math.round((window.innerWidth - w) / 2) + 'px';
         win.style.top = Math.max(4, Math.round((window.innerHeight - h) / 2.5)) + 'px';
       }
@@ -490,6 +538,8 @@
       if (controls && controls.isMinimized()) return;
       if (controls) controls.hide();
       removeTaskbarEntry();
+      opts._onShowFired = false;
+      if (controls) controls.clearSavedRect();
       if (opts.onHide) opts.onHide(this);
     }
 

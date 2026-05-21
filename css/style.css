@@ -591,7 +591,8 @@ p {
     border-bottom: 2px solid #5a5a5a;
     transition: none;
 }
-.start-btn:active {
+.start-btn:active,
+.start-btn.active {
     border-top: 2px solid #5a5a5a;
     border-left: 2px solid #5a5a5a;
     border-right: 2px solid #fff;
@@ -609,6 +610,7 @@ p {
     font-size: 13px;
     font-weight: 700;
     color: #000;
+    padding: 3px 0 1px;
 }
 
 .quick-launch {
@@ -653,7 +655,7 @@ p {
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 2px 10px;
+    padding: 3px 10px 1px;
     height: 26px;
     min-width: 80px;
     max-width: 200px;
@@ -690,37 +692,51 @@ p {
     position: fixed;
     bottom: 40px;
     left: 0;
-    width: 200px;
+    width: 220px;
     background: #ece9e0;
     border-top: 2px solid #fff;
     border-left: 2px solid #fff;
     border-right: 2px solid #5a5a5a;
     border-bottom: 2px solid #5a5a5a;
     z-index: 9998;
-    box-shadow: 2px -2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 2px -2px 6px rgba(0, 0, 0, 0.2);
 }
 .start-menu.open {
     display: block;
 }
 .start-menu-header {
-    background: #000080;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
     color: #fff;
     font-weight: 700;
-    font-size: 12px;
+    font-size: 13px;
     font-family: "Tahoma", "MS Sans Serif", sans-serif;
 }
 .start-menu-body {
-    padding: 4px 0;
+    padding: 2px 0;
+}
+.start-menu-group-title {
+    padding: 4px 12px 2px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: "Tahoma", "MS Sans Serif", sans-serif;
 }
 .start-menu-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 12px;
+    padding: 5px 12px 5px 16px;
     font-size: 13px;
     color: #000;
-
     font-family: "Tahoma", "MS Sans Serif", sans-serif;
+    margin: 0 2px;
+    border-radius: 0;
 }
 .start-menu-item:hover {
     background: #000080;
@@ -729,9 +745,15 @@ p {
 .start-menu-item svg {
     flex-shrink: 0;
 }
+.start-menu-item[data-action="shutdown"] {
+    color: #cc0000;
+}
+.start-menu-item[data-action="shutdown"]:hover {
+    color: #fff;
+}
 .start-menu-separator {
     height: 1px;
-    margin: 4px 8px;
+    margin: 3px 10px;
     background: #c8c4bc;
     border-bottom: 1px solid #fff;
 }
@@ -799,6 +821,17 @@ p {
     min-width: 34px;
     text-align: center;
     font-family: "Tahoma", "MS Sans Serif", sans-serif;
+    cursor: pointer;
+    padding: 3px 4px 1px;
+    border: 1px solid transparent;
+}
+.tray-clock:hover {
+    background: #c8c4bc;
+    border-color: #888480;
+}
+.tray-clock:active {
+    background: #b0aca4;
+    border-color: #6a6660;
 }
 
 /* ========== RESIZE EDGES & CORNERS ========== */
@@ -1200,13 +1233,15 @@ body.mobile-mode .title-bar-buttons {
 body.mobile-mode .window-body {
     overflow-y: auto !important;
     padding: 10px 12px 16px;
-    scrollbar-width: auto;
-    -ms-overflow-style: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     max-height: none !important;
     -webkit-overflow-scrolling: touch;
 }
 body.mobile-mode .window-body::-webkit-scrollbar {
-    display: block;
+    display: none;
+    width: 0;
+    height: 0;
 }
 body.mobile-mode .content-area {
     padding: 0;
@@ -1642,15 +1677,18 @@ body.mobile-mode #termWindow.active {
     }
 }
 
-/* ========== GLOBAL CUSTOM SCROLLBARS (hidden native) ========== */
+/* ========== GLOBAL: hide scrollbars, keep wheel scroll ========== */
 
+html, body {
+    overflow: hidden;
+}
 .window-body,
 .term-output,
 .chat-messages,
 .settings-content {
     scrollbar-width: none;
     -ms-overflow-style: none;
-    overflow: hidden;
+    overflow-y: auto;
 }
 .window-body::-webkit-scrollbar,
 .term-output::-webkit-scrollbar,
@@ -1659,4 +1697,55 @@ body.mobile-mode #termWindow.active {
     display: none;
     width: 0;
     height: 0;
+}
+
+/* ========== Volume slider ========== */
+#volumePanel input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: #b0aca4;
+    border: 1px solid #6a6660;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+}
+#volumePanel input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #d4d0c8;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #505050;
+    border-bottom: 2px solid #505050;
+    box-shadow: inset -1px -1px 0 #888480;
+    cursor: pointer;
+}
+#volumePanel input[type=range]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #d4d0c8;
+    border: none;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #505050;
+    border-bottom: 2px solid #505050;
+    box-shadow: inset -1px -1px 0 #888480;
+    cursor: pointer;
+}
+
+/* ========== Tray icons hover ========== */
+.tray-icon {
+    cursor: pointer;
+    padding: 2px;
+    border: 1px solid transparent;
+}
+.tray-icon:hover {
+    background: #c8c4bc;
+    border-color: #888480;
+}
+.tray-icon:active {
+    background: #b0aca4;
+    border-color: #6a6660;
 }

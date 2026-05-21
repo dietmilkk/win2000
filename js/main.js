@@ -31,7 +31,7 @@
     minH: 500,
     startVisible: false,
     taskbarIcon:
-      '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="3" width="12" height="10" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="3" width="12" height="3" fill="#000080"/><text x="8" y="11" text-anchor="middle" fill="#000080" font-size="8" font-weight="bold">P</text></svg>',
+      '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><path d="M2 1h9l3 3v11H2V1z" fill="#fff" stroke="#666" stroke-width="1.5"/><path d="M11 1v3h3" fill="#fff" stroke="#666" stroke-width="1.5"/><line x1="4" y1="7" x2="12" y2="7" stroke="#444" stroke-width="1"/><line x1="4" y1="9" x2="12" y2="9" stroke="#444" stroke-width="1"/><line x1="4" y1="11" x2="10" y2="11" stroke="#444" stroke-width="1"/></svg>',
     taskbarLabel: "Portifolio",
     onInit: function (controls) {
       // Ensure initial position
@@ -139,10 +139,12 @@
        ================================================================ */
 
   var startMenu = document.getElementById("startMenu");
+  var startBtn = document.getElementById("startBtn");
 
-  document.getElementById("startBtn").addEventListener("click", function (e) {
+  startBtn.addEventListener("click", function (e) {
     e.stopPropagation();
     startMenu.classList.toggle("open");
+    startBtn.classList.toggle("active", startMenu.classList.contains("open"));
   });
 
   /* ================================================================
@@ -153,6 +155,7 @@
     var item = e.target.closest(".start-menu-item");
     if (!item) return;
     startMenu.classList.remove("open");
+    startBtn.classList.remove("active");
     var action = item.getAttribute("data-action");
     switch (action) {
       case "programs":
@@ -172,6 +175,13 @@
         break;
       case "settings":
         if (typeof window.showSettings !== "undefined") window.showSettings();
+        break;
+      case "fullscreen":
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(function(){});
+        } else {
+          document.exitFullscreen().catch(function(){});
+        }
         break;
       case "shutdown":
         xpDialog({
@@ -263,6 +273,7 @@
   document.addEventListener("click", function (e) {
     if (!e.target.closest("#startBtn") && !e.target.closest("#startMenu")) {
       startMenu.classList.remove("open");
+      startBtn.classList.remove("active");
     }
     if (!e.target.closest("#ctxMenu")) {
       ctxMenu.style.display = "none";

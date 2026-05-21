@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --x-bg: #ffffff;
+  --x-elevated: #f7f9f9;
+  --x-border: #eff3f4;
+  --x-text: #0f1419;
+  --x-muted: #536471;
+  --x-hover: rgba(15, 20, 25, 0.1);
+  --x-blue: #1d9bf0;
+  --x-green: #00ba7c;
+  --x-pink: #f91880;
+}
+
+.dark {
+  --x-bg: #000000;
+  --x-elevated: #16181c;
+  --x-border: #2f3336;
+  --x-text: #e7e9ea;
+  --x-muted: #71767b;
+  --x-hover: rgba(239, 243, 244, 0.1);
+  --x-blue: #1d9bf0;
+  --x-green: #00ba7c;
+  --x-pink: #f91880;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-x-black: var(--x-bg);
+  --color-x-elevated: var(--x-elevated);
+  --color-x-border: var(--x-border);
+  --color-x-text: var(--x-text);
+  --color-x-muted: var(--x-muted);
+  --color-x-hover: var(--x-hover);
+  --color-x-blue: var(--x-blue);
+  --color-x-green: var(--x-green);
+  --color-x-pink: var(--x-pink);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--x-bg);
+  color: var(--x-text);
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-press {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
+}
+.btn-press:active:not(:disabled) {
+  transform: scale(0.94);
+  transition: transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+@media (hover: hover) {
+  .btn-press:hover:not(:disabled) {
+    opacity: 0.88;
+    transition: opacity 0.15s ease;
+  }
+}
+
+.btn-press-icon {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
+}
+.btn-press-icon:active:not(:disabled) {
+  transform: scale(0.88);
+  transition: transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}

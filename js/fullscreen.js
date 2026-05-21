@@ -22,14 +22,5 @@
         isFullscreen = !!document.fullscreenElement;
     });
 
-    var fullBtn = document.createElement('div');
-    fullBtn.className = 'tray-icon';
-    fullBtn.title = 'Alternar Tela Cheia (F11)';
-    fullBtn.style.cssText = 'cursor:pointer;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;';
-    fullBtn.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3 3h4v1H4v3H3V3zm6 0h4v4h-1V4H9V3zM4 9v3h3v1H3V9h1zm8 0v3H9v1h4V9h-1z" fill="#000"/></svg>';
-    var tray = document.querySelector('.taskbar-tray');
-    if (tray) {
-        tray.insertBefore(fullBtn, tray.firstChild);
-        fullBtn.addEventListener('click', toggleFullscreen);
-    }
+    window.toggleFullscreen = toggleFullscreen;
 })();

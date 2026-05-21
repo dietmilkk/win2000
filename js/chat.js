@@ -22,7 +22,7 @@
     minW: 360,
     minH: 300,
     taskbarIcon:
-      '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#c8d8e8" stroke="#5a7a9a" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#0a1a4a"/><text x="8" y="11" text-anchor="middle" fill="#0a1a4a" font-size="7" font-weight="bold">AI</text></svg>',
+      '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><path d="M1 2h14v10H6l-3 3v-3H1V2z" fill="#d0e0f0" stroke="#4a6a8a" stroke-width="1.5"/><text x="8" y="9" text-anchor="middle" fill="#0a1a4a" font-size="6" font-weight="bold">AI</text></svg>',
     taskbarLabel: "Chat IA",
     onShow: function () {
       chatWin.style.width = "360px";

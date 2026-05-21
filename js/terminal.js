@@ -15,6 +15,7 @@
     var historyIndex = -1;
     var terminalFirstOpen = true;
     var _pageLoad = Date.now();
+    var _gameHandler = null;
 
     function getHostname() {
         return window.location.hostname || 'localhost';
@@ -46,426 +47,196 @@
 
     var commands = {
         help: function() {
-            return 'Comandos disponíveis:\n' +
-                '  cls        Limpa a tela\n' +
-                '  time       Mostra a hora atual\n' +
-                '  dir        Lista arquivos no diretório atual\n' +
-                '  echo       Repete texto\n' +
-                '  fortune    Mensagem aleatória\n' +
-                '  cowsay     Vaca diz algo\n' +
-                '  matrix     Entrar na Matrix\n' +
-                '  8ball      Bola Mágica 8\n' +
-                '  joke       Piada aleatória\n' +
-                '  ascii      Mostra arte ASCII aleatória\n' +
-                '  hack       Invadir o planeta\n' +
-                '  rm -rf     Deletar tudo\n' +
-                '  doom       Fim do mundo\n' +
-                '  gif        Visualizador de GIF aleatório\n' +
-                '  neofetch   Informações do sistema\n' +
-                '  sudo       Executar como root\n' +
-                '  pwd        Diretório atual\n' +
-                '  whoami     Nome do usuário\n' +
-                '  uptime     Tempo de atividade\n' +
-                '  reboot     Reiniciar o sistema\n' +
-                '  bsod       Tela azul da morte\n' +
-                '  help       Mostra esta ajuda';
-        },
-        cls: function() {
-            termOutput.innerHTML = '';
-            return '';
-        },
-        date: function() {
-            var d = new Date();
-            var days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-            var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-            return 'A data atual é: ' + days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ' ' + d.getFullYear();
-        },
-        time: function() {
-            var d = new Date();
-            return 'A hora atual é: ' + d.toLocaleTimeString();
-        },
-        ver: function() {
-            return '\nMicrosoft Windows 2000 [Version 5.00.2195]\n' +
-                '(C) Copyright 1985-2000 Microsoft Corp.\n' +
-                '\n' +
-                'Este é um emulador de terminal retrô.\n' +
-                'Windows 2000 build 2195 (Service Pack 4)';
-        },
-        dir: function() {
-            var files = [
-                '12/10/2000  09:15 AM    <DIR>          Documents',
-                '12/15/2000  02:30 PM    <DIR>          Projects',
-                '01/05/2001  11:00 AM             1,024 portfolio.html',
-                '02/20/2001  04:45 PM             2,560 style.css',
-                '03/10/2001  08:20 AM             1,536 main.js',
-                '04/01/2001  10:00 AM    <DIR>          assets',
-                '04/15/2001  03:30 PM               420 README.txt',
-                '05/01/2001  12:00 PM             2,048 index.html'
-            ];
-            return '\n Volume na unidade C não tem etiqueta.\n' +
-                ' Número de Série do Volume é A8B3-C2D1\n\n' +
-                ' Diretório de ' + currentDir + '\n\n' +
-                files.join('\n') + '\n\n' +
-                '              6 arquivo(s)          9,148 bytes\n' +
-                '              3 diretório(s)     4,096.00 MB livres';
-        },
-        echo: function(args) {
-            return args || 'ECHO está ativado.';
-        },
-        color: function(args) {
-            if (!args) {
-                return 'Define as cores padrão do console.\n\n' +
-                    'COLOR [attr]\n\n  attr - Specifies color attribute of console output\n\n' +
-                    'Atributos de cor:\n  0=Preto 1=Azul 2=Verde 3=Aqua 4=Vermelho\n  5=Roxo 6=Amarelo 7=Branco 8=Cinza\n 9=Azul Claro A=Verde Claro B=Aqua Claro\n C=Vermelho Claro D=Roxo Claro E=Amarelo Claro F=Branco Brilhante\n\nExemplo: color 0a (fundo preto, texto verde claro)';
-            }
-            var bg = parseInt(args[0], 16);
-            var fg = parseInt(args[1], 16);
-            var colors = ['#000','#00a','#0a0','#0aa','#a00','#a0a','#aa0','#aaa','#555','#55f','#5f5','#5ff','#f55','#f5f','#ff5','#fff'];
-            if (!isNaN(bg) && !isNaN(fg) && bg >= 0 && bg < 16 && fg >= 0 && fg < 16) {
-                termWin.style.background = colors[bg];
-                termWin.style.color = colors[fg];
-                termOutput.style.color = colors[fg];
-                return '';
-            }
-            return 'Atributo de cor inválido: ' + args;
-        },
-        type: function(args) {
-            if (!args) return 'A sintaxe do comando está incorreta.';
-            var files = {
-                'readme.txt': 'Bem-vindo ao Portifolio!\n\nEste é um site portfólio com tema Windows 2000.\n\nFique à vontade para explorar o sistema.\nDigite HELP para comandos disponíveis.\n\nObrigado pela visita!',
-                'portfolio.html': '<html>\n<body>\n<h1>Portifolio</h1>\n<p>Welcome!</p>\n</body>\n</html>',
-                'style.css': '/* Windows 2000 Classic Theme */\nbody {\n    font-family: "MS Sans Serif";\n    background: #327e32;\n}',
-                'main.js': '// Portifolio main application\n// Version 5.00.2195'
-            };
-            var fn = args.toLowerCase().replace(/^c:\\/i, '');
-            if (files[fn]) return files[fn];
-            return 'O sistema não pode encontrar o arquivo especificado.';
-        },
-        tree: function() {
-            return 'Listagem do CAMINHO da pasta para volume C:\\\n' +
-                'C:\\\n' +
-                '+---Documents\n|   +---Work\n|   +---Personal\n|   +---Downloads\n+---Projects\n|   +---Portifolio\n|   |   +---css\n|   |   +---js\n|   |   +---assets\n|   |       +---icons\n|   +---Experiments\n+---WINDOWS\n|   +---system32\n|   +---system\n|   +---Fonts\n+---Program Files\n    +---Internet Explorer\n    +---Accessories';
-        },
-        ipconfig: function() {
-            var host = getHostname().toUpperCase();
-            return '\nConfiguração IP do Windows 2000\n\n' +
-                '        Nome do Host . . . . . . . : ' + host + '\n' +
-                '        Sufixo DNS Primário  . . : \n' +
-                '        Tipo de Nó . . . . . . . : Hybrid\n' +
-                '        Roteamento IP Habilitado. . . : No\n' +
-                '        Proxy WINS Habilitado. . . : No\n\n' +
-                'Adaptador Ethernet Conexão Local:\n\n' +
-                '        Sufixo DNS específico da conexão  . : \n' +
-                '        Descrição . . . . . . . : AMD PCNET Family PCI Ethernet Adapter\n' +
-                '        Endereço Físico. . . . . : 00-1A-2B-3C-4D-5E\n' +
-                '        DHCP Habilitado. . . . . . . : Yes\n' +
-                '        Endereço IP. . . . . . . . : 175.45.176.1\n' +
-                '        Máscara de Sub-rede . . . . . . . : 255.255.255.0\n' +
-                '        Gateway Padrão . . . . . : 192.168.1.1\n' +
-                '        Servidores DNS . . . . . . . : 8.8.8.8\n' +
-                '                                         8.8.4.4';
-        },
-        ping: function(args) {
-            var target = args || 'localhost';
-            var results = [];
-            results.push('\nRespondendo de ' + target + ' com 32 bytes de dados:');
-            var times = [];
-            for (var i = 0; i < 4; i++) {
-                times.push(Math.floor(Math.random() * 40 + 5));
-            }
-            for (var i = 0; i < 4; i++) {
-                results.push('Resposta de ' + target + ': bytes=32 time=' + times[i] + 'ms TTL=128');
-            }
-            var min = Math.min.apply(null, times);
-            var max = Math.max.apply(null, times);
-            var avg = Math.floor(times.reduce(function(a, b) { return a + b; }, 0) / times.length);
-            results.push('\nEstatísticas do ping para ' + target + ':');
-            results.push('    Pacotes: Enviados = 4, Recebidos = 4, Perdidos = 0 (0% perda),');
-            results.push('Tempos aproximados de ida e volta em milissegundos:');
-            results.push('    Mínimo = ' + min + 'ms, Máximo = ' + max + 'ms, Média = ' + avg + 'ms');
-            return results.join('\n');
-        },
-        net: function(args) {
-            var host = getHostname().toUpperCase();
-            if (!args) return 'A sintaxe deste comando é:\n\nNET [ HELP | START | STOP | USE | VIEW | SEND ]\n\nDigite NET HELP para mais informações.';
-            if (args.toLowerCase() === 'send') {
-                return 'Mensagem enviada com sucesso para ' + host + '.';
-            }
-            if (args.toLowerCase() === 'view') {
-                return '\nNome do Servidor    Observação\n\n' +
-                    '-------------------------------------------------------------------------------\n' +
-                    '\\\\' + host + '       Portifolio Workstation\n' +
-                    '\\\\FILESERVER      Servidor de Arquivos (esta rede)\n' +
-                    'O comando concluído com sucesso.';
-            }
-            if (args.toLowerCase() === 'start') {
-                return 'Os seguintes serviços estão iniciando:\n  Workstation\n  Server\n  TCP/IP NetBIOS Helper\n\nOs serviços iniciaram com sucesso.';
-            }
-            return 'O comando concluído com sucesso.';
-        },
-        msg: function(args) {
-            if (!args) return 'Uso: MSG {usuário | *} mensagem\n\nExemplo: MSG * Olá!';
-            xpDialog({ title: 'Message', icon: 'i', message: args });
-            return 'Mensagem enviada com sucesso.';
-        },
-        calc: function() {
-            xpDialog({ title: 'Calculadora', icon: 'C', message: 'Calculadora\n\nCalculadora do Windows 2000\n\n0 + 0 = 0\n\n(Isto é uma demonstração. Use uma calculadora de verdade.)' });
-            return 'Iniciando Calculadora...';
-        },
-        notepad: function() {
-            xpDialog({ title: 'Bloco de Notas', icon: 'N', message: 'Bloco de Notas\n\nSem título - Bloco de Notas\n\nIsto é um Bloco de Notas de demonstração.\n\nDigite suas anotações em um editor de texto real.' });
-            return 'Iniciando Bloco de Notas...';
-        },
-        beep: function() {
-            var ctx = new (window.AudioContext || window.webkitAudioContext)();
-            var osc = ctx.createOscillator();
-            osc.type = 'square';
-            osc.frequency.value = 800;
-            var gain = ctx.createGain();
-            gain.gain.value = 0.1;
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.15);
-            return 'Beep!';
-        },
-        logo: function() {
-            return '\n' +
-                '                              WINDOWS 2000\n' +
-                '                                  *****\n' +
-                '                                *********\n' +
-                '                               ***********\n' +
-                '                              *************\n' +
-                '                               ***********\n' +
-                '                                *********\n' +
-                '                                  *****\n' +
-                '                                    *\n' +
-                '\n' +
-                '                    Microsoft Windows 2000 Professional\n' +
-                '                            Build 2195 (Service Pack 4)\n' +
-                '\n' +
-                '               This product is licensed to:\n' +
-                '                      User\n' +
-                '                      Workstation\n' +
-                '\n' +
-                '               Copyright (C) 1985-2000 Microsoft Corp.\n';
-        },
-        fortune: function() {
-            var fortunes = [
-                'Um lindo dia pela frente!',
-                'A resposta é 42.',
-                'Você terá uma ótima ideia hoje.',
-                'Boas notícias virão até você.',
-                'Hoje é seu dia de sorte.',
-                'Um sábio disse: "Digite HELP"',
-                'Olhe atrás de você. (Brincadeira)',
-                'O comando é forte com este.',
-                '404: Fortuna não encontrada.',
-                'Seu código vai compilar de primeira.',
-                'Erro de sintaxe na linha 1: Foda demais.',
-                'Um bug foi encontrado: era uma funcionalidade.',
-                'O sistema está rodando perfeitamente.',
-                'Você está em um labirinto de pequenas passagens tortuosas, todas iguais.',
-                'Elvis saiu do prédio.',
-                'Penso, logo existo... confuso.',
-                'Ser ou não ser? Eis a questão.',
-                '42 é o sentido da vida, do universo, e de tudo.'
-            ];
-            return '\n' + fortunes[Math.floor(Math.random() * fortunes.length)] + '\n';
-        },
-        cowsay: function(args) {
-            var msg = args || 'Muu!';
-            var len = msg.length;
-            var top = '_' + new Array(len + 3).join('_');
-            var bottom = '-' + new Array(len + 3).join('-');
-            return '\n ' + top + '\n< ' + msg + ' >\n ' + bottom + '\n' +
-                '        \\   ^__^\n' +
-                '         \\  (oo)\\_______\n' +
-                '            (__)\\       )\\/\\\n' +
-                '                ||----w |\n' +
-                '                ||     ||';
-        },
-        shutdown: function() {
-            document.body.innerHTML = '<div style="background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;font-size:24px;">Agora é seguro desligar o computador.</div>';
-            return '';
-        },
-        easter: function() {
-            return '\nVocê encontrou um easter egg! \ud83e\udd5a\n\n' +
-                'Sabia que?\n' +
-                'Windows 2000 foi originalmente chamado de "Windows NT 5.0".\n' +
-                'O nome foi mudado para Windows 2000 em Outubro de 1998.\n' +
-                'Foi lançado em 17 de Fevereiro de 2000.\n' +
-                'Windows 2000 tinha 4 edições: Professional, Server, Advanced Server, Datacenter Server.';
-        },
-        matrix: function() {
-            var chars = '\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f3';
-            var result = '';
-            for (var i = 0; i < 15; i++) {
-                var line = '';
-                for (var j = 0; j < 50; j++) {
-                    line += chars[Math.floor(Math.random() * chars.length)] + ' ';
-                }
-                result += line + '\n';
-            }
-            return '\n' + result + '\nThe Matrix has you...';
-        },
-        '8ball': function() {
-            var answers = [
-                'Sim!',
-                'De jeito nenhum!',
-                'Com certeza!',
-                'Pergunte novamente mais tarde...',
-                'Minhas fontes dizem não.',
-                'Absolutamente!',
-                'Não tenho certeza...',
-                'Sem dúvida!',
-                'Muito duvidoso.',
-                'Perspectiva boa!',
-                'Não conte com isso.',
-                'Pode confiar!',
-                'Resposta vaga, tente novamente.',
-                'Os sinais dizem não!',
-                'Sim - definitivamente!',
-                'É certo!',
-                'Minha resposta é não.',
-                'Do meu ponto de vista, sim.'
-            ];
-            return '\n \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 \n  \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 \n   \u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0 \n    ( 8 ) ball diz:\n\n    "' + answers[Math.floor(Math.random() * answers.length)] + '"';
-        },
-        joke: function() {
-            var jokes = [
-                'Por que programadores preferem modo escuro? Porque luz atrai bugs.',
-                'Como se chama um macarrão falso? Um impasta!',
-                'Por que o desenvolvedor faliu? Porque gastou todo o cache!',
-                'Como se chama um pônei com tosse? Um cavalinho!',
-                'Por que o computador foi ao médico? Porque pegou um vírus!',
-                'HTML é como inglês - todo mundo reclama mas todo mundo usa.',
-                'Só existem 10 tipos de pessoas no mundo: as que entendem binário e as que não entendem.',
-                'Por que desenvolvedores Java usam óculos? Porque não enxergam C#!',
-                'Uma query SQL entra num bar, vai até duas mesas e pergunta... "Posso me juntar a vocês?"',
-                'Por que o desenvolvedor morreu no banho? Porque as instruções diziam "ensaboar, enxaguar, repetir"!'
-            ];
-            return '\n' + jokes[Math.floor(Math.random() * jokes.length)] + '\n';
-        },
-        ascii: function() {
-            var arts = [
-                '    /\\_/\\  \n   ( o.o ) \n    > ^ <\n   /|   |\\\n  (_|   |_)',
-                '   ___\n  /___\\\n  |o o|\n  | > |<\n  |___|',
-                '    \n   \\\\//\n  ((@v@))\n   (///)\n    \\\\//\n     ||\n    /||\\',
-                '   .--.\n  |o_o |\n  |:_/ |\n //   \\ \\\n(|     | )\n/\\\\_   /_\\\n  \\___)',
-                '   (_\n   ( )_\n    (_(_)\n     (_)'
-            ];
-            return '\n' + arts[Math.floor(Math.random() * arts.length)] + '\n';
-        },
-        hack: function() {
-            return '\nInicializando sequência de hack...\n' +
-                '> Conectando ao mainframe... OK\n' +
-                '> Contornando firewall... OK\n' +
-                '> Injetando payload SQL... OK\n' +
-                '> Acesso root obtido!\n\n' +
-                'Parabéns! Você agora é um Hacker Nível 99!\n' +
-                '(Isso foi uma piada. Vá lá fora.)';
-        },
-        rm: function(args) {
-            if (!args || args.indexOf('-rf') === -1) {
-                return 'Uso: rm -rf <diretório>\nExemplo: rm -rf /';
-            }
-            var dirs = ['/bin', '/usr', '/home', '/etc', '/root', '/var', '/tmp', '/sys', '/proc'];
-            var result = 'Removendo arquivos permanentemente...\n';
-            for (var i = 0; i < 10; i++) {
-                result += 'rm: removendo ' + dirs[Math.floor(Math.random() * dirs.length)] + '\n';
-            }
-            result += '\nAVISO: rm -rf / executado com sucesso!\n' +
-                'Felizmente, isto é apenas um navegador.\n' +
-                'Seu sistema real ainda está intacto. :)\n' +
-                'Mas se fosse real... tela azul!';
-            xpDialog({ title: 'rm -rf /', icon: '!', message: result });
-            return 'Comando executado. (Simulação segura)';
-        },
-        neofetch: function() {
-            var host = getHostname();
-            var arch = navigator.platform || 'desconhecido';
-            var screenRes = screen.width + 'x' + screen.height;
-            var os = getOS();
-            return '\n          ################\n        ####################\n      ####' +
-                '####################\n     ######              ######\n    ######    ########    ######\n    ######    ########    ' +
-                '######\n    ######    ########    ######\n     ######              ######\n      ##################' +
-                '##\n        ################\n          ################\n\n' +
-                '  SO: ' + os + '\n' +
-                '  Hostname: ' + host + '\n' +
-                '  Usuário: usuário\n' +
-                '  Arquitetura: ' + arch + '\n' +
-                '  Uptime: ' + getUptime() + '\n' +
-                '  Resolução: ' + screenRes + '\n' +
-                '  Shell: cmd.exe\n' +
-                '  Navegador: ' + navigator.userAgent.replace(/[\/][^\s]*/g, '') + '\n' +
-                '  Gerenciador de Janelas: Windows 2000 Explorer';
-        },
-        sudo: function(args) {
-            if (!args) return 'Uso: sudo <comando>\n\nPermissão negada.\nEste evento será registrado.';
-            if (args === 'rm -rf /') {
-                return 'Nice try.\nPermissão negada. Você não é root.\n(Sim, mesmo com sudo. Segurança primeiro.)';
-            }
-            if (args === 'apt install' || args === 'apt-get install') {
-                return 'Este não é um sistema Linux.\nTalvez você queira o Windows Update.';
-            }
-            if (args === 'su') {
-                return 'root\n# Por favor, seja cuidadoso.\n# Isto é um Windows 2000, não um servidor Unix.';
-            }
-            return 'Permissão negada.\n' + args + ' não pôde ser executado como root.\nContate o administrador do sistema.';
-        },
-        pwd: function() {
-            return currentDir;
-        },
-        whoami: function() {
-            return getHostname() + '\\usuário';
-        },
-        hostname: function() {
-            return getHostname();
-        },
-        uptime: function() {
-            return 'Tempo de atividade do sistema: ' + getUptime() + '\n' +
-                'O sistema está rodando perfeitamente.';
-        },
-        reboot: function() {
-            var steps = [
-                'Iniciando desligamento do sistema...',
-                'Salvando configurações do registro...',
-                'Encerrando serviços...',
-                'Sincronizando cache...',
-                'Aplicando atualizações pendentes... (1 de 5)',
-                'Aplicando atualizações pendentes... (2 de 5)',
-                'Aplicando atualizações pendentes... (3 de 5)',
-                'Aplicando atualizações pendentes... (4 de 5)',
-                'Aplicando atualizações pendentes... (5 de 5)',
-                'Reiniciando em 10... 9... 8... 7... 6... 5... 4... 3... 2... 1...'
-            ];
-            return '\n' + steps.join('\n') + '\n\nReinicialização concluída. (Simulação)';
-        },
-        bsod: function() {
-            return '\n' +
-                '*** STOP: 0x0000007B (0xF78D2524, 0xC0000034, 0x00000000, 0x00000000)\n\n' +
-                'INACCESSIBLE_BOOT_DEVICE\n\n' +
-                'Se esta é a primeira vez que você vê esta tela, reinicie o computador.\n' +
-                'Se este problema persistir, contate o administrador do sistema.\n\n' +
-                '*** ' + getHostname() + ' - Endereço base do driver: 0xA0000000, Datestamp: 4a5bc200\n\n' +
-                'Coletando informações de erro de despejo...\n' +
-                'Reinicie o computador.';
+            return 'Available commands:\n' +
+                '  anims      ASCII animations (16 available)\n' +
+                '  ascii      ASCII art from the internet\n' +
+                '  cd         Change directory\n' +
+                '  clear      Clear the screen\n' +
+                '  data       Detailed system information\n' +
+                '  games      List of games\n' +
+                '  help       Show this help\n' +
+                '  hostname   Computer name\n' +
+                '  ipconfig   Network configuration\n' +
+                '  ping       Test connection\n' +
+                '  uptime     System uptime';
         },
         clear: function() {
             termOutput.innerHTML = '';
             return '';
         },
-        doom: function() {
-            document.body.innerHTML = '<img src="assets/end.gif" style="position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:999999;">';
-            return '';
+        ipconfig: function() {
+            var host = getHostname().toUpperCase();
+            return '\nWindows 2000 IP Configuration\n\n' +
+                '        Host Name . . . . . . . : ' + host + '\n' +
+                '        Primary DNS Suffix  . . : \n' +
+                '        Node Type . . . . . . : Hybrid\n' +
+                '        IP Routing Enabled. . . : No\n' +
+                '        WINS Proxy Enabled. . . : No\n\n' +
+                'Ethernet Adapter Local Connection:\n\n' +
+                '        Connection-specific DNS Suffix  . : \n' +
+                '        Description . . . . . . : AMD PCNET Family PCI Ethernet Adapter\n' +
+                '        Physical Address . . . . : 00-1A-2B-3C-4D-5E\n' +
+                '        DHCP Enabled. . . . . . : Yes\n' +
+                '        IP Address . . . . . . . : 175.45.176.1\n' +
+                '        Subnet Mask . . . . . . : 255.255.255.0\n' +
+                '        Default Gateway . . . . : 192.168.1.1\n' +
+                '        DNS Servers . . . . . . : 8.8.8.8\n' +
+                '                                         8.8.4.4';
         },
-        gif: function() {
-            if (typeof window.openGallery === 'function') {
-                window.openGallery();
-                return 'Abrindo galeria...';
+        ping: function(args) {
+            var target = args || 'localhost';
+            var results = [];
+            results.push('\nPinging ' + target + ' with 32 bytes of data:');
+            var times = [];
+            for (var i = 0; i < 4; i++) {
+                times.push(Math.floor(Math.random() * 40 + 5));
             }
-            return 'Visualizador de GIF não disponível.\n';
+            for (var i = 0; i < 4; i++) {
+                results.push('Reply from ' + target + ': bytes=32 time=' + times[i] + 'ms TTL=128');
+            }
+            var min = Math.min.apply(null, times);
+            var max = Math.max.apply(null, times);
+            var avg = Math.floor(times.reduce(function(a, b) { return a + b; }, 0) / times.length);
+            results.push('\nPing statistics for ' + target + ':');
+            results.push('    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),');
+            results.push('Approximate round trip times in milliseconds:');
+            results.push('    Minimum = ' + min + 'ms, Maximum = ' + max + 'ms, Average = ' + avg + 'ms');
+            return results.join('\n');
+        },
+        ascii: function() {
+            var complexArts = [
+                '       __----__\n    _-~          ~-_\n  /     __    __     \\\n |    / _ \\  / _ \\    |\n  \\   | | | || | |   /\n   \\  | | | || | |  /\n    \\ |_| |_||_| |_| /\n     \\_____________/\n      \\_         _/\n        \\       /\n         |  _  |\n         | | | |\n         |_| |_|',
+                '         __====-_  _-====___\n   _--^^^#####//      \\\\\\#####^^^--_\n_-^##########// (    ) \\\\\\##########^-_\n-############//  |\\^^/|  \\\\\\############-\n_/############//   (@::@)   \\\\\\############\\_\n/#############((     \\\\//     ))#############\\\n\\############/    \\\\||||//    \\############/\n \\############/  \\\\/ || \\\\/  \\############/\n  \\############\\  \\\\_||_//  /############/\n   \\###########\\    \\\\//    /###########/\n    \\##########\\     \\//     /##########/\n     \\#########\\     ||     /#########/\n      \\########\\    |||    /########/',
+                '     .---.\n    /     \\\n   | () () |\n    \\  ^  /\n     |||||\n     |||||\n   __|||||__\n  /   |||   \\\n /    |||    \\\n|     |||     |\n \\    |||    /\n  \\   |||   /\n   \\  |||  /\n    \\_____/',
+                '    ________________________\n  /        \\/       \\/       \\\n /   /\\    ||   /\\   ||  /\\    \\\n|   /  \\   ||  /  \\  || /  \\    |\n|  |    |  || |    | |||    |   |\n|   \\  /   ||  \\  /  || \\  /    |\n \\   \\/    ||   \\/   ||  \\/    /\n  \\________||________||_______/\n   |  ___  ||  ___  ||  ___  |\n   | |   | || |   | || |   | |\n   | |___| || |___| || |___| |\n   |_______||_______||_______|',
+                '         /\\\n        /  \\\n       / /\\ \\\n      / /  \\ \\\n     / /    \\ \\\n    / / _____\\ \\\n   / /_/     \\_\\ \\\n  /_/___________\\_\\\n  |    _____     |\n  |   /     \\    |\n  |  |  o o |   |\n  |   \\_____/    |\n  |_______________|\n       |||||\n       |||||',
+                '      .---.\n     /     \\\n    | . . . |\n     \\  ^  /\n      |||||\n      |||||\n   ___|||||___\n  /  |||||||  \\\n /   |||||||   \\\n|    |||||||    |\n \\   |||||||   /\n  \\  |||||||  /\n   \\_________/',
+                '  ,---.  ,---.\n /     \\/     \\\n|  o  o  o  o  |\n \\    ()    /\n  \\        /\n   \\  __  /\n    | |  |\n    | |  |\n   /| |  |\\\n  / | |  | \\\n /  | |  |  \\\n    |_|  |_|',
+                '  __      ___ _    _ ____  _____ ___   ___  \n  \\ \\    / (_) |  | / ___|| ____/ _ \\ / _ \\ \n   \\ \\  / / _| |  | \\___ \\|  __| | | | | | |\n    \\ \\/ / | | |__| |___) | |___| |_| | |_| |\n     \\__/  |_|\\____/|____/|_____|\\___/ \\___/ \n  __        ___   ___ _   _ _   _ \n  \\ \\      / / | |_ _| \\ | | \\ | |\n   \\ \\ /\\ / /| |  | ||  \\| |  \\| |\n    \\ V  V / | |  | || |\\  | |\\  |\n     \\_/\\_/  |_| |___|_| \\_|_| \\_|',
+                '      .-.\n     /   \\\n    | . .|\n    |  _ |\n    |/   \\|\n   /|     |\\\n  / |  _  | \\\n /  | | | |  \\\n    |_| |_|',
+                '    /\\_/\\\n   ( o.o )\n    > ^ <\n   /|   |\\\n  (_|   |_)\n    |   |\n   /     \\\n  /       \\\n /         \\',
+                '      ___           ___\n     /  \\\\         /  \\\\\n    /    \\\\       /    \\\\\n   /  ()  \\\\     /  ()  \\\\\n  /________\\\\   /________\\\\\n  |        |   |        |\n  |  ____  |   |  ____  |\n  | |    | |   | |    | |\n  | |____| |   | |____| |\n  |________|   |________|',
+                '         ___\n        /   \\\n       /     \\\n      /  ---  \\\n     /  |   |  \\\n    /   |___|   \\\n   /    _____    \\\n  /    /     \\    \\\n /    /       \\    \\\n|    |  o   o  |    |\n|     \\_____/     |\n \\________________/',
+                '     _______       _______\n   /       \\\\   /       \\\\\n  /    o    \\\\ /    o    \\\\\n |   (___)   | |   (___)   |\n  \\    |    /   \\    |    /\n   \\___|___/     \\___|___/\n       |             |\n      / \\           / \\\n     /   \\         /   \\',
+                '    /\\---------/\\\n   /  \\_______/  \\\n  /               \\\n |   ___     ___   |\n |  |   |   |   |  |\n |  |___|   |___|  |\n |               |\n  \\             /\n   \\    ___    /\n    \\  /   \\  /\n     \\/     \\/',
+                '    _______________\n   /               \\\n  /     _     _     \\\n |     |_|   |_|    |\n |      _     _     |\n |     |_|   |_|    |\n |                 |\n  \\      ___      /\n   \\    /   \\    /\n    \\  /     \\  /\n     \\/       \\/',
+            ];
+            var fonts = ['acrobatic', 'alligator', 'caligraphy', 'catwalk', 'colossal', 'contessa', 'cosmic', 'doh', 'doom', 'fraktur', 'funface', 'goofy', 'graffiti', 'hollywood', 'isometric1', 'isometric2', 'isometric3', 'isometric4', 'jazmine', 'katakana', 'larry3d', 'marquee', 'nancyj', 'nancyj-fancy', 'nipples', 'ogre', 'poison', 'puffy', 'pyramid', 'relief', 'rounded', 'rozzo', 'runic', 'sblood', 'shadow', 'slide', 'starwars', 'stellar', 'stop', 'trek', 'usaflag', 'varsity', 'wavy', 'weird', 'whimsy'];
+            var font = fonts[Math.floor(Math.random() * fonts.length)];
+            var words = ['win2000', 'Windows', 'Retro', 'Terminal', 'Hacker', 'Byte', 'Pixel', 'Vintage', 'Matrix', 'Cyber', 'Neon', 'Digital', 'System', 'Computer', 'Blue Screen'];
+            var word = words[Math.floor(Math.random() * words.length)];
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://artii.herokuapp.com/make?text=' + word + '&font=' + font);
+            xhr.timeout = 7000;
+            xhr.onload = function() {
+                if (xhr.status === 200 && xhr.responseText && xhr.responseText.trim().length > 10) {
+                    printPre('\n' + xhr.responseText);
+                } else {
+                    printPre('\n' + complexArts[Math.floor(Math.random() * complexArts.length)] + '\n');
+                }
+            };
+            xhr.onerror = function() { printPre('\n' + complexArts[Math.floor(Math.random() * complexArts.length)] + '\n'); };
+            xhr.ontimeout = function() { printPre('\n' + complexArts[Math.floor(Math.random() * complexArts.length)] + '\n'); };
+            xhr.send();
+            return 'Fetching ASCII art...';
+        },
+        games: function() {
+            return 'Available games:\n' +
+                '  hangman      Hangman (guess the word)\n' +
+                '  tictactoe    Tic-Tac-Toe (2 players)\n' +
+                '  snake        Snake game (popup window)\n' +
+                '  reaction     Reaction time test\n\n' +
+                'Type the game name to start. During a game,\ntype QUIT to exit.';
+        },
+        hangman: function() {
+            _gs = {
+                word: _palavras[Math.floor(Math.random() * _palavras.length)],
+                guessed: [],
+                attempts: 6
+            };
+            _gameHandler = hangmanHandler;
+            return '\n' + drawGallows(6) + '\n' + makeForcaDisplay() + '\n\nType a letter or QUIT.';
+        },
+        tictactoe: function() {
+            _gs = {
+                board: ['1','2','3','4','5','6','7','8','9'],
+                turn: 'X'
+            };
+            _gameHandler = velhaHandler;
+            return drawVelhaBoard();
+        },
+        snake: function() {
+            return startSnake();
+        },
+        reaction: function() {
+            return startReaction();
+        },
+        anims: function(args) {
+            if (!window.animations) return '\nAnimations not loaded.';
+            if (args) {
+                var a = args.trim().toLowerCase();
+                if (window.animations[a]) {
+                    window.playAnimation(a);
+                    return '\nPlaying: ' + window.animations[a].name + ' (ESC to stop)';
+                }
+                return '\nAnimation "' + a + '" not found.';
+            }
+            var list = Object.keys(window.animations);
+            var out = '\nAvailable animations (' + list.length + '):\n\n';
+            for (var i = 0; i < list.length; i++) {
+                out += '  ' + list[i] + '    ' + window.animations[list[i]].name + '\n';
+            }
+            out += '\nType "anims <name>" to play, or ESC to stop.';
+            return out;
+        },
+        hostname: function() {
+            return getHostname();
+        },
+        uptime: function() {
+            return 'System uptime: ' + getUptime() + '\n' +
+                'The system is running perfectly.';
+        },
+        data: function() {
+            var now = new Date();
+            var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var tz = '';
+            try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) {}
+            var conn = '';
+            try { conn = navigator.connection ? navigator.connection.effectiveType : ''; } catch(e) {}
+            var mem = '';
+            try { mem = navigator.deviceMemory ? navigator.deviceMemory + 'GB' : ''; } catch(e) {}
+            var cpu = '';
+            try { cpu = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + ' cores' : ''; } catch(e) {}
+            var info = '=== System Information ===\n\n' +
+                '  Date: ' + days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear() + '\n' +
+                '  Time: ' + now.toLocaleTimeString() + '\n' +
+                '  Timezone: ' + (tz || 'unknown') + '\n' +
+                '  Hostname: ' + getHostname() + '\n' +
+                '  User: user\n' +
+                '  OS: ' + getOS() + '\n' +
+                '  Architecture: ' + (navigator.platform || 'unknown') + '\n' +
+                '  Browser: ' + navigator.userAgent.replace(/[\/][^\s]*/g, '').substring(0, 60) + '\n' +
+                '  Language: ' + (navigator.language || '') + '\n' +
+                '  Resolution: ' + screen.width + 'x' + screen.height + '\n' +
+                '  Available Resolution: ' + screen.availWidth + 'x' + screen.availHeight + '\n' +
+                '  Color Depth: ' + screen.colorDepth + '-bit\n' +
+                '  Session Time: ' + getUptime() + '\n' +
+                '  CPU: ' + (cpu || 'unknown') + '\n' +
+                '  RAM: ' + (mem || 'unknown') + '\n' +
+                '  Connection: ' + (conn || 'unknown') + '\n';
+            printPre(info);
+            printPre('  Fetching external IP...');
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://api.ipify.org');
+            xhr.timeout = 5000;
+            xhr.onload = function() {
+                if (xhr.status === 200 && xhr.responseText) {
+                    printPre('  External IP: ' + xhr.responseText);
+                }
+            };
+            xhr.send();
+            return '';
         }
     };
 
@@ -482,6 +253,14 @@
         for (var i = 0; i < lines.length; i++) {
             printLine(lines[i]);
         }
+    }
+
+    function printHTML(html) {
+        var div = document.createElement('div');
+        div.className = 'term-line';
+        div.innerHTML = html;
+        termOutput.appendChild(div);
+        termOutput.scrollTop = termOutput.scrollHeight;
     }
 
     function processCommand(cmd) {
@@ -517,7 +296,7 @@
                     newDir = currentDir + newDir;
                 }
                 if (!newDir.endsWith('\\')) newDir += '\\';
-                printLine('Diretório alterado.');
+                printLine('Directory changed.');
                 currentDir = newDir;
             }
             return;
@@ -528,12 +307,401 @@
             return;
         }
 
+        if (_gameHandler) {
+            _gameHandler(cmd);
+            return;
+        }
+
         var handler = commands[command];
         if (handler) {
             var result = handler(args);
             if (result) printPre(result);
         } else {
-            printLine('"' + command + '" não é reconhecido como um comando interno ou externo,\num programa operável ou arquivo em lote.');
+            printLine('"' + command + '" is not recognized as an internal or external command,\noperable program or batch file.');
+        }
+    }
+
+    /* ===== Games ===== */
+    var _gs = {};
+
+    /* ---- Hangman ---- */
+    var _palavras = ['TERMINAL','WINDOWS','COMPUTADOR','PROGRAMAR','ASCII','RETRO','PIXEL','HACKER','BYTE','VINTAGE','SISTEMA','INTERNET','CODIGO','MOUSE','TECLADO','MONITOR','PROCESSADOR','MEMORIA','DISCO','REDE','GRAFICO','KERNEL','DRIVER','SERVIDOR','JANELA'];
+
+    function drawGallows(n) {
+        var g = [
+            '  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========',
+            '  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========',
+            '  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========',
+            '  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========',
+            '  +---+\n  |   |\n  O   |\n /|\\\\  |\n      |\n      |\n=========',
+            '  +---+\n  |   |\n  O   |\n /|\\\\  |\n /    |\n      |\n=========',
+            '  +---+\n  |   |\n  O   |\n /|\\\\  |\n / \\\\  |\n      |\n=========',
+            '  +---+\n  |   |\n [O]  |\n /|\\\\  |\n / \\\\  |\n      |\n========='
+        ];
+        return g[n] || g[6];
+    }
+
+    function makeForcaDisplay() {
+        var d = '';
+        for (var i = 0; i < _gs.word.length; i++) {
+            var ch = _gs.word[i];
+            if (_gs.guessed.indexOf(ch) !== -1) {
+                d += '<span style="color:#0c0;font-weight:bold">' + ch + '</span> ';
+            } else {
+                d += '<span style="color:#888">_</span> ';
+            }
+        }
+        var kb = makeKeyboard();
+        return d + '<br><br><span style="color:#888">Attempts: ' + _gs.attempts + '/6</span><br><br>' + kb;
+    }
+
+    function makeKeyboard() {
+        var rows = ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+        var html = '<span style="color:#888">Keyboard:</span><br>';
+        for (var r = 0; r < rows.length; r++) {
+            for (var c = 0; c < rows[r].length; c++) {
+                var ch = rows[r][c];
+                var guessed = _gs.guessed.indexOf(ch) !== -1;
+                var correct = guessed && _gs.word.indexOf(ch) !== -1;
+                var wrong = guessed && _gs.word.indexOf(ch) === -1;
+                if (correct) {
+                    html += '<span style="color:#0c0;font-weight:bold">' + ch + '</span> ';
+                } else if (wrong) {
+                    html += '<span style="color:#c33;text-decoration:line-through">' + ch + '</span> ';
+                } else {
+                    html += '<span style="color:#555">' + ch + '</span> ';
+                }
+            }
+            html += '<br>';
+        }
+        return html;
+    }
+
+    function hangmanHandler(input) {
+        var cmd = input.trim().toUpperCase();
+        if (cmd === 'QUIT' || cmd === 'EXIT' || cmd === 'CANCEL') {
+            _gameHandler = null;
+            printPre('Game ended.');
+            return;
+        }
+        if (cmd.length !== 1 || cmd < 'A' || cmd > 'Z') {
+            printPre('Type ONE letter (A-Z).');
+            return;
+        }
+        if (_gs.guessed.indexOf(cmd) !== -1) {
+            printPre('Letter "' + cmd + '" already used!');
+            return;
+        }
+        _gs.guessed.push(cmd);
+        if (_gs.word.indexOf(cmd) === -1) _gs.attempts--;
+
+        var won = true;
+        for (var i = 0; i < _gs.word.length; i++) {
+            if (_gs.guessed.indexOf(_gs.word[i]) === -1) { won = false; break; }
+        }
+        if (won) {
+            _gameHandler = null;
+            var winArt = '\n  \\o/  You got it!\n   |\n  / \\\n';
+            printPre(winArt);
+            printPre(drawGallows(6 - _gs.attempts));
+            var finalWord = '';
+            for (var i = 0; i < _gs.word.length; i++) {
+                finalWord += '<span style="color:#0c0;font-weight:bold">' + _gs.word[i] + '</span> ';
+            }
+            printHTML(finalWord);
+            printPre('You won!');
+            return;
+        }
+        if (_gs.attempts <= 0) {
+            _gameHandler = null;
+            printPre(drawGallows(7));
+            printPre('  The word was: ' + _gs.word);
+            printPre('  You lost...');
+            return;
+        }
+        printPre('\n' + drawGallows(6 - _gs.attempts));
+        printHTML(makeForcaDisplay());
+    }
+
+    /* ---- Tic-Tac-Toe ---- */
+    function drawVelhaBoard(suppressTurn) {
+        var b = _gs.board;
+        function cell(v) {
+            if (v === 'X') return '<span style="color:#cc3333;font-weight:bold">X</span>';
+            if (v === 'O') return '<span style="color:#2255cc;font-weight:bold">O</span>';
+            return '<span style="color:#888">' + v + '</span>';
+        }
+        var hl = _gs._winLine || [];
+        function wrap(i, content) {
+            var isHl = hl.indexOf(i) !== -1;
+            return isHl ? '<span style="background:#ffd700;color:#000;font-weight:bold">' + content + '</span>' : content;
+        }
+        var html = '\n\u250C\u2500\u2500\u2500\u252C\u2500\u2500\u2500\u252C\u2500\u2500\u2500\u2510\n';
+        html += '\u2502 ' + wrap(0, cell(b[0])) + ' \u2502 ' + wrap(1, cell(b[1])) + ' \u2502 ' + wrap(2, cell(b[2])) + ' \u2502\n';
+        html += '\u251C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u2524\n';
+        html += '\u2502 ' + wrap(3, cell(b[3])) + ' \u2502 ' + wrap(4, cell(b[4])) + ' \u2502 ' + wrap(5, cell(b[5])) + ' \u2502\n';
+        html += '\u251C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u253C\u2500\u2500\u2500\u2524\n';
+        html += '\u2502 ' + wrap(6, cell(b[6])) + ' \u2502 ' + wrap(7, cell(b[7])) + ' \u2502 ' + wrap(8, cell(b[8])) + ' \u2502\n';
+        html += '\u2514\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2518\n';
+        if (!suppressTurn) {
+            html += '<br>Turn: ' + cell(_gs.turn) + ' &mdash; type 1-9 or QUIT.';
+        }
+        return html;
+    }
+
+    function velhaHandler(input) {
+        var cmd = input.trim();
+        if (cmd === 'QUIT' || cmd === 'EXIT' || cmd === 'CANCEL') {
+            _gameHandler = null;
+            printPre('Game ended.');
+            return;
+        }
+        var pos = parseInt(cmd, 10);
+        if (isNaN(pos) || pos < 1 || pos > 9) {
+            printPre('Type a number from 1 to 9.');
+            return;
+        }
+        var idx = pos - 1;
+        var b = _gs.board;
+        if (b[idx] === 'X' || b[idx] === 'O') {
+            printPre('Position already taken!');
+            return;
+        }
+        b[idx] = _gs.turn;
+        _gs._winLine = [];
+
+        var wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        var won = false;
+        var winningCombo = null;
+        for (var i = 0; i < wins.length; i++) {
+            if (b[wins[i][0]] === b[wins[i][1]] && b[wins[i][1]] === b[wins[i][2]]) { won = true; winningCombo = wins[i]; break; }
+        }
+        if (won) {
+            _gameHandler = null;
+            _gs._winLine = winningCombo;
+            printHTML(drawVelhaBoard(true));
+            printPre('Player ' + _gs.turn + ' wins!');
+            return;
+        }
+        var tie = true;
+        for (var i = 0; i < 9; i++) { if (b[i] !== 'X' && b[i] !== 'O') { tie = false; break; } }
+        if (tie) {
+            _gameHandler = null;
+            printHTML(drawVelhaBoard(true));
+            printPre('Draw!');
+            return;
+        }
+        _gs.turn = (_gs.turn === 'X') ? 'O' : 'X';
+        printHTML(drawVelhaBoard());
+    }
+
+    /* ---- Snake popup ---- */
+    var _snakeInterval = null;
+
+    function startSnake() {
+        var overlay = document.createElement('div');
+        overlay.id = 'snakeOverlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:99999;display:flex;align-items:center;justify-content:center;';
+        var box = document.createElement('div');
+        box.style.cssText = 'background:#ece9e0;border:2px solid;border-color:#fff #5a5a5a #5a5a5a #fff;padding:14px;font-family:monospace;text-align:center;box-shadow:4px 4px 8px rgba(0,0,0,0.3);';
+        box.innerHTML = '<div style="font-weight:bold;font-size:15px;margin-bottom:6px;color:#000;font-family:Tahoma,sans-serif;">SNAKE &mdash; Score: <span id="snakeScore">0</span></div><pre id="snakeBoard" style="background:#111;color:#0f0;padding:8px;font-size:15px;line-height:1.15;margin:0;border:1px solid #555;"></pre><div style="margin-top:6px;font-size:11px;color:#666;font-family:Tahoma,sans-serif;">Arrow keys to move &middot; ESC to quit</div>';
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+
+        var size = 14;
+        var snake = [{x:7,y:7}];
+        var dir = {x:1,y:0};
+        var nextDir = {x:1,y:0};
+        var food = {x:3,y:3};
+        var score = 0;
+        var highScore = parseInt(localStorage.getItem('snakeHigh') || '0', 10);
+        var running = true;
+
+        function placeFood() {
+            var free = [];
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
+                    var occupied = false;
+                    for (var s = 0; s < snake.length; s++) {
+                        if (snake[s].x === x && snake[s].y === y) { occupied = true; break; }
+                    }
+                    if (!occupied) free.push({x:x,y:y});
+                }
+            }
+            if (free.length > 0) {
+                var f = free[Math.floor(Math.random() * free.length)];
+                food = f;
+            }
+        }
+
+        function render() {
+            var board = '';
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
+                    var isSnake = false;
+                    var isHead = x === snake[0].x && y === snake[0].y;
+                    for (var s = 0; s < snake.length; s++) {
+                        if (snake[s].x === x && snake[s].y === y) { isSnake = true; break; }
+                    }
+                    if (isHead) board += '<span style="color:#0f0;font-weight:bold">@</span>';
+                    else if (isSnake) board += '<span style="color:#0a0">O</span>';
+                    else if (x === food.x && y === food.y) board += '<span style="color:#f33;font-weight:bold">*</span>';
+                    else board += '<span style="color:#222">.</span>';
+                }
+                board += '\n';
+            }
+            var el = document.getElementById('snakeBoard');
+            var sc = document.getElementById('snakeScore');
+            if (el) el.innerHTML = board;
+            if (sc) sc.textContent = score;
+        }
+
+        function tick() {
+            if (!running) return;
+            dir = {x:nextDir.x, y:nextDir.y};
+            var head = {x:snake[0].x + dir.x, y:snake[0].y + dir.y};
+            if (head.x < 0 || head.x >= size || head.y < 0 || head.y >= size) {
+                gameOver(); return;
+            }
+            for (var i = 0; i < snake.length; i++) {
+                if (snake[i].x === head.x && snake[i].y === head.y) {
+                    gameOver(); return;
+                }
+            }
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                placeFood();
+            } else {
+                snake.pop();
+            }
+            render();
+        }
+
+        function gameOver() {
+            running = false;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('snakeHigh', score);
+            }
+            var el = document.getElementById('snakeBoard');
+            var board = '  .  .  .  .  .  .  .  .\n' +
+                '  .  .  .  .  .  .  .  .\n' +
+                '   _   _   _   _   _\n' +
+                '  / \\ / \\ / \\ / \\ / \\\n' +
+                ' ( G A M E   O V E R )\n' +
+                '  \\_/ \\_/ \\_/ \\_/ \\_/\n' +
+                '  .  .  .  .  .  .  .  .\n\n' +
+                '  Score: ' + score + '\n' +
+                '  High: ' + highScore + '\n\n  Press ESC to close';
+            if (el) el.innerHTML = board;
+        }
+
+        function keyHandler(e) {
+            if (e.key === 'Escape') {
+                cleanup();
+                return;
+            }
+            if (!running) return;
+            switch (e.key) {
+                case 'ArrowUp': if (dir.y !== 1) { nextDir = {x:0,y:-1}; } e.preventDefault(); break;
+                case 'ArrowDown': if (dir.y !== -1) { nextDir = {x:0,y:1}; } e.preventDefault(); break;
+                case 'ArrowLeft': if (dir.x !== 1) { nextDir = {x:-1,y:0}; } e.preventDefault(); break;
+                case 'ArrowRight': if (dir.x !== -1) { nextDir = {x:1,y:0}; } e.preventDefault(); break;
+            }
+        }
+
+        function cleanup() {
+            if (_snakeInterval) { clearInterval(_snakeInterval); _snakeInterval = null; }
+            document.removeEventListener('keydown', keyHandler);
+            var ov = document.getElementById('snakeOverlay');
+            if (ov) ov.remove();
+        }
+
+        document.addEventListener('keydown', keyHandler);
+        placeFood();
+        render();
+        _snakeInterval = setInterval(function() { tick(); }, Math.max(60, 180 - score * 4));
+        // speed-up each point
+        var speedCheck = setInterval(function() {
+            if (!running && _snakeInterval) { clearInterval(speedCheck); return; }
+            if (_snakeInterval) {
+                clearInterval(_snakeInterval);
+                _snakeInterval = setInterval(function() { tick(); }, Math.max(60, 180 - score * 4));
+            }
+        }, 500);
+
+        return 'Snake game opened in popup. Press ESC to close.';
+    }
+
+    /* ---- Reaction time test ---- */
+    var _reactionRound = 0;
+    var _reactionTimes = [];
+
+    function startReaction() {
+        _reactionRound = 0;
+        _reactionTimes = [];
+        nextReactionRound();
+        return '';
+    }
+
+    function nextReactionRound() {
+        _reactionRound++;
+        _gs = { phase: 'wait', ready: false, round: _reactionRound };
+        _gameHandler = reactionHandler;
+        var delay = 1500 + Math.random() * 3000;
+        if (_reactionRound === 1) {
+            printPre('\n=== REACTION TIME TEST ===');
+            printPre('Press ENTER when you see GO!');
+            printPre('3 rounds &middot; ESC or QUIT to exit\n');
+        }
+        printPre('Round ' + _reactionRound + '/3 &mdash; Get ready...');
+        _gs.timer = setTimeout(function() {
+            if (_gameHandler !== reactionHandler) return;
+            _gs.ready = true;
+            printHTML('<span style="color:#0f0;font-weight:bold;font-size:16px">=== GO! ===</span>');
+            _gs.startTime = Date.now();
+        }, delay);
+    }
+
+    function reactionHandler(input) {
+        var cmd = input.trim().toUpperCase();
+        if (cmd === 'QUIT' || cmd === 'EXIT' || cmd === 'CANCEL') {
+            _gameHandler = null;
+            clearTimeout(_gs.timer);
+            printPre('Game ended.');
+            return;
+        }
+        if (_gs.phase === 'wait') {
+            if (_gs.ready) {
+                var ms = Date.now() - _gs.startTime;
+                _reactionTimes.push(ms);
+                clearTimeout(_gs.timer);
+
+                var color = ms < 200 ? '#0c0' : ms < 300 ? '#cc0' : '#c33';
+                var label = ms < 150 ? 'Superhuman!' : ms < 200 ? 'Excellent!' : ms < 250 ? 'Great!' : ms < 300 ? 'Good!' : ms < 400 ? 'Average.' : 'Slow...';
+                printHTML('<span style="color:' + color + ';font-weight:bold">' + ms + ' ms</span> &mdash; ' + label);
+
+                if (_reactionRound >= 3) {
+                    _gameHandler = null;
+                    var sum = 0;
+                    for (var i = 0; i < _reactionTimes.length; i++) sum += _reactionTimes[i];
+                    var avg = Math.round(sum / _reactionTimes.length);
+                    var best = Math.min.apply(null, _reactionTimes);
+                    printPre('\nResults (3 rounds):');
+                    for (var i = 0; i < _reactionTimes.length; i++) {
+                        printPre('  Round ' + (i+1) + ': ' + _reactionTimes[i] + ' ms');
+                    }
+                    printHTML('<br>Average: <span style="color:#0cf;font-weight:bold">' + avg + ' ms</span>');
+                    printHTML('Best: <span style="color:#0c0;font-weight:bold">' + best + ' ms</span>');
+                    return;
+                }
+                nextReactionRound();
+            } else {
+                _gameHandler = null;
+                clearTimeout(_gs.timer);
+                printHTML('<span style="color:#c33">Too early! Wait for GO! Type REACTION to try again.</span>');
+            }
         }
     }
 
@@ -573,7 +741,7 @@
         btnMaximize: termBtnMaximize,
         minW: 500,
         minH: 300,
-        taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="3" width="14" height="10" fill="#111" stroke="#333" stroke-width="2"/><rect x="1" y="3" width="14" height="3" fill="#666"/><rect x="3" y="6" width="10" height="6" fill="#080a08"/><text x="8" y="9" text-anchor="middle" fill="#22aa55" font-size="3" font-weight="bold">C:\\&gt;</text></svg>',
+        taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="1" y="1" width="14" height="11" fill="#1a1a2e" stroke="#555" stroke-width="1.5"/><rect x="1" y="1" width="14" height="2.5" fill="#888"/><text x="8" y="10" text-anchor="middle" fill="#0f0" font-size="5" font-weight="bold">C:\\&gt;</text></svg>',
         taskbarLabel: 'Terminal',
         onShow: function() {
             termWin.style.width = '580px';

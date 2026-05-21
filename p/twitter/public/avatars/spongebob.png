@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Yellow body -->
+  <circle cx="50" cy="50" r="40" fill="#FFD700"/>
+  <!-- Brown pants -->
+  <rect x="30" y="65" width="40" height="15" fill="#8B4513"/>
+  <!-- White shirt -->
+  <rect x="35" y="55" width="30" height="15" fill="white"/>
+  <!-- Eyes -->
+  <circle cx="40" cy="45" r="5" fill="white"/>
+  <circle cx="60" cy="45" r="5" fill="white"/>
+  <circle cx="40" cy="45" r="2" fill="black"/>
+  <circle cx="60" cy="45" r="2" fill="black"/>
+  <!-- Mouth -->
+  <path d="M40 60 Q50 65 60 60" stroke="black" stroke-width="2" fill="none"/>
+  <!-- Holes -->
+  <circle cx="45" cy="35" r="2" fill="black"/>
+  <circle cx="55" cy="35" r="2" fill="black"/>
+</svg>

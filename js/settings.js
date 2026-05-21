@@ -21,7 +21,7 @@
         btnMaximize: btnMaximize,
         minW: 520,
         minH: 380,
-        taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><rect x="2" y="2" width="12" height="12" fill="#d4d0c8" stroke="#666" stroke-width="2"/><rect x="2" y="2" width="12" height="3" fill="#000080"/><circle cx="8" cy="9" r="2" fill="#666"/><path d="M8 7 L8 11 M6 9 L10 9" stroke="#fff" stroke-width="1"/></svg>',
+        taskbarIcon: '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><g fill="#555"><rect x="6.5" y="1" width="3" height="3" rx="0.5"/><rect x="6.5" y="1" width="3" height="3" rx="0.5" transform="rotate(45 8 8)"/><rect x="6.5" y="1" width="3" height="3" rx="0.5" transform="rotate(90 8 8)"/><rect x="6.5" y="1" width="3" height="3" rx="0.5" transform="rotate(135 8 8)"/><rect x="6.5" y="1" width="3" height="3" rx="0.5" transform="rotate(180 8 8)"/><rect x="6.5" y="1" width="3" height="3" rx="0.5" transform="rotate(225 8 8)"/><rect x="6.5" y="1" width="3" height="3" rx="0.5" transform="rotate(270 8 8)"/><rect x="6.5" y="1" width="3" height="3" rx="0.5" transform="rotate(315 8 8)"/></g><circle cx="8" cy="8" r="4" fill="#d4d0c8" stroke="#555" stroke-width="1.2"/><circle cx="8" cy="8" r="2" fill="#8a8a8a" stroke="#444" stroke-width="0.8"/></svg>',
         taskbarLabel: 'Configurações',
         onShow: function () {
             win.style.width = '520px';
