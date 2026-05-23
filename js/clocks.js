@@ -38,7 +38,7 @@
 
     var header = document.createElement('div');
     header.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #c0bcb4;';
-    header.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14"><polygon points="3,4 5,4 8,2 8,14 5,12 3,12" fill="#666"/><rect x="10" y="6" width="2" height="4" fill="#888"/><rect x="12" y="5" width="1" height="6" fill="#888"/></svg>';
+    header.innerHTML = '<img src="assets/icons/tango2kde/16x16/apps/kmix.png" alt="" width="16" height="16">';
     var headerText = document.createElement('span');
     headerText.style.cssText = 'font-weight:bold;color:#000;font-size:12px;';
     headerText.textContent = 'Volume';
@@ -50,7 +50,7 @@
 
     var muteBtn = document.createElement('span');
     muteBtn.style.cssText = 'cursor:pointer;display:flex;align-items:center;padding:2px;';
-    muteBtn.innerHTML = '<svg viewBox="0 0 12 12" width="12" height="12"><polygon points="2,3 4,3 7,1 7,11 4,9 2,9" fill="#666"/></svg>';
+    muteBtn.innerHTML = '<img src="assets/icons/tango2kde/16x16/apps/kmix.png" alt="" width="10" height="10" style="opacity:0.6;">';
     muteBtn.title = 'Mudo';
     row.appendChild(muteBtn);
 
@@ -59,7 +59,7 @@
     slider.min = '0';
     slider.max = '100';
     slider.value = Math.round(_volume * 100);
-    slider.style.cssText = 'flex:1;height:4px;cursor:pointer;';
+    slider.style.cssText = 'flex:1;height:4px;cursor:pointer;border-radius:0;appearance:none;-webkit-appearance:none;';
     slider.addEventListener('input', function() {
       setVolume(this.value / 100);
       updateVolIcon();
@@ -68,7 +68,7 @@
 
     var maxBtn = document.createElement('span');
     maxBtn.style.cssText = 'cursor:pointer;display:flex;align-items:center;padding:2px;';
-    maxBtn.innerHTML = '<svg viewBox="0 0 12 12" width="12" height="12"><polygon points="2,3 4,3 7,1 7,11 4,9 2,9" fill="#666"/><rect x="8" y="4" width="2" height="4" fill="#888"/><rect x="10" y="3" width="1" height="6" fill="#888"/></svg>';
+    maxBtn.innerHTML = '<img src="assets/icons/tango2kde/22x22/apps/kmix.png" alt="" width="16" height="16">';
     maxBtn.title = 'Máximo';
     row.appendChild(maxBtn);
 
@@ -103,12 +103,40 @@
   }
 
   function updateVolIcon() {
+    volIcon.innerHTML = '';
     if (_volume === 0) {
-      volIcon.innerHTML = '<svg viewBox="0 0 12 12" width="12" height="12"><polygon points="2,3 4,3 7,1 7,11 4,9 2,9" fill="#999" stroke="#888" stroke-width="1"/><line x1="9" y1="3" x2="11" y2="9" stroke="#c00" stroke-width="1.5"/><line x1="11" y1="3" x2="9" y2="9" stroke="#c00" stroke-width="1.5"/></svg>';
-    } else if (_volume < 0.5) {
-      volIcon.innerHTML = '<svg viewBox="0 0 12 12" width="12" height="12"><polygon points="2,3 4,3 7,1 7,11 4,9 2,9" fill="#666" stroke="#444" stroke-width="1"/><rect x="8" y="4" width="2" height="4" fill="#888"/></svg>';
+      var wrap = document.createElement('span');
+      wrap.style.cssText = 'position:relative;display:inline-flex;';
+      var img = document.createElement('img');
+      img.src = 'assets/icons/tango2kde/22x22/apps/kmix.png';
+      img.alt = '';
+      img.width = 18;
+      img.height = 18;
+      wrap.appendChild(img);
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 18 18');
+      svg.style.cssText = 'position:absolute;top:0;left:0;width:18px;height:18px;';
+      var l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l1.setAttribute('x1', '5'); l1.setAttribute('y1', '5');
+      l1.setAttribute('x2', '13'); l1.setAttribute('y2', '13');
+      l1.setAttribute('stroke', '#c00'); l1.setAttribute('stroke-width', '2');
+      l1.setAttribute('stroke-linecap', 'square');
+      svg.appendChild(l1);
+      var l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l2.setAttribute('x1', '13'); l2.setAttribute('y1', '5');
+      l2.setAttribute('x2', '5'); l2.setAttribute('y2', '13');
+      l2.setAttribute('stroke', '#c00'); l2.setAttribute('stroke-width', '2');
+      l2.setAttribute('stroke-linecap', 'square');
+      svg.appendChild(l2);
+      wrap.appendChild(svg);
+      volIcon.appendChild(wrap);
     } else {
-      volIcon.innerHTML = '<svg viewBox="0 0 12 12" width="12" height="12"><polygon points="2,3 4,3 7,1 7,11 4,9 2,9" fill="#666" stroke="#444" stroke-width="1"/><rect x="8" y="4" width="2" height="4" fill="#888"/><rect x="10" y="3" width="1" height="6" fill="#888"/></svg>';
+      var img = document.createElement('img');
+      img.src = 'assets/icons/tango2kde/22x22/apps/kmix.png';
+      img.alt = '';
+      img.width = 18;
+      img.height = 18;
+      volIcon.appendChild(img);
     }
   }
 

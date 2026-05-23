@@ -94,7 +94,7 @@
       '<span class="xp-dialog-title-text">' +
       title +
       '</span>' +
-      '<span id="xpDialogClose" class="xp-dialog-close"><img src="assets/icons/win-close.svg" alt="X" class="win-btn-icon"></span>' +
+      '<span id="xpDialogClose" class="xp-dialog-close"><svg viewBox="0 0 16 16" width="12" height="12"><line x1="3" y1="3" x2="13" y2="13" stroke="#444" stroke-width="1.5"/><line x1="13" y1="3" x2="3" y2="13" stroke="#444" stroke-width="1.5"/></svg></span>' +
       '</div>' +
       '<div class="xp-dialog-body">' +
       '<div class="xp-dialog-icon-area">' +

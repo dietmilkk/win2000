@@ -69,8 +69,10 @@
         win.classList.remove('window-maximized');
         maximized = false;
         if (btnMaximize) {
-          var img = btnMaximize.querySelector('img');
-          if (img) { img.src = 'assets/icons/win-maximize.svg'; img.alt = '[]'; }
+          var svg = btnMaximize.querySelector('svg');
+          if (svg) {
+            svg.innerHTML = '<rect x="2" y="2" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5"/>';
+          }
           btnMaximize.title = 'Maximize';
         }
       } else {
@@ -84,8 +86,10 @@
         win.classList.add('window-maximized');
         maximized = true;
         if (btnMaximize) {
-          var img = btnMaximize.querySelector('img');
-          if (img) { img.src = 'assets/icons/win-restore.svg'; img.alt = '\u25A6'; }
+          var svg = btnMaximize.querySelector('svg');
+          if (svg) {
+            svg.innerHTML = '<rect x="1" y="4" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="4" y="1" width="11" height="11" fill="#d4d0c8" stroke="currentColor" stroke-width="1.2"/>';
+          }
           btnMaximize.title = 'Restore';
         }
       }

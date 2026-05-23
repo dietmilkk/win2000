@@ -31,8 +31,8 @@
     minH: 500,
     startVisible: false,
     taskbarIcon:
-      '<svg viewBox="0 0 16 16" width="14" height="14" style="flex-shrink:0;"><path d="M2 1h9l3 3v11H2V1z" fill="#fff" stroke="#666" stroke-width="1.5"/><path d="M11 1v3h3" fill="#fff" stroke="#666" stroke-width="1.5"/><line x1="4" y1="7" x2="12" y2="7" stroke="#444" stroke-width="1"/><line x1="4" y1="9" x2="12" y2="9" stroke="#444" stroke-width="1"/><line x1="4" y1="11" x2="10" y2="11" stroke="#444" stroke-width="1"/></svg>',
-    taskbarLabel: "Portifolio",
+      '<img src="assets/icons/tango2kde/16x16/apps/dolphin.png" alt="" width="14" height="14" style="flex-shrink:0;">',
+    taskbarLabel: "Repositório",
     onInit: function (controls) {
       // Ensure initial position
       controls.setMinimized(false);
@@ -97,9 +97,13 @@
   }
 
   function openDesktopIcon(action) {
+    trackUse(action);
     switch (action) {
       case "terminal":
         showTerminal();
+        break;
+      case "games":
+        if (typeof window.showGames !== "undefined") window.showGames();
         break;
       case "randomgif":
         if (typeof window.openGallery !== "undefined") window.openGallery();
@@ -109,6 +113,9 @@
           "https://wakatime.com/@530e7be4-0c7e-40cf-9389-1017373810c3",
           "_blank",
         );
+        break;
+      case "soundcloud":
+        if (typeof window.showSoundCloud !== "undefined") window.showSoundCloud();
         break;
     }
   }
@@ -145,7 +152,49 @@
     e.stopPropagation();
     startMenu.classList.toggle("open");
     startBtn.classList.toggle("active", startMenu.classList.contains("open"));
+    if (startMenu.classList.contains("open")) sortMostUsed();
   });
+
+  /* ================================================================
+       MOST USED (frequência de uso)
+       ================================================================ */
+
+  var mostUsed = JSON.parse(localStorage.getItem("w2kMostUsed") || "{}");
+
+  function trackUse(action) {
+    mostUsed[action] = (mostUsed[action] || 0) + 1;
+    localStorage.setItem("w2kMostUsed", JSON.stringify(mostUsed));
+  }
+
+  function sortMostUsed() {
+    var body = document.getElementById("startMenuBody");
+    if (!body) return;
+    var items = Array.from(body.querySelectorAll(".start-menu-item"));
+    var grupos = body.querySelectorAll(".start-menu-separator, .start-menu-group-title");
+    var sepIndex = -1;
+    for (var i = 0; i < body.children.length; i++) {
+      if (body.children[i].classList.contains("start-menu-separator")) {
+        sepIndex = i;
+        break;
+      }
+    }
+    if (sepIndex < 0) return;
+    var appItems = items.filter(function (el) {
+      var action = el.getAttribute("data-action");
+      return action && action !== "fullscreen" && action !== "shutdown";
+    });
+    appItems.sort(function (a, b) {
+      var aFreq = mostUsed[a.getAttribute("data-action")] || 0;
+      var bFreq = mostUsed[b.getAttribute("data-action")] || 0;
+      if (bFreq !== aFreq) return bFreq - aFreq;
+      var aLabel = (a.textContent || "").trim();
+      var bLabel = (b.textContent || "").trim();
+      return aLabel.localeCompare(bLabel, "pt");
+    });
+    var sep = body.querySelector(".start-menu-separator");
+    if (!sep) return;
+    appItems.forEach(function (el) { body.insertBefore(el, sep); });
+  }
 
   /* ================================================================
        START MENU ITEMS
@@ -157,6 +206,7 @@
     startMenu.classList.remove("open");
     startBtn.classList.remove("active");
     var action = item.getAttribute("data-action");
+    trackUse(action);
     switch (action) {
       case "programs":
         if (winBehavior.isMinimized() || win.style.display === "none") {
@@ -170,11 +220,17 @@
       case "terminal":
         showTerminal();
         break;
+      case "games":
+        if (typeof window.showGames !== "undefined") window.showGames();
+        break;
       case "randomgif":
         if (typeof window.openGallery !== "undefined") window.openGallery();
         break;
       case "settings":
         if (typeof window.showSettings !== "undefined") window.showSettings();
+        break;
+      case "soundcloud":
+        if (typeof window.showSoundCloud !== "undefined") window.showSoundCloud();
         break;
       case "fullscreen":
         if (!document.fullscreenElement) {
