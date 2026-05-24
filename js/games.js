@@ -58,9 +58,8 @@
 
   function addBackButton(container) {
     var backBtn = document.createElement("div");
-    backBtn.style.cssText = "position:absolute;left:4px;top:50%;transform:translateY(-50%);width:24px;height:24px;background:#d4d0c8;border:2px solid;border-color:#fff #5a5a5a #5a5a5a #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:20;";
-    backBtn.innerHTML = '<svg viewBox="0 0 16 16" width="12" height="12"><polygon points="11,2 3,8 11,14" fill="#444"/></svg>';
-    backBtn.title = "Voltar ao menu";
+    backBtn.className = "games-back-btn";
+    backBtn.innerHTML = '<svg viewBox="0 0 16 16" width="12" height="12"><polygon points="11,2 3,8 11,14" fill="currentColor"/></svg>';
     backBtn.addEventListener("click", function(e) {
       e.stopPropagation();
       if (gameState.cleanup) gameState.cleanup();
@@ -71,41 +70,98 @@
     container.appendChild(backBtn);
   }
 
+  var _selectorIdx = 0;
+  var _gamesData = [
+    {
+      id: "snake", label: "Cobrinha",
+      desc: "Pegue a comida sem bater na parede",
+      icon: "S",
+      controls: "Setas / WASD para mover | Espaço para pausar",
+      color: "#0f0",
+    },
+    {
+      id: "labirinto", label: "Labirinto",
+      desc: "Fuja do labirinto ate a saida",
+      icon: "M",
+      controls: "W/A/S/D para mover | R para reiniciar",
+      color: "#0cf",
+    },
+  ];
+
   function showSelector() {
     clearBody();
     gameState = {};
+    _selectorIdx = 0;
     var c = document.createElement("div");
     c.className = "games-container";
+    c.style.cssText = "height:100%;box-sizing:border-box;display:flex;flex-direction:column;padding:12px;gap:10px;";
 
-    var h = document.createElement("div");
-    h.className = "games-header";
-    h.textContent = "Jogos";
-    c.appendChild(h);
+    var grid = document.createElement("div");
+    grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;flex:1;align-content:start;";
 
-    var sub = document.createElement("div");
-    sub.className = "games-sub";
-    sub.textContent = "Selecione um jogo:";
-    c.appendChild(sub);
-
-    var games = [
-      { id: "snake", label: "Cobrinha", desc: "Pegue a comida sem bater na parede (Setas / WASD)", icon: "S" },
-      { id: "labirinto", label: "Labirinto", desc: "Fuja do labirinto (W/A/S/D)", icon: "M" },
-    ];
-
-    for (var i = 0; i < games.length; i++) {
+    for (var i = 0; i < _gamesData.length; i++) {
       (function (g) {
-        var btn = document.createElement("div");
-        btn.className = "games-btn";
-        btn.innerHTML = '<span class="games-btn-icon">' + g.icon + '</span><div><div class="games-btn-label">' + g.label + '</div><div class="games-btn-desc">' + g.desc + '</div></div><span class="games-btn-right">\u25B6</span>';
-        btn.addEventListener("click", function () {
-          if (g.id === "snake") startSnake();
-          else startLabirinto();
-        });
-        c.appendChild(btn);
-      })(games[i]);
+        var block = document.createElement("div");
+        block.className = "games-block";
+        block.style.cssText = "background:#000080;color:#fff;font-family:'Courier New',monospace;font-size:14px;font-weight:bold;padding:20px 12px;text-align:center;cursor:pointer;border:2px solid;border-color:#0000c0 #000040 #000040 #0000c0;display:flex;align-items:center;justify-content:center;aspect-ratio:1;user-select:none;";
+        block.textContent = g.label;
+        block.addEventListener("click", function () { launchGame(g.id); });
+        block.addEventListener("dblclick", function () { launchGame(g.id); });
+        grid.appendChild(block);
+      })(_gamesData[i]);
     }
 
+    c.appendChild(grid);
+
+    var foot = document.createElement("div");
+    foot.style.cssText = "font-family:'Courier New',monospace;font-size:11px;color:#888;text-align:center;padding:4px 0;";
+    foot.textContent = "Esc para voltar | Clique duas vezes para jogar";
+    c.appendChild(foot);
+
     gamesBody.appendChild(c);
+
+    document.addEventListener("keydown", selKeyHandler);
+    gameState.cleanup = function () {
+      document.removeEventListener("keydown", selKeyHandler);
+    };
+  }
+
+  function setSelector(idx) {
+    _selectorIdx = idx;
+    var blocks = document.querySelectorAll(".games-block");
+    for (var i = 0; i < blocks.length; i++) {
+      blocks[i].style.outline = i === idx ? "3px solid #fff" : "none";
+      blocks[i].style.outlineOffset = i === idx ? "-3px" : "0";
+    }
+  }
+
+  function launchGame(id) {
+    document.removeEventListener("keydown", selKeyHandler);
+    if (id === "snake") startSnake();
+    else startLabirinto();
+  }
+
+  function selKeyHandler(e) {
+    var k = e.key;
+    if (k === "ArrowUp" || k === "ArrowDown" || k === "ArrowLeft" || k === "ArrowRight") {
+      e.preventDefault();
+      var cols = Math.floor(gamesBody.clientWidth / 160);
+      if (cols < 1) cols = 1;
+      var d = 0;
+      if (k === "ArrowRight") d = 1;
+      else if (k === "ArrowLeft") d = -1;
+      else if (k === "ArrowDown") d = cols;
+      else if (k === "ArrowUp") d = -cols;
+      var next = (_selectorIdx + d + _gamesData.length * 10) % _gamesData.length;
+      setSelector(next);
+    } else if (k === "Enter") {
+      e.preventDefault();
+      launchGame(_gamesData[_selectorIdx].id);
+    } else if (k === "Escape") {
+      e.preventDefault();
+      var w = gamesWin;
+      if (w && window.gamesMinimizeWindow) window.gamesMinimizeWindow;
+    }
   }
 
   /* ================================================================
@@ -144,18 +200,25 @@
 
   /* ================================================================
      Smooth Camera System — player at bottom-center, looks ahead
+     framerate-independent, two-stage smoothing
      ================================================================ */
   var _camX = 0, _camY = 0;
   var _camTX = 0, _camTY = 0;
   var _camRunning = false;
   var _camBoardId = "";
   var _camCellSize = 18;
+  var _lastCamTime = 0;
+
+  var _lookX = 0, _lookY = 0;        // smoothed look-ahead direction
+  var _camSpeed = 10;                 // base convergence rate (per second)
 
   function startCamera(boardId, cellSize) {
     _camBoardId = boardId;
     _camCellSize = cellSize;
     _camX = 0; _camY = 0;
     _camTX = 0; _camTY = 0;
+    _lookX = 0; _lookY = 0;
+    _lastCamTime = performance.now();
     if (!_camRunning) {
       _camRunning = true;
       requestAnimationFrame(cameraTick);
@@ -177,17 +240,24 @@
     var lookAhead = cs * 3.5;
     var playerScreenX = vpW / 2;
     var playerScreenY = vpH / 2;
-    _camTX = playerScreenX - px * cs - cs / 2 - (dirX || 0) * lookAhead;
-    _camTY = playerScreenY - py * cs - cs / 2 - (dirY || 0) * lookAhead;
+    // smooth the look-ahead direction to avoid abrupt jumps
+    _lookX += ((dirX || 0) - _lookX) * 0.25;
+    _lookY += ((dirY || 0) - _lookY) * 0.25;
+    _camTX = playerScreenX - px * cs - cs / 2 - _lookX * lookAhead;
+    _camTY = playerScreenY - py * cs - cs / 2 - _lookY * lookAhead;
   }
 
-  function cameraTick() {
+  function cameraTick(now) {
     if (!_camRunning) return;
-    _camX += (_camTX - _camX) * 0.12;
-    _camY += (_camTY - _camY) * 0.12;
+    var dt = Math.min(now - (_lastCamTime || now), 50);
+    _lastCamTime = now;
+    // framerate-independent exponential ease
+    var f = Math.min(1, 1 - Math.exp(-_camSpeed * dt / 1000));
+    _camX += (_camTX - _camX) * f;
+    _camY += (_camTY - _camY) * f;
     var grid = document.getElementById("gameGrid");
     if (grid) {
-      grid.style.transform = "translate(" + Math.round(_camX) + "px," + Math.round(_camY) + "px) rotateX(28deg)";
+      grid.style.transform = "translate(" + _camX.toFixed(1) + "px," + _camY.toFixed(1) + "px) rotateX(28deg)";
     }
     requestAnimationFrame(cameraTick);
   }
@@ -261,14 +331,14 @@
       var boardEl = document.querySelector("#snakeBoard .games-board-3d");
       if (!boardEl) return;
       var ov = document.createElement("div");
-      ov.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);z-index:10;font-family:monospace;";
+      ov.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:10;";
       ov.innerHTML =
-        '<div style="text-align:center;color:#0f0;">' +
-        '<div style="font-size:30px;font-weight:bold;text-shadow:0 0 15px #c00;">GAME OVER</div>' +
-        (score >= highScore && score > 0 ? '<div style="color:#fa0;font-size:14px;margin:6px 0;">NOVO RECORDE!</div>' : '') +
-        '<div style="font-size:15px;margin:4px 0;">Pontos: <span style="color:#0cf;font-weight:bold;">' + score + '</span></div>' +
-        '<div style="font-size:15px;margin:4px 0;">Recorde: <span style="color:#fa0;font-weight:bold;">' + highScore + '</span></div>' +
-        '<div style="margin-top:14px;font-size:12px;color:#888;">ENTER = Jogar de novo</div></div>';
+        '<div style="text-align:center;">' +
+        '<div style="font-size:28px;font-weight:bold;color:#c00;font-family:monospace;text-shadow:2px 2px 0 #600;margin-bottom:8px;letter-spacing:2px;">GAME OVER</div>' +
+        (score >= highScore && score > 0 ? '<div style="color:#ff0;font-size:12px;margin:6px 0;font-family:monospace;">NOVO RECORDE!</div>' : '') +
+        '<div style="color:#0f0;font-size:13px;margin:4px 0;font-family:monospace;">Pontos: <span style="color:#0ff;">' + score + '</span></div>' +
+        '<div style="color:#0f0;font-size:13px;margin:4px 0;font-family:monospace;">Recorde: <span style="color:#ff0;">' + highScore + '</span></div>' +
+        '<div style="margin-top:14px;font-size:11px;color:#888;font-family:monospace;">ENTER = Jogar de novo</div></div>';
       boardEl.appendChild(ov);
     }
 
@@ -303,8 +373,8 @@
       if (p && !ov) {
         var d = document.createElement("div");
         d.id = "pauseOverlay";
-        d.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);z-index:10;font-family:monospace;";
-        d.innerHTML = '<div style="font-size:30px;font-weight:bold;color:#0cf;text-shadow:0 0 12px #0cf;">PAUSA</div>';
+        d.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:10;";
+        d.innerHTML = '<div style="font-size:28px;font-weight:bold;color:#ff0;font-family:monospace;text-shadow:2px 2px 0 #660;letter-spacing:3px;">PAUSA</div>';
         boardEl.appendChild(d);
       } else if (!p) {
         var d = document.getElementById("pauseOverlay");
@@ -331,8 +401,8 @@
     c.style.cssText = "height:100%;box-sizing:border-box;display:flex;flex-direction:column;";
 
     var topBar = document.createElement("div");
-    topBar.style.cssText = "display:flex;align-items:center;gap:8px;padding:2px 6px;background:#000;color:#0c0;font-family:monospace;font-size:11px;flex-shrink:0;";
-    topBar.innerHTML = '<span style="font-weight:bold;">COBRINHA</span><span style="color:#888;">|</span>Pontos: <span id="snakeScore" style="color:#0cf;font-weight:bold;">0</span><span style="color:#888;">|</span>Recorde: <span id="snakeHigh" style="color:#fa0;font-weight:bold;">' + highScore + '</span>';
+    topBar.className = "games-hud";
+    topBar.innerHTML = '<span class="games-hud-label">COBRINHA</span><span class="games-hud-sep">|</span>Pontos: <span class="games-hud-val" id="snakeScore">0</span><span class="games-hud-sep">|</span>Recorde: <span class="games-hud-high" id="snakeHigh">' + highScore + '</span>';
     c.appendChild(topBar);
 
     var boardWrap = document.createElement("div");
@@ -437,11 +507,11 @@
       if (stEl) {
         if (g.st.won) {
           var elapsed = Math.floor((Date.now() - g.st.startTime) / 1000);
-          stEl.innerHTML = 'Voce escapou! Passos: <span style="color:#0cf;font-weight:bold">' + g.st.steps + '</span>';
+          stEl.innerHTML = 'Passos: <span class="games-hud-val">' + g.st.steps + '</span>';
         } else if (g.st.dead) {
           stEl.innerHTML = '<span style="color:#c33;font-weight:bold">Bateu na parede!</span>';
         } else {
-          stEl.innerHTML = 'Passos: <span style="color:#0cf;font-weight:bold">' + g.st.steps + '</span>';
+          stEl.innerHTML = 'Passos: <span class="games-hud-val">' + g.st.steps + '</span>';
         }
       }
       if (tiEl) {
@@ -462,18 +532,18 @@
       var nextText = "";
       var action = "ENTER = Continuar";
       if (nextLevel) {
-        nextText = '<div style="margin-top:6px;color:#0f0;font-size:13px;">Proximo nivel: ' + nextLevel + '</div>';
+        nextText = '<div style="margin-top:6px;color:#0f0;font-size:12px;font-family:monospace;">Proximo nivel: ' + nextLevel + '</div>';
         action = "ENTER = Proximo nivel";
       }
       var ov = document.createElement("div");
       ov.id = "mazeOverlay";
-      ov.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);z-index:10;font-family:monospace;";
+      ov.style.cssText = "position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);z-index:10;";
       ov.innerHTML =
-        '<div style="text-align:center;color:#0f0;">' +
-        '<div style="font-size:28px;font-weight:bold;text-shadow:0 0 12px #0f0;">' + msg + '</div>' +
+        '<div style="text-align:center;">' +
+        '<div style="font-size:26px;font-weight:bold;color:#0f0;font-family:monospace;text-shadow:2px 2px 0 #060;margin-bottom:8px;letter-spacing:2px;">' + msg + '</div>' +
         nextText +
-        '<div style="margin-top:8px;font-size:13px;color:#aaa;">' + sub + '</div>' +
-        '<div style="margin-top:14px;font-size:12px;color:#888;">' + action + '</div></div>';
+        '<div style="margin-top:8px;font-size:11px;color:#aaa;font-family:monospace;">' + sub + '</div>' +
+        '<div style="margin-top:14px;font-size:11px;color:#888;font-family:monospace;">' + action + '</div></div>';
       boardEl.appendChild(ov);
     }
 
@@ -551,8 +621,8 @@
     c.style.cssText = "height:100%;box-sizing:border-box;display:flex;flex-direction:column;";
 
     var topBar = document.createElement("div");
-    topBar.style.cssText = "display:flex;align-items:center;gap:8px;padding:2px 6px;background:#000;color:#0c0;font-family:monospace;font-size:11px;flex-shrink:0;";
-    topBar.innerHTML = '<span style="font-weight:bold;">LABIRINTO</span><span style="color:#888;">|</span>Nivel: <span id="mazeLevel" style="color:#0cf;font-weight:bold;">' + level + '</span><span style="color:#888;">|</span><span id="mazeStatus" style="color:#888;">Passos: <span style="color:#0cf;font-weight:bold;">0</span></span><span style="color:#888;">|</span><span id="mazeTime" style="color:#888;">Tempo: <span style="color:#0c0;font-weight:bold;">0s</span></span>';
+    topBar.className = "games-hud";
+    topBar.innerHTML = '<span class="games-hud-label">LABIRINTO</span><span class="games-hud-sep">|</span>Nivel: <span class="games-hud-val" id="mazeLevel">' + level + '</span><span class="games-hud-sep">|</span><span class="games-hud-val" id="mazeStatus">Passos: 0</span><span class="games-hud-sep">|</span><span id="mazeTime" style="color:#0c0;font-weight:bold;">Tempo: 0s</span>';
     c.appendChild(topBar);
 
     var boardWrap = document.createElement("div");

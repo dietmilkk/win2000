@@ -14,6 +14,9 @@
   function setVolume(v) {
     _volume = Math.max(0, Math.min(1, v));
     localStorage.setItem('win2k_volume', _volume);
+    if (typeof window.setSoundCloudVolume === 'function') {
+      window.setSoundCloudVolume(_volume);
+    }
   }
 
   /* ===== Clock update ===== */
@@ -34,68 +37,111 @@
   function buildVolumePanel() {
     var p = document.createElement('div');
     p.id = 'volumePanel';
-    p.style.cssText = 'position:fixed;bottom:42px;right:10px;background:#ece9e0;border:2px solid;border-color:#fff #5a5a5a #5a5a5a #fff;padding:10px 14px;z-index:99999;display:none;font-family:Tahoma,sans-serif;font-size:12px;min-width:160px;box-shadow:2px -2px 4px rgba(0,0,0,0.15);';
+    p.style.cssText = 'position:fixed;bottom:42px;right:10px;background:#ece9e0;border:2px solid;border-color:#fff #5a5a5a #5a5a5a #fff;padding:8px 12px;z-index:99999;display:none;font-family:Tahoma,sans-serif;font-size:12px;min-width:200px;box-shadow:2px -2px 4px rgba(0,0,0,0.15);';
 
     var header = document.createElement('div');
-    header.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #c0bcb4;';
-    header.innerHTML = '<img src="assets/icons/tango2kde/16x16/apps/kmix.png" alt="" width="16" height="16">';
+    header.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid #c0bcb4;';
+    header.innerHTML = '<img src="assets/icons/tango2kde/16x16/apps/kmix.png" alt="" width="14" height="14">';
     var headerText = document.createElement('span');
-    headerText.style.cssText = 'font-weight:bold;color:#000;font-size:12px;';
+    headerText.style.cssText = 'font-weight:bold;color:#000;font-size:11px;';
     headerText.textContent = 'Volume';
     header.appendChild(headerText);
     p.appendChild(header);
 
     var row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;';
 
     var muteBtn = document.createElement('span');
     muteBtn.style.cssText = 'cursor:pointer;display:flex;align-items:center;padding:2px;';
     muteBtn.innerHTML = '<img src="assets/icons/tango2kde/16x16/apps/kmix.png" alt="" width="10" height="10" style="opacity:0.6;">';
-    muteBtn.title = 'Mudo';
     row.appendChild(muteBtn);
 
-    var slider = document.createElement('input');
-    slider.type = 'range';
-    slider.min = '0';
-    slider.max = '100';
-    slider.value = Math.round(_volume * 100);
-    slider.style.cssText = 'flex:1;height:4px;cursor:pointer;border-radius:0;appearance:none;-webkit-appearance:none;';
-    slider.addEventListener('input', function() {
-      setVolume(this.value / 100);
+    var sliderWrap = document.createElement('div');
+    sliderWrap.style.cssText = 'position:relative;flex:1;height:26px;user-select:none;';
+
+    var trackEl = document.createElement('div');
+    trackEl.style.cssText = 'position:absolute;top:11px;left:0;right:0;height:6px;background:#b0aca4;border:1px solid #6a6660;border-radius:0;box-shadow:inset 0 1px 2px rgba(0,0,0,0.15);pointer-events:none;';
+
+    var fillEl = document.createElement('div');
+    fillEl.style.cssText = 'position:absolute;top:0;left:0;height:100%;background:#000080;pointer-events:none;';
+
+    var thumbEl = document.createElement('div');
+    thumbEl.style.cssText = 'position:absolute;top:5px;width:16px;height:16px;background:#d4d0c8;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #505050;border-bottom:2px solid #505050;box-shadow:inset -1px -1px 0 #888480;margin-left:-8px;box-sizing:border-box;cursor:pointer;';
+
+    trackEl.appendChild(fillEl);
+    sliderWrap.appendChild(trackEl);
+    sliderWrap.appendChild(thumbEl);
+
+    function setSliderVisual(val) {
+      var pct = val / 100;
+      fillEl.style.width = pct * 100 + '%';
+      thumbEl.style.left = pct * 100 + '%';
+    }
+
+    function snapAndSet(val) {
+      var snapped = Math.round(val / 5) * 5;
+      snapped = Math.max(0, Math.min(100, snapped));
+      setSliderVisual(snapped);
+      setVolume(snapped / 100);
+      pctLabel.textContent = snapped + '%';
       updateVolIcon();
+    }
+
+    var _sliderDragging = false;
+    function sliderPointer(e) {
+      var rect = sliderWrap.getBoundingClientRect();
+      var pct = (e.clientX - rect.left) / rect.width;
+      snapAndSet(pct * 100);
+    }
+
+    thumbEl.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      _sliderDragging = true;
+      sliderPointer(e);
+      document.addEventListener('mousemove', _sliderOnMove);
+      document.addEventListener('mouseup', _sliderOnUp);
     });
-    row.appendChild(slider);
+
+    function _sliderOnMove(e) {
+      if (!_sliderDragging) return;
+      sliderPointer(e);
+    }
+    function _sliderOnUp() {
+      _sliderDragging = false;
+      document.removeEventListener('mousemove', _sliderOnMove);
+      document.removeEventListener('mouseup', _sliderOnUp);
+    }
+
+    setSliderVisual(Math.round(_volume * 100 / 5) * 5);
+
+    row.appendChild(sliderWrap);
 
     var maxBtn = document.createElement('span');
     maxBtn.style.cssText = 'cursor:pointer;display:flex;align-items:center;padding:2px;';
-    maxBtn.innerHTML = '<img src="assets/icons/tango2kde/22x22/apps/kmix.png" alt="" width="16" height="16">';
-    maxBtn.title = 'Máximo';
+    maxBtn.innerHTML = '<img src="assets/icons/tango2kde/22x22/apps/kmix.png" alt="" width="14" height="14">';
     row.appendChild(maxBtn);
 
     p.appendChild(row);
 
     var pctLabel = document.createElement('div');
     pctLabel.id = 'volPct';
-    pctLabel.style.cssText = 'text-align:center;margin-top:4px;font-size:11px;color:#444;';
-    pctLabel.textContent = Math.round(_volume * 100) + '%';
+    pctLabel.style.cssText = 'text-align:center;margin-top:3px;font-size:11px;color:#444;';
+    pctLabel.textContent = Math.round(_volume * 100 / 5) * 5 + '%';
     p.appendChild(pctLabel);
 
     document.body.appendChild(p);
 
-    slider.addEventListener('input', function() {
-      pctLabel.textContent = Math.round(this.value) + '%';
-    });
-
     muteBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       if (_volume > 0) {
-        slider._prevVol = _volume;
+        sliderWrap._prevVol = _volume;
         setVolume(0);
       } else {
-        setVolume(slider._prevVol || 0.5);
+        setVolume(sliderWrap._prevVol || 0.5);
       }
-      slider.value = Math.round(_volume * 100);
-      pctLabel.textContent = Math.round(_volume * 100) + '%';
+      var snapped = Math.round(_volume * 100 / 5) * 5;
+      setSliderVisual(snapped);
+      pctLabel.textContent = snapped + '%';
       updateVolIcon();
     });
 

@@ -6,9 +6,9 @@
 
     var dragHandle   = opts.dragHandle   || win.querySelector('.title-bar');
     var tbEntry      = opts.taskbarEntry || null;
-    var btnClose     = opts.btnClose === false ? null : (opts.btnClose || win.querySelector('.win-btn[title="Close"]'));
-    var btnMinimize  = opts.btnMinimize  || win.querySelector('.win-btn[title="Minimize"]');
-    var btnMaximize  = opts.btnMaximize  || win.querySelector('.win-btn[title="Maximize"]');
+    var btnClose     = opts.btnClose === false ? null : (opts.btnClose || win.querySelector('.win-btn[data-wbtn="close"]'));
+    var btnMinimize  = opts.btnMinimize  || win.querySelector('.win-btn[data-wbtn="minimize"]');
+    var btnMaximize  = opts.btnMaximize  || win.querySelector('.win-btn[data-wbtn="maximize"]');
     var minW         = opts.minW || 500;
     var minH         = opts.minH || 300;
     var onMinimize   = opts.onMinimize || null;
@@ -73,7 +73,6 @@
           if (svg) {
             svg.innerHTML = '<rect x="2" y="2" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5"/>';
           }
-          btnMaximize.title = 'Maximize';
         }
       } else {
         saveRect();
@@ -90,7 +89,6 @@
           if (svg) {
             svg.innerHTML = '<rect x="1" y="4" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="4" y="1" width="11" height="11" fill="#d4d0c8" stroke="currentColor" stroke-width="1.2"/>';
           }
-          btnMaximize.title = 'Restore';
         }
       }
     }
@@ -580,7 +578,7 @@
 
     // Wire close button to hide + remove taskbar
     (function() {
-      var closeBtn = opts.btnClose || win.querySelector('.win-btn[title="Close"]');
+      var closeBtn = opts.btnClose || win.querySelector('.win-btn[data-wbtn="close"]');
       if (closeBtn) {
         closeBtn.addEventListener('click', function(e) {
           if (controls && controls.isMinimized()) return;

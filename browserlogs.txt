@@ -1,0 +1,272 @@
+
+12:17:43.267 Avisos de cookies 3
+12:18:00.249
+Object { resource_id: "f-3", attributes: {…}, _escapedAttributes: {}, cid: "c208", _setting: false, _previousAttributes: {…}, id: "c208", fatal: false, _submodels: [], options: {}, … }
+​
+_changed: Object {  }
+​
+_escapedAttributes: Object {  }
+​
+_previousAttributes: Object { message: "InvalidStateError: CanvasRenderingContext2D.createPattern: Passed-in canvas has width 0", fatal: false, id: "c208", … }
+​
+_setting: false
+​
+_submodels: Array []
+​
+attributes: Object { message: "InvalidStateError: CanvasRenderingContext2D.createPattern: Passed-in canvas has width 0", fatal: false, id: "c208", … }
+​
+cid: "c208"
+​
+fatal: false
+​
+id: "c208"
+​
+options: Object {  }
+​
+resource_id: "f-3"
+​
+<prototype>: Object { hold: g(e), release: f(e), _usageCount: _usageCount(), … }
+​
+<global>: Window https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2113920854&auto_play=false&show_artwork=true&visual=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&sharing=false&liking=false&download=false
+widget-9-4d9f35302af2.js:55:21921
+12:20:12.696 Requisição cross-origin bloqueada: A diretiva Same Origin (mesma origem) não permite a leitura do recurso remoto em https://api-widget.soundcloud.com/me?client_id=gqKBMSuBw5rbN9rDRYPqKNvF17ovlObu (motivo: falha na requisição CORS). Código de status: (null). 4
+12:20:36.644 Erro ao analisar o valor de ‘-webkit-text-size-adjust’.  Declaração descartada. player:1:315
+12:20:36.644 Pseudo-classe ou pseudo-elemento ‘-moz-focus-inner’ desconhecido.  Conjunto de regras ignorado devido a seletor incorreto. player:1:1537
+12:20:36.645 Erro ao analisar o valor de ‘transition’.  Declaração descartada. player:1:538
+12:20:36.646 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:357
+12:20:36.646 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:374
+12:20:36.646 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:437
+12:20:36.646 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:454
+12:20:36.646 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:282
+12:20:36.647 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘background-color’.  Declaração descartada. player:1:278
+12:20:36.654 Erro ao analisar o valor de ‘-webkit-text-size-adjust’.  Declaração descartada. player:1:315
+12:20:36.654 Pseudo-classe ou pseudo-elemento ‘-moz-focus-inner’ desconhecido.  Conjunto de regras ignorado devido a seletor incorreto. player:1:1537
+12:20:36.655 Erro ao analisar o valor de ‘transition’.  Declaração descartada. player:1:538
+12:20:36.655 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:357
+Elementos que correspondem ao seletor: .sharePanel-selection::selection
+NodeList []
+12:20:36.655 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:374
+12:20:36.655 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:437
+Elementos que correspondem ao seletor: .sharePanel-selection::selection
+NodeList []
+12:20:36.655 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:454
+Elementos que correspondem ao seletor: .sharePanel-selection::selection
+NodeList []
+12:20:36.656 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:282
+Elementos que correspondem ao seletor: .soundItem.g-highlighted, .soundItem.g-highlighted .soundItem__content, .soundItem.g-highlighted .soundStats, .soundItem.g-highlighted .soundTitle__title, .soundItem.g-highlighted .soundTitle__username
+NodeList(3) [ div.soundItem.g-highlighted.viewTrackLink, ul.soundStats.sc-ministats-group, div.sc-media-content.soundItem__content ]
+12:20:36.656 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘background-color’.  Declaração descartada. player:1:278
+12:20:36.663 Erro ao analisar o valor de ‘-webkit-text-size-adjust’.  Declaração descartada. player:1:315
+Elementos que correspondem ao seletor: html
+NodeList [ html ]
+12:20:36.664 Pseudo-classe ou pseudo-elemento ‘-moz-focus-inner’ desconhecido.  Conjunto de regras ignorado devido a seletor incorreto. player:1:1537
+12:20:36.664 Erro ao analisar o valor de ‘transition’.  Declaração descartada. player:1:538
+12:20:36.665 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:357
+12:20:36.665 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:374
+12:20:36.665 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:437
+12:20:36.665 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:454
+12:20:36.665 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:282
+12:20:36.666 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘background-color’.  Declaração descartada. player:1:278
+Elementos que correspondem ao seletor: .thinProgressbar__played
+NodeList [ div.thinProgressbar__layer.thinProgressbar__played ]
+12:20:36.675 Erro ao analisar o valor de ‘-webkit-text-size-adjust’.  Declaração descartada. player:1:315
+12:20:36.675 Pseudo-classe ou pseudo-elemento ‘-moz-focus-inner’ desconhecido.  Conjunto de regras ignorado devido a seletor incorreto. player:1:1537
+12:20:36.676 Erro ao analisar o valor de ‘transition’.  Declaração descartada. player:1:538
+12:20:36.677 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:357
+Elementos que correspondem ao seletor: .sharePanel-selection::selection
+NodeList []
+12:20:36.677 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:374
+12:20:36.677 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:437
+12:20:36.677 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:454
+12:20:36.677 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:282
+12:20:36.678 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘background-color’.  Declaração descartada. player:1:278
+12:20:36.690 Erro ao analisar o valor de ‘-webkit-text-size-adjust’.  Declaração descartada. player:1:315
+12:20:36.690 Pseudo-classe ou pseudo-elemento ‘-moz-focus-inner’ desconhecido.  Conjunto de regras ignorado devido a seletor incorreto. player:1:1537
+12:20:36.691 Erro ao analisar o valor de ‘transition’.  Declaração descartada. player:1:538
+12:20:36.692 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:357
+12:20:36.692 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:374
+12:20:36.692 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:437
+12:20:36.692 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:454
+12:20:36.692 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:282
+12:20:36.692 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘background-color’.  Declaração descartada. player:1:278
+12:20:36.694 Propriedade desconhecida ‘-moz-osx-font-smoothing’.  Declaração descartada. style.css:42:29
+12:20:36.694 Propriedade desconhecida ‘font-smooth’.  Declaração descartada. style.css:43:17
+12:20:36.701 Erro ao analisar o valor de ‘-webkit-text-size-adjust’.  Declaração descartada. player:1:315
+12:20:36.701 Pseudo-classe ou pseudo-elemento ‘-moz-focus-inner’ desconhecido.  Conjunto de regras ignorado devido a seletor incorreto. player:1:1537
+12:20:36.702 Erro ao analisar o valor de ‘transition’.  Declaração descartada. player:1:538
+12:20:36.703 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:357
+12:20:36.703 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:374
+12:20:36.703 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:437
+12:20:36.703 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:454
+12:20:36.703 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:282
+12:20:36.704 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘background-color’.  Declaração descartada. player:1:278
+12:20:36.711 Erro ao analisar o valor de ‘-webkit-text-size-adjust’.  Declaração descartada. player:1:315
+Elementos que correspondem ao seletor: html
+NodeList [ html ]
+12:20:36.711 Pseudo-classe ou pseudo-elemento ‘-moz-focus-inner’ desconhecido.  Conjunto de regras ignorado devido a seletor incorreto. player:1:1537
+12:20:36.712 Erro ao analisar o valor de ‘transition’.  Declaração descartada. player:1:538
+Elementos que correspondem ao seletor: .commentPopover:hover .commentPopover__wrapper
+NodeList []
+12:20:36.713 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:357
+12:20:36.713 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:374
+12:20:36.713 Erro ao analisar o valor de ‘background’.  Declaração descartada. player:1:437
+Elementos que correspondem ao seletor: .sharePanel-selection::selection
+NodeList []
+12:20:36.713 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:454
+Elementos que correspondem ao seletor: .sharePanel-selection::selection
+NodeList []
+12:20:36.713 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘color’.  Declaração descartada. player:1:282
+12:20:36.713 Esperada cor, mas encontrou ‘$’.  Erro ao analisar o valor de ‘background-color’.  Declaração descartada. player:1:278
+12:20:36.728 GET
+data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E
+
+Nenhum cabeçalho nesta requisição
+12:20:36.898 GET
+http://localhost:8080/assets/wallpaper-1920x1080.webp
+[HTTP/1 200 OK 0ms]
+
+
+GET
+	http://localhost:8080/assets/wallpaper-1920x1080.webp
+Status
+200
+OK
+VersãoHTTP/1
+Transferido13,41 kB (tamanho 13,41 kB)
+Referrer Policystrict-origin-when-cross-origin
+Prioridade da requisiçãoHigh
+Resolução de DNSSistema
+
+
+    Content-Length
+    	13414
+    Content-type
+    	image/webp
+    Date
+    	Sat, 23 May 2026 02:50:57 GMT
+    Last-Modified
+    	Wed, 20 May 2026 17:08:18 GMT
+    Server
+    	SimpleHTTP/0.6 Python/3.14.4
+
+    Accept
+    	image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+    Accept-Encoding
+    	gzip, deflate, br, zstd
+    Connection
+    	keep-alive
+    DNT
+    	1
+    Host
+    	localhost:8080
+    Referer
+    	http://localhost:8080/css/style.css
+    Sec-Fetch-Dest
+    	image
+    Sec-Fetch-Mode
+    	no-cors
+    Sec-Fetch-Site
+    	same-origin
+    Sec-GPC
+    	1
+    User-Agent
+    	Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0
+
+12:21:07.008 GET
+https://widget.sndcdn.com/assets/images/logo-200x120-3190df52.png
+[HTTP/2 200  0ms]
+
+
+GET
+	https://widget.sndcdn.com/assets/images/logo-200x120-3190df52.png
+Status
+200
+VersãoHTTP/2
+Transferido3,75 kB (tamanho 3,75 kB)
+Referrer Policystrict-origin-when-cross-origin
+Prioridade da requisiçãoLow
+Resolução de DNSSistema
+
+
+    accept-ranges
+    	bytes
+    access-control-allow-methods
+    	GET
+    access-control-allow-origin
+    	*
+    access-control-max-age
+    	3000
+    age
+    	1579831
+    cache-control
+    	public, max-age=31536000, immutable
+    content-length
+    	3745
+    content-type
+    	image/png
+    date
+    	Mon, 04 May 2026 19:54:08 GMT
+    etag
+    	"a1591e5274b36cfbae3e167dffe49970"
+    last-modified
+    	Wed, 29 Apr 2026 00:08:30 GMT
+    server
+    	AmazonS3
+    via
+    	1.1 2934036c9e92e9eeca7c708e2079c18a.cloudfront.net (CloudFront)
+    x-amz-cf-id
+    	1QwG71Uv4l-WS2q75gRk_bibnTHEAFeWxpDTDGM5lj_PUW2qSdE-cg==
+    x-amz-cf-pop
+    	FOR50-P3
+    x-amz-server-side-encryption
+    	AES256
+    x-amz-version-id
+    	V5I.0LViDctiJyvpaRsEY_LxCg9V8BB3
+    x-cache
+    	Hit from cloudfront
+    X-Firefox-Spdy
+    	h2
+
+    Accept
+    	image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+    Accept-Encoding
+    	gzip, deflate, br, zstd
+    Connection
+    	keep-alive
+    DNT
+    	1
+    Host
+    	widget.sndcdn.com
+    Referer
+    	https://w.soundcloud.com/
+    Sec-Fetch-Dest
+    	image
+    Sec-Fetch-Mode
+    	no-cors
+    Sec-Fetch-Site
+    	cross-site
+    Sec-Fetch-Storage-Access
+    	none
+    Sec-GPC
+    	1
+    User-Agent
+    	Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0
+
+12:21:23.067 GET
+https://widget.sndcdn.com/assets/images/logo-200x120-3190df52.png
+[HTTP/1.1 200 OK 0ms]
+
+12:22:27.776 Erro no mapa de código: Error: NetworkError when attempting to fetch resource.
+URL do recurso: https://widget.sndcdn.com/widget-9-4d9f35302af2.js
+URL do mapa de código: http://ent/web-sourcemaps/widget-9-4d9f35302af2.js.map
+12:22:27.777 Erro no mapa de código: Error: NetworkError when attempting to fetch resource.
+URL do recurso: https://widget.sndcdn.com/widget-0-46d8f78b156f.js
+URL do mapa de código: http://ent/web-sourcemaps/widget-0-46d8f78b156f.js.map
+12:22:31.483 Erro no mapa de código: Error: NetworkError when attempting to fetch resource.
+URL do recurso: https://widget.sndcdn.com/widget-9-4d9f35302af2.js
+URL do mapa de código: http://ent/web-sourcemaps/widget-9-4d9f35302af2.js.map 6
+12:23:36.232 Erro no mapa de código: Error: NetworkError when attempting to fetch resource.
+URL do recurso: https://widget.sndcdn.com/widget-0-46d8f78b156f.js
+URL do mapa de código: http://ent/web-sourcemaps/widget-0-46d8f78b156f.js.map 2
+
+​

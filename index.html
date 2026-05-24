@@ -78,7 +78,7 @@
                             <span
                                 class="win-btn"
                                 id="btnMinimize"
-                                title="Minimizar"
+                                data-wbtn="minimize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -95,7 +95,7 @@
                             <span
                                 class="win-btn"
                                 id="btnMaximize"
-                                title="Maximizar"
+                                data-wbtn="maximize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -111,7 +111,10 @@
                                         stroke-width="1.5"
                                     /></svg
                             ></span>
-                            <span class="win-btn" id="btnClose" title="Fechar"
+                            <span
+                                class="win-btn"
+                                id="btnClose"
+                                data-wbtn="close"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -155,44 +158,6 @@
                                 que pode virar algo maior.
                             </p>
                             <div class="projects-grid">
-                                <div
-                                    class="project-card"
-                                    onclick="
-                                        window.location.href = '/p/twitter/out/'
-                                    "
-                                    style="cursor: pointer"
-                                >
-                                    <div class="project-img">
-                                        <img
-                                            src="p/img/twitter.png"
-                                            alt="Twitter Clone"
-                                        />
-                                    </div>
-                                    <div class="project-body">
-                                        <h3>Twitter Clone</h3>
-                                        <p>
-                                            Cópia funcional do Twitter/X —
-                                            contas, feed, curtidas, respostas,
-                                            perfis e navegação. Uma rede social
-                                            completa, recriada do zero.
-                                        </p>
-                                        <div class="project-tags">
-                                            <span class="project-tag"
-                                                >Next.js</span
-                                            >
-                                            <span class="project-tag"
-                                                >TypeScript</span
-                                            >
-                                            <span class="project-tag"
-                                                >React</span
-                                            >
-                                            <span class="project-tag"
-                                                >Tailwind</span
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div
                                     class="project-card"
                                     onclick="
@@ -324,7 +289,7 @@
                             <span
                                 class="win-btn"
                                 id="chatBtnMinimize"
-                                title="Minimizar"
+                                data-wbtn="minimize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -341,7 +306,7 @@
                             <span
                                 class="win-btn"
                                 id="chatBtnMaximize"
-                                title="Maximizar"
+                                data-wbtn="maximize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -360,7 +325,7 @@
                             <span
                                 class="win-btn"
                                 id="chatBtnClose"
-                                title="Fechar"
+                                data-wbtn="close"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -430,7 +395,7 @@
                             <span
                                 class="win-btn"
                                 id="gamesBtnMinimize"
-                                title="Minimizar"
+                                data-wbtn="minimize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -447,7 +412,7 @@
                             <span
                                 class="win-btn"
                                 id="gamesBtnMaximize"
-                                title="Maximizar"
+                                data-wbtn="maximize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -466,7 +431,7 @@
                             <span
                                 class="win-btn"
                                 id="gamesBtnClose"
-                                title="Fechar"
+                                data-wbtn="close"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -512,7 +477,7 @@
                             <span
                                 class="win-btn"
                                 id="settingsBtnMinimize"
-                                title="Minimizar"
+                                data-wbtn="minimize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -529,7 +494,7 @@
                             <span
                                 class="win-btn"
                                 id="settingsBtnMaximize"
-                                title="Maximizar"
+                                data-wbtn="maximize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -548,7 +513,7 @@
                             <span
                                 class="win-btn"
                                 id="settingsBtnClose"
-                                title="Fechar"
+                                data-wbtn="close"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -672,18 +637,31 @@
                                         class="settings-desc"
                                         style="line-height: 1.8"
                                     >
-                                        <b>Win2K Desktop</b><br /><br />
-                                        feito por um maluco com HTML/CSS/JS
-                                        puro.<br /><br />
-                                        • janelas que arrastam, redimensionam,
-                                        minimizam<br />
-                                        • barra de tarefas com icones
-                                        dinâmicos<br />
-                                        • menu iniciar + icones na area de
-                                        trabalho<br />
-                                        • chat IA que conversa de boa<br />
-                                        • terminal com comandos de verdade<br />
-                                        • galeria de imagens + scanlines CRT<br /><br />
+                                        <b>Win2K Desktop</b><br />
+                                        Um desktop funcional feito por um maluco
+                                        com HTML/CSS/JS<br /><br />
+                                        O intuito deste espaço é ser um espaço
+                                        pessoal onde eu possa me expor, tipo um
+                                        instagram, mas melhor porque não é
+                                        controlado por uma bigtech, e é
+                                        totalmente feito e customizado por mim,
+                                        com base completamente em meus gostos e
+                                        preferências<br />
+                                        Sendo meu espaço de paz em meio a um
+                                        mundo frenético onde todos estão
+                                        competindo por algo<br />
+
+                                        <br /><br />
+
+                                        <b>Sobre o Autor</b><br /><br />
+                                        Podem me chamar de sillky ou ky pros
+                                        mais intimos, sou uma pessoa não
+                                        binária, pode me chamar com qualquer
+                                        pronome, tambem sou uma entusiasta de
+                                        tecnologia e amante de coisas antigas e
+                                        de culturas alternativas como hacker e
+                                        grunge
+                                        <br /><br />
                                         só isso. se divirta :)
                                     </p>
                                 </div>
@@ -733,7 +711,7 @@
                             <span
                                 class="win-btn"
                                 id="termBtnMinimize"
-                                title="Minimizar"
+                                data-wbtn="minimize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -750,7 +728,7 @@
                             <span
                                 class="win-btn"
                                 id="termBtnMaximize"
-                                title="Maximizar"
+                                data-wbtn="maximize"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -769,7 +747,7 @@
                             <span
                                 class="win-btn"
                                 id="termBtnClose"
-                                title="Fechar"
+                                data-wbtn="close"
                                 ><svg
                                     viewBox="0 0 16 16"
                                     width="14"
@@ -829,9 +807,9 @@
                             <span
                                 class="win-btn"
                                 id="scBtnMinimize"
-                                title="Minimizar"
+                                data-wbtn="minimize"
                             >
-                                <svg viewBox="0 0 16 16" width="10" height="10">
+                                <svg viewBox="0 0 16 16" width="14" height="14">
                                     <rect
                                         x="3"
                                         y="12"
@@ -844,9 +822,9 @@
                             <span
                                 class="win-btn"
                                 id="scBtnMaximize"
-                                title="Maximizar"
+                                data-wbtn="maximize"
                             >
-                                <svg viewBox="0 0 16 16" width="10" height="10">
+                                <svg viewBox="0 0 16 16" width="14" height="14">
                                     <rect
                                         x="3"
                                         y="3"
@@ -861,9 +839,9 @@
                             <span
                                 class="win-btn"
                                 id="scBtnClose"
-                                title="Fechar"
+                                data-wbtn="close"
                             >
-                                <svg viewBox="0 0 16 16" width="10" height="10">
+                                <svg viewBox="0 0 16 16" width="14" height="14">
                                     <line
                                         x1="3"
                                         y1="3"
@@ -892,31 +870,13 @@
                                         Playlists
                                     </div>
                                     <div id="scPlaylistItems"></div>
-                                    <div class="sc-playlist-bottom">
-                                        <span
-                                            class="sc-playlist-count"
-                                            id="scPlaylistCount"
-                                            >7 playlists</span
-                                        >
-                                    </div>
                                 </div>
                                 <div class="sc-artwork" id="scArtwork">
                                     <img src="" alt="" id="scArtImg" />
                                     <div
                                         class="sc-artwork-overlay"
                                         id="scArtOverlay"
-                                    >
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            width="32"
-                                            height="32"
-                                        >
-                                            <polygon
-                                                points="8,4 20,12 8,20"
-                                                fill="rgba(255,255,255,0.5)"
-                                            />
-                                        </svg>
-                                    </div>
+                                    ></div>
                                 </div>
                             </div>
                             <div class="sc-info">
@@ -947,7 +907,6 @@
                                 <button
                                     class="sc-btn sc-btn-sm"
                                     id="scBtnShuffle"
-                                    title="Aleatório"
                                 >
                                     <svg
                                         viewBox="0 0 16 16"
@@ -962,11 +921,7 @@
                                         />
                                     </svg>
                                 </button>
-                                <button
-                                    class="sc-btn sc-btn-sm"
-                                    id="scBtnPrev"
-                                    title="Anterior"
-                                >
+                                <button class="sc-btn sc-btn-sm" id="scBtnPrev">
                                     <svg
                                         viewBox="0 0 16 16"
                                         width="11"
@@ -981,7 +936,6 @@
                                 <button
                                     class="sc-btn sc-btn-play"
                                     id="scBtnPlay"
-                                    title="Tocar"
                                 >
                                     <svg
                                         viewBox="0 0 16 16"
@@ -1017,11 +971,7 @@
                                         />
                                     </svg>
                                 </button>
-                                <button
-                                    class="sc-btn sc-btn-sm"
-                                    id="scBtnNext"
-                                    title="Próxima"
-                                >
+                                <button class="sc-btn sc-btn-sm" id="scBtnNext">
                                     <svg
                                         viewBox="0 0 16 16"
                                         width="11"
@@ -1085,7 +1035,7 @@
                     </div>
                     <div class="taskbar-items"></div>
                     <div class="taskbar-tray" id="taskbarTray">
-                        <span class="tray-icon" id="trayVolume" title="Volume">
+                        <span class="tray-icon" id="trayVolume">
                             <img
                                 src="assets/icons/tango2kde/22x22/apps/kmix.png"
                                 alt=""
@@ -1104,7 +1054,7 @@
                     </div>
                     <div class="start-menu-body" id="startMenuBody">
                         <div class="start-menu-group-title">
-                            Usados mais frequentes
+                            Usados frequentemente
                         </div>
                         <div class="start-menu-item" data-action="terminal">
                             <img
