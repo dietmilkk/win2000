@@ -95,9 +95,6 @@
         "Dez",
       ];
 
-      const tz =
-        Intl.DateTimeFormat().resolvedOptions()?.timeZone || "desconhecido";
-      const conn = navigator.connection?.effectiveType || "desconhecida";
       const mem = navigator.deviceMemory
         ? `${navigator.deviceMemory}GB`
         : "desconhecida";
@@ -112,7 +109,6 @@
 
   Data: ${days[now.getDay()]} ${now.getDate()} de ${months[now.getMonth()]} de ${now.getFullYear()}
   Hora: ${now.toLocaleTimeString()}
-  Fuso: ${tz}
   SO: ${getOS()}
   Arquitetura: ${navigator.platform || "desconhecida"}
   Navegador: ${uaClean}
@@ -122,17 +118,14 @@
   Profundidade de Cor: ${screen.colorDepth}-bit
   Sessao: ${getUptime()}
   CPU: ${cpu}
-  RAM: ${mem}
-  Conexao: ${conn}`;
+  RAM: ${mem}`;
 
       printPre(info);
-      checkProtocol(); // Avisa no terminal se estiver usando file://
-      printPre("  Buscando dados externos (ipapi.co)...");
-
+      checkProtocol();
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      // Nova API altamente compatível e resiliente
+      // API
       fetch("https://ipapi.co/json/", { signal: controller.signal })
         .then((response) => {
           if (!response.ok) throw new Error("HTTP Status " + response.status);
@@ -156,7 +149,7 @@
           if (err.name === "AbortError") {
             printPre("  IP Externo: tempo limite excedido (8s)");
           } else {
-            // DIAGNÓSTICO: Mostra o erro real gerado pelo navegador na tela
+            // DIAGNÓSTICO:
             printPre("  IP Externo: Erro detectado -> " + err.toString());
           }
         });
