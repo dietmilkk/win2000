@@ -1,11 +1,14 @@
 ==Correções:
 
-use as fontes de @fonts, de forma que o site fique consistente e atraente, usando variaveis para cada grupo;
-analize esses dados coletados e corrija o maximo possivel sem perder a funcionalidade do site, tudo esta no arquivo : @browserlogs.txt
+a galeria pre-carregue os 10 mais proximos de cada direção < > sempre que o usuario se move para uma nova direção;
 
-aplique pequenos filtros em cima de tudo na tela que em conjunto vão dar uma ambientaçao de ambiente estéreo, pacifico, calmo e vazio;
+use o horario de am e pm no relogio, mas nao precisa de informaformar o am e pm, somente o horario;
 
-eu tava testando num computador windows e derrepente o player de musica parava de tocar as musicas, vasculhe e tente descubrir oq pode ter ocorrido e refine e deixe TODO codigo funcionando corretamente em todos os navegadores e sistemas operacionais desktop;
+quando testei no firefox, o soundcloud funcionou, mas o som saiu absurdamente baixo, como se o aumento de volume nao tivesse funcionando;
+
+analize esses dados coletados e corrija o maximo possivel sem perder a funcionalidade do site, tudo esta no arquivo: @browserlogs.txt
+
+otimize o css e organize TODO mas TODOS os arquivos e codigos, faça oq for necessario para manter o projeto organizado e facil de manter;
 
 
 
@@ -13,14 +16,18 @@ eu tava testando num computador windows e derrepente o player de musica parava d
 
 ==Novas funçoes:
 
-integrar chat de bate-papo com alternativa ja pre pronta
+use as fontes de @fonts, de forma que o site fique consistente e atraente, usando variaveis para cada grupo;
 
-Crie uma extensão Manifest V3 para o Chrome que remova os cabeçalhos 'X-Frame-Options' e 'Content-Security-Policy' do Discord e do YouTube usando declarativeNetRequest, Adicione um script que injete um iframe flutuante, arrastável e com o visual das janela DENTRO do site para carregar esses sites de forma integrada, a ideia é criar um tipo de browser interno dentro do site que consiga fazer de tudo, foque no simples porém funcional, integrar com o ublock origen para bloqueio de ads e melhorar a experiência do usuário
+aplique pequenos filtros em cima de tudo na tela que em conjunto vão dar uma ambientaçao de ambiente estéreo, pacifico, calmo e vazio;
+
+integrar chat de bate-papo com alternativa ja pre pronta
 
 diario editavel pelo proprio site
 
+gerenciador de arquivos publico
+
 sistema de armazenamento de dados permanente
 
-gerenciador de arquivos publico
+Crie uma extensão Manifest V3 para o Chrome que remova os cabeçalhos 'X-Frame-Options' e 'Content-Security-Policy' do Discord e do YouTube usando declarativeNetRequest, Adicione um script que injete um iframe flutuante, arrastável e com o visual das janela DENTRO do site para carregar esses sites de forma integrada, a ideia é criar um tipo de browser interno dentro do site que consiga fazer de tudo, foque no simples porém funcional, integrar com o ublock origen para bloqueio de ads e melhorar a experiência do usuário
 
 Crie uma extensão Manifest V3 para o Chrome e a estrutura de um site (Web OS) integrado à API do Google Drive usando o Google Sign-In para autenticação simplificada através de um menu de configurações. A extensão deve usar 'declarativeNetRequest' e a permissão de 'cookies' para remover restrições de iframe (X-Frame-Options/CSP) do Discord e YouTube. O sistema deve criptografar e sincronizar na conta do Google Drive do usuário: 1) O estado das janelas e arquivos do Web OS e 2) Os cookies de sessão dos iframes, injetando-os automaticamente em computadores diferentes para manter o usuário sempre logado

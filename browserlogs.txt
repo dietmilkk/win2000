@@ -156,3 +156,27 @@ URL do recurso: https://widget.sndcdn.com/widget-9-4d9f35302af2.js
 URL do mapa de código: http://ent/web-sourcemaps/widget-9-4d9f35302af2.js.map
 
 ​
+
+============
+
+no chrome:
+
+api-widget.soundcloud.com/me?client_id=gqKBMSuBw5rbN9rDRYPqKNvF17ovlObu:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+api-widget.soundcloud.com/me?client_id=gqKBMSuBw5rbN9rDRYPqKNvF17ovlObu:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+api-widget.soundcloud.com/me?client_id=gqKBMSuBw5rbN9rDRYPqKNvF17ovlObu:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+api-widget.soundcloud.com/me?client_id=gqKBMSuBw5rbN9rDRYPqKNvF17ovlObu:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+api-widget.soundcloud.com/me?client_id=gqKBMSuBw5rbN9rDRYPqKNvF17ovlObu:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+api-widget.soundcloud.com/me?client_id=gqKBMSuBw5rbN9rDRYPqKNvF17ovlObu:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+Encrypted Media access has been blocked because of a Feature Policy applied to the current document. See https://crbug.com/414348233 for more details.
+The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.ch40me.qjz9zk/blog/autoplay/#web_audio
+Uncaught (in promise) AbortError: signal is aborted without reason
+    at f._abort (widget-9-4d9f35302af2.js:32:198079)
+    at f.abort (widget-9-4d9f35302af2.js:32:33828)
+    at Object.onCancel (widget-9-4d9f35302af2.js:32:335166)
+    at cancel (widget-9-4d9f35302af2.js:32:78363)
+    at Object.abort (widget-9-4d9f35302af2.js:32:335437)
+    at Object.abort (widget-9-4d9f35302af2.js:32:32345)
+    at Object.abort (widget-9-4d9f35302af2.js:32:332518)
+    at Object.abort (widget-9-4d9f35302af2.js:32:32345)
+    at Object.abort (widget-9-4d9f35302af2.js:32:30984)
+    at Object.abort (widget-9-4d9f35302af2.js:32:32345)

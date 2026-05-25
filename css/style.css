@@ -628,17 +628,11 @@ p {
     background: linear-gradient(180deg, #c8c4bc, #d4d0c8);
 }
 
-.start-orb {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .start-text {
     font-size: 13px;
     font-weight: 700;
     color: #000;
-    padding: 3px 0 1px;
+    padding: 3px;
 }
 
 .quick-launch {
@@ -1209,159 +1203,6 @@ p {
     background: #b0aca4;
 }
 
-/* ========== MOBILE MODE — simplified content view ========== */
-
-body.mobile-mode {
-    overflow: hidden !important;
-}
-body.mobile-mode .desktop {
-    height: 100vh !important;
-    min-height: 100vh;
-    overflow: hidden !important;
-    background-size: cover;
-    background-attachment: fixed;
-    background-color: #327e32;
-}
-body.mobile-mode .desktop::after,
-body.mobile-mode .desktop-icons,
-body.mobile-mode .start-menu,
-body.mobile-mode .ctx-menu,
-body.mobile-mode .resize-edge,
-body.mobile-mode .resize-corner,
-body.mobile-mode .resize-handle {
-    display: none !important;
-}
-
-body.mobile-mode .window {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 34px !important;
-    width: auto !important;
-    height: auto !important;
-    border: none !important;
-    box-shadow: none !important;
-    transform: none !important;
-    margin: 0 !important;
-    z-index: 100 !important;
-    display: none !important;
-}
-body.mobile-mode .window.active {
-    display: flex !important;
-}
-body.mobile-mode .title-bar {
-    background: #000080;
-    padding: 8px 12px;
-    min-height: auto;
-}
-body.mobile-mode .title-bar-buttons {
-    display: none;
-}
-body.mobile-mode .window-body {
-    overflow-y: auto !important;
-    padding: 10px 12px 16px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    max-height: none !important;
-    -webkit-overflow-scrolling: touch;
-}
-body.mobile-mode .window-body::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-}
-body.mobile-mode .content-area {
-    padding: 0;
-    max-width: 100%;
-}
-body.mobile-mode .projects-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-}
-body.mobile-mode .project-img img {
-    height: 130px;
-}
-body.mobile-mode .section-header {
-    font-size: 11px;
-    margin: 10px 0 6px;
-}
-body.mobile-mode fieldset {
-    padding: 10px;
-    margin-bottom: 8px;
-}
-body.mobile-mode .xp-dialog-overlay {
-    z-index: 99999;
-}
-
-/* keep taskbar but make it compact */
-body.mobile-mode .taskbar {
-    position: fixed;
-    height: 34px;
-    z-index: 9999;
-}
-body.mobile-mode .start-btn {
-    height: 26px;
-    padding: 2px 8px 2px 3px;
-}
-body.mobile-mode .start-text {
-    display: none;
-}
-body.mobile-mode .start-orb svg {
-    width: 14px;
-    height: 14px;
-}
-body.mobile-mode .quick-launch {
-    display: none;
-}
-body.mobile-mode .taskbar-item {
-    flex: 1;
-    font-size: 9px;
-    min-width: 0;
-    max-width: none;
-    justify-content: center;
-}
-body.mobile-mode .taskbar-item svg {
-    width: 12px;
-    height: 12px;
-}
-body.mobile-mode .taskbar-tray {
-    gap: 1px;
-}
-body.mobile-mode .tray-clock {
-    font-size: 9px;
-    min-width: 28px;
-}
-body.mobile-mode .tray-icon svg {
-    width: 10px;
-    height: 10px;
-}
-
-/* chat window in mobile mode — hidden by default, shown via .active */
-body.mobile-mode #chatWindow {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 34px;
-    width: auto !important;
-    height: auto !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    display: none !important;
-}
-body.mobile-mode #chatWindow.active {
-    display: flex !important;
-}
-body.mobile-mode .chat-container {
-    max-height: none !important;
-}
-body.mobile-mode .chat-messages {
-    max-height: 240px;
-    overflow-y: auto;
-}
-
 /* ========== TERMINAL STYLES ========== */
 
 #termWindow {
@@ -1433,25 +1274,6 @@ body.mobile-mode .chat-messages {
     font-size: 12px;
     caret-color: #22aa55;
     padding: 2px 0;
-}
-
-/* Mobile mode for terminal */
-body.mobile-mode #termWindow {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 34px !important;
-    width: auto !important;
-    height: auto !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    display: none !important;
-    z-index: 100 !important;
-}
-body.mobile-mode #termWindow.active {
-    display: flex !important;
 }
 
 /* ========== ANIMATIONS ========== */
@@ -1666,10 +1488,6 @@ body.mobile-mode #termWindow.active {
     }
     .start-text {
         font-size: 9px;
-    }
-    .start-orb svg {
-        width: 14px;
-        height: 14px;
     }
     .tray-clock {
         font-size: 9px;
