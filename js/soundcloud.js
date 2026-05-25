@@ -544,7 +544,7 @@
   // Brute-force: re-sync volume periodically to catch any missed READY events
   setInterval(function () {
     syncActiveVolume();
-  }, 2000);
+  }, 200);
 
   function showAllIframes() {
     if (!elIframeWrap) return;

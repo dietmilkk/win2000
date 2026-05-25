@@ -139,8 +139,7 @@
     row.appendChild(sliderWrap);
 
     var maxBtn = document.createElement("span");
-    maxBtn.style.cssText =
-      "cursor:pointer;display:flex;align-items:center;padding:2px;";
+    maxBtn.style.cssText = "display:flex;align-items:center;padding:2px;";
     maxBtn.innerHTML =
       '<img src="assets/system/icons/tango2kde/22x22/apps/kmix.png" alt="" width="14" height="14">';
     row.appendChild(maxBtn);

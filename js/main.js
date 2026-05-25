@@ -118,7 +118,7 @@
     .addEventListener("click", toggleShowDesktop);
 
   /* ================================================================
-       DESKTOP ICONS — select, drag, double-click
+       DESKTOP ICONS
        ================================================================ */
 
   var deskIcons = document.querySelectorAll(".desk-icon");
