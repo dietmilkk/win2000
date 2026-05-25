@@ -14,7 +14,7 @@
       var el = document.createElement("div");
       el.id = "retroCursor";
       el.innerHTML =
-        '<img src="assets/cursors/Normal%20Select.cur" class="rc-img"><img src="assets/cursors/Link%20Select.cur" class="rc-img" style="display:none"><img src="assets/cursors/Text%20Select.cur" class="rc-img" style="display:none"><img src="assets/cursors/Move.cur" class="rc-img" style="display:none"><img src="assets/cursors/Vertical%20Resize.cur" class="rc-img" style="display:none"><img src="assets/cursors/Horizontal%20Resize.cur" class="rc-img" style="display:none"><img src="assets/cursors/Diagonal%20Resize%201.cur" class="rc-img" style="display:none"><img src="assets/cursors/Diagonal%20Resize%202.cur" class="rc-img" style="display:none"><img src="assets/cursors/Busy.cur" class="rc-img" style="display:none"><img src="assets/cursors/Working%20in%20Background.cur" class="rc-img" style="display:none"><img src="assets/cursors/Unavailable.cur" class="rc-img" style="display:none"><img src="assets/cursors/Help%20Select.cur" class="rc-img" style="display:none">';
+        '<img src="assets/system/cursors/Normal%20Select.cur" class="rc-img"><img src="assets/system/cursors/Link%20Select.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Text%20Select.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Move.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Vertical%20Resize.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Horizontal%20Resize.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Diagonal%20Resize%201.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Diagonal%20Resize%202.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Busy.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Working%20in%20Background.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Unavailable.cur" class="rc-img" style="display:none"><img src="assets/system/cursors/Help%20Select.cur" class="rc-img" style="display:none">';
       document.body.appendChild(el);
 
       var ss = document.createElement("style");
@@ -180,10 +180,39 @@
 
   function _initGallery() {
     if (_galleryList) return;
-    _galleryList = [ 
-"Among Us GIF.gif","Animated GIF.gif","Anime Girl GIF.gif","Apple Fruit GIF.gif","a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-4vs0wh5f8d0c1.webp","a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-6bs2wx9g8d0c1.webp","Baby Niche GIF.gif","Blue Cat GIF by Justin.gif","Bye Bye Skeleton GIF.gif","chuunibyou demo koi ga shitai dance GIF.gif","cute anime GIF.gif","Dance Skeleton GIF.gif","dancing GIF.gif","Danse Macabre Fun GIF by Kiszkiloszki.gif","gif.gif","Gif.gif","khanh2k6.gif","Om Nom Eating GIF.gif","Spinner Fern GIF.gif","taiga aisaka t GIF.gif","Working Chis Sweet Home GIF.gif"
+    _galleryList = [
+      "Among Us GIF.gif",
+      "Animated GIF.gif",
+      "Anime Girl GIF.gif",
+      "Apple Fruit GIF.gif",
+      "a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-4vs0wh5f8d0c1.webp",
+      "a-side-effect-of-lackadaisy-brainrot-no-one-tells-you-is-v0-6bs2wx9g8d0c1.webp",
+      "Baby Niche GIF.gif",
+      "Blue Cat GIF by Justin.gif",
+      "Bye Bye Skeleton GIF.gif",
+      "chuunibyou demo koi ga shitai dance GIF.gif",
+      "cute anime GIF.gif",
+      "Dance Skeleton GIF.gif",
+      "dancing GIF.gif",
+      "Danse Macabre Fun GIF by Kiszkiloszki.gif",
+      "gif.gif",
+      "Gif.gif",
+      "khanh2k6.gif",
+      "Om Nom Eating GIF.gif",
+      "Spinner Fern GIF.gif",
+      "taiga aisaka t GIF.gif",
+      "Working Chis Sweet Home GIF.gif",
     ];
     _reshuffle();
+  }
+
+  if (W2K && W2K.AppRegistry) {
+    W2K.AppRegistry.register("randomgif", {
+      label: "Galeria GIF",
+      show: function () {
+        window.openGallery();
+      },
+    });
   }
 
   window.openGallery = function () {
@@ -204,7 +233,8 @@
 
     var overlay = document.createElement("div");
     overlay.id = "galleryOverlay";
-    overlay.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;outline:none";
+    overlay.style.cssText =
+      "position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:999998;display:flex;align-items:center;justify-content:center;outline:none";
     overlay.setAttribute("tabindex", "0");
 
     var img = document.createElement("img");
@@ -214,8 +244,14 @@
 
     var total = _galleryList.length;
     var info = document.createElement("div");
-    info.style.cssText = "position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999";
-    info.textContent = "SPACE para sair | ← → para navegar (" + (_shufflePos + 1) + "/" + total + ")";
+    info.style.cssText =
+      "position:fixed;bottom:20px;left:20px;color:#fff;font-family:monospace;font-size:14px;background:rgba(0,0,0,0.7);padding:8px 12px;z-index:999999";
+    info.textContent =
+      "SPACE para sair | ← → para navegar (" +
+      (_shufflePos + 1) +
+      "/" +
+      total +
+      ")";
     overlay.appendChild(info);
 
     document.body.appendChild(overlay);
@@ -227,7 +263,12 @@
       var name = _shuffled[_shufflePos];
       img.src = "assets/gallery/" + encodeURIComponent(name);
       preload(name);
-      info.textContent = "SPACE para sair | ← → para navegar (" + (_shufflePos + 1) + "/" + total + ")";
+      info.textContent =
+        "SPACE para sair | ← → para navegar (" +
+        (_shufflePos + 1) +
+        "/" +
+        total +
+        ")";
     }
 
     function prev() {
@@ -236,7 +277,12 @@
       var name = _shuffled[_shufflePos];
       img.src = "assets/gallery/" + encodeURIComponent(name);
       preload(name);
-      info.textContent = "SPACE para sair | ← → para navegar (" + (_shufflePos + 1) + "/" + total + ")";
+      info.textContent =
+        "SPACE para sair | ← → para navegar (" +
+        (_shufflePos + 1) +
+        "/" +
+        total +
+        ")";
     }
 
     overlay.addEventListener("keydown", function (e) {

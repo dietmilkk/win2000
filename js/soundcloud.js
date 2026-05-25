@@ -179,17 +179,15 @@
         label.className = "sc-playlist-item-label";
         label.textContent = pl.label;
         e.appendChild(label);
-        if (pl.default === false) {
-          var rm = document.createElement("span");
-          rm.className = "sc-playlist-remove";
-          rm.innerHTML =
-            '<svg viewBox="0 0 10 10" width="10" height="10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>';
-          rm.addEventListener("click", function (e) {
-            e.stopPropagation();
-            removePlaylist(pl.id);
-          });
-          e.appendChild(rm);
-        }
+        var rm = document.createElement("span");
+        rm.className = "sc-playlist-remove";
+        rm.innerHTML =
+          '<svg viewBox="0 0 10 10" width="10" height="10"><line x1="2" y1="2" x2="8" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="2" x2="2" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>';
+        rm.addEventListener("click", function (e) {
+          e.stopPropagation();
+          removePlaylist(pl.id);
+        });
+        e.appendChild(rm);
         e.addEventListener("click", function () {
           switchPlaylist(pl.id);
         });
@@ -199,8 +197,9 @@
 
     var addBtn = document.createElement("button");
     addBtn.className = "sc-playlist-add";
+    addBtn.title = "Adicionar playlist";
     addBtn.innerHTML =
-      '<svg viewBox="0 0 10 10" width="10" height="10"><line x1="5" y1="1" x2="5" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="1" y1="5" x2="9" y2="5" stroke="currentColor" stroke-width="1.5"/></svg> Adicionar playlist';
+      '<svg viewBox="0 0 10 10" width="10" height="10"><line x1="5" y1="1" x2="5" y2="9" stroke="currentColor" stroke-width="1.5"/><line x1="1" y1="5" x2="9" y2="5" stroke="currentColor" stroke-width="1.5"/></svg>';
     addBtn.addEventListener("click", showAddDialog);
     elPlaylistItems.appendChild(addBtn);
 
@@ -211,10 +210,10 @@
   function showAddDialog() {
     xpDialog({
       title: "Adicionar playlist",
-      icon: "@",
+      icon: '<img src="assets/system/icons/tango2kde/32x32/filesystems/folder_sound_blue.png" alt="" width="32" height="32">',
       type: "prompt",
       message: "Cole o link da playlist do SoundCloud:",
-      defaultValue: "https://soundcloud.com/",
+      defaultValue: "",
       width: "400px",
       callback: function (val) {
         if (val && val.indexOf("soundcloud.com") !== -1) {
@@ -298,7 +297,7 @@
     iframe.frameBorder = "no";
     iframe.scrolling = "no";
     iframe.style.position = "absolute";
-    iframe.style.left = "-9999px";
+    iframe.style.left = "0";
     iframe.style.top = "0";
     iframe.style.width = "400px";
     iframe.style.height = "166px";
@@ -408,6 +407,7 @@
     }
 
     activePlaylistId = id;
+    syncActiveVolume();
     renderPlaylists();
     stopPoll();
     showAllIframes();
@@ -513,15 +513,20 @@
     }
   }
 
-  /* ===== Volume sync with tray slider (3x boost) ===== */
+  /* ===== Volume sync ===== */
+  var _lastSyncedVol = -1;
+
   function syncActiveVolume() {
     if (
       !widgets[activePlaylistId] ||
       typeof window.getPageVolume !== "function"
     )
       return;
+    var v = window.getPageVolume();
+    if (v === _lastSyncedVol) return;
+    _lastSyncedVol = v;
     try {
-      widgets[activePlaylistId].setVolume(window.getPageVolume() * 3);
+      widgets[activePlaylistId].setVolume(v);
     } catch (e) {}
   }
 
@@ -529,11 +534,17 @@
     for (var id in widgets) {
       if (widgets[id] && widgetReadies[id]) {
         try {
-          widgets[id].setVolume(v * 3);
+          widgets[id].setVolume(v);
         } catch (e) {}
       }
     }
+    _lastSyncedVol = v;
   };
+
+  // Brute-force: re-sync volume periodically to catch any missed READY events
+  setInterval(function () {
+    syncActiveVolume();
+  }, 2000);
 
   function showAllIframes() {
     if (!elIframeWrap) return;
@@ -568,7 +579,7 @@
         iframe.frameBorder = "no";
         iframe.scrolling = "no";
         iframe.style.position = "absolute";
-        iframe.style.left = "-9999px";
+        iframe.style.left = "0";
         iframe.style.top = "0";
         iframe.style.width = "400px";
         iframe.style.height = "166px";
@@ -698,10 +709,20 @@
     }
   }
 
-  function scrollActive() {
+  function centerCurrentTrack() {
     if (!elTrackList) return;
     var a = elTrackList.querySelector(".sc-track-item-active");
-    if (a) a.scrollIntoView({ block: "nearest" });
+    if (!a) return;
+    var container = elTrackList;
+    var cTop = container.getBoundingClientRect().top;
+    var cH = container.clientHeight;
+    var aTop = a.getBoundingClientRect().top;
+    var aH = a.offsetHeight;
+    container.scrollTop += aTop - cTop - cH / 2 + aH / 2;
+  }
+
+  function scrollActive() {
+    centerCurrentTrack();
   }
 
   function refreshHighlight() {
@@ -1108,7 +1129,7 @@
     minW: 420,
     minH: 500,
     taskbarIcon:
-      '<img src="assets/icons/kwin18.png" alt="" width="14" height="14" style="flex-shrink:0;">',
+      '<img src="assets/system/icons/kwin18.png" alt="" width="14" height="14" style="flex-shrink:0;">',
     taskbarLabel: "SoundCloud Player",
     onShow: function () {
       win.style.width = "417px";
@@ -1176,13 +1197,14 @@
     return behavior.hasTaskbarEntry();
   };
 
-  if (window.registerWindow) {
-    registerWindow({
-      minimize: function () {
-        behavior.minimize();
-      },
+  if (W2K && W2K.AppRegistry) {
+    W2K.AppRegistry.register("soundcloud", {
+      label: "SoundCloud Player",
       show: function () {
         behavior.show();
+      },
+      minimize: function () {
+        behavior.minimize();
       },
       hasEntry: function () {
         return behavior.hasTaskbarEntry();

@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var SYSTEM_PROMPT = `Você é uma amiga sincera e divertida que mora dentro de um desktop Windows 2000. Use o mesmo idioma da pessoa, no casual, sem firmeza. Sem emojis/lista/formatação, mas pode usar figuras tipo ^^ ou :P. Máximo 2 parágrafos. Se não tiver certeza de algo, só fala que não tem certeza.`;
+  var SYSTEM_PROMPT = `Você é uma amiga sincera e divertida que mora dentro de um desktop Windows 2000. Use o casual, sem firmeza. Sem emojis/lista/formatação, mas pode usar figuras tipo ^^ ou :P. Máximo 2 parágrafos curtos. Se não tiver certeza de algo, só fala que não tem certeza.`;
 
   /* ----------------------------------------------------------
      WINDOW MANAGEMENT
@@ -22,7 +22,7 @@
     minW: 360,
     minH: 300,
     taskbarIcon:
-      '<img src="assets/icons/tango2kde/16x16/apps/kopete.png" alt="" width="14" height="14" style="flex-shrink:0;">',
+      '<img src="assets/system/icons/tango2kde/16x16/apps/kopete.png" alt="" width="14" height="14" style="flex-shrink:0;">',
     taskbarLabel: "Chat IA",
     onShow: function () {
       chatWin.style.width = "360px";
@@ -30,7 +30,7 @@
     },
     onHide: function () {
       var msgs = document.getElementById("chatMessages");
-      if (msgs) msgs.innerHTML = '';
+      if (msgs) msgs.innerHTML = "";
     },
   });
 
@@ -47,13 +47,14 @@
     return chatBehavior.hasTaskbarEntry();
   };
 
-  if (window.registerWindow) {
-    registerWindow({
-      minimize: function () {
-        chatBehavior.minimize();
-      },
+  if (W2K && W2K.AppRegistry) {
+    W2K.AppRegistry.register("chat", {
+      label: "Chat IA",
       show: function () {
         chatBehavior.show();
+      },
+      minimize: function () {
+        chatBehavior.minimize();
       },
       hasEntry: function () {
         return chatBehavior.hasTaskbarEntry();

@@ -1,6 +1,7 @@
 (function () {
   "use strict";
 
+  // Mapeamento dos elementos do DOM
   var termWin = document.getElementById("termWindow");
   var termBody = document.getElementById("termBody");
   var termDragHandle = document.getElementById("termDragHandle");
@@ -10,13 +11,28 @@
   var termBtnMinimize = document.getElementById("termBtnMinimize");
   var termBtnMaximize = document.getElementById("termBtnMaximize");
 
+  // Estado do Terminal
   var currentDir = "C:\\";
   var cmdHistory = [];
   var historyIndex = -1;
   var terminalFirstOpen = true;
   var _pageLoad = Date.now();
+
   function getHostname() {
     return window.location.hostname || "localhost";
+  }
+
+  // Detecta se o script está rodando incorretamente via arquivo local
+  function checkProtocol() {
+    if (window.location.protocol === "file:") {
+      printPre("  [AVISO] Voce abriu o HTML direto do PC (file://).");
+      printPre(
+        "          Requisicoes de API podem ser bloqueadas pelo navegador.",
+      );
+      printPre(
+        "          Recomenda-se usar um servidor local (ex: Live Server).",
+      );
+    }
   }
 
   function getUptime() {
@@ -28,7 +44,7 @@
   }
 
   function getOS() {
-    var ua = navigator.userAgent;
+    var ua = navigator.userAgent || "";
     if (ua.indexOf("Windows NT 10") !== -1) return "Windows 10";
     if (ua.indexOf("Windows NT 6.3") !== -1) return "Windows 8.1";
     if (ua.indexOf("Windows NT 6.2") !== -1) return "Windows 8";
@@ -43,200 +59,115 @@
     return "Desconhecido";
   }
 
+  // Lista de comandos suportados
   var commands = {
     help: function () {
       return (
         "Comandos disponiveis:\n" +
+        "  help       Mostra esta ajuda\n" +
         "  clear      Limpar a tela\n" +
         "  data       Informacoes do sistema\n" +
-        "  help       Mostra esta ajuda\n" +
-        "  ipconfig   Configuracao de rede\n" +
-        "  ping       Testar conexao\n" +
         "  uptime     Tempo de atividade"
       );
     },
     clear: function () {
-      termOutput.innerHTML = "";
+      if (termOutput) termOutput.innerHTML = "";
       return "";
-    },
-    ipconfig: function () {
-      var host = getHostname().toUpperCase();
-      var os = getOS();
-      var conn = "";
-      try { conn = navigator.connection ? navigator.connection.effectiveType : ""; } catch (e) {}
-      var cpu = "";
-      try { cpu = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + " core" : ""; } catch (e) {}
-      var mem = "";
-      try { mem = navigator.deviceMemory ? navigator.deviceMemory + "GB" : ""; } catch (e) {}
-
-      var base =
-        "\n" +
-        "Windows 2000 IP Configuration\n\n" +
-        "        Host Name . . . . . . . . . : " + host + "\n" +
-        "        Primary DNS Suffix . . . . : \n" +
-        "        Node Type . . . . . . . . . : Hybrid\n" +
-        "        IP Routing Enabled. . . . . : Yes\n" +
-        "        WINS Proxy Enabled. . . . . : No\n\n" +
-        "Ethernet adapter Local Area Connection:\n\n" +
-        "        Connection-specific DNS Suffix. : \n" +
-        "        Description . . . . . . . . . . : " + os + " | " + (cpu || "desconhecido") + "\n" +
-        "        Physical Address. . . . . . . . : Nao disponivel via navegador\n" +
-        "        DHCP Enabled. . . . . . . . . . : Yes\n" +
-        "        Autoconfiguration Enabled . . . : Yes\n";
-      printPre(base);
-      printPre("  Obtendo configuracao externa...");
-      var xhr = new XMLHttpRequest();
-      xhr.open(
-        "GET",
-        "https://ip-api.com/json/?fields=status,country,regionName,city,isp,org,as,query,lat,lon,timezone",
-      );
-      xhr.timeout = 8000;
-      xhr.onload = function () {
-        if (xhr.status === 200 && xhr.responseText) {
-          try {
-            var d = JSON.parse(xhr.responseText);
-            if (d.status === "success") {
-              var ext =
-                "\n" +
-                "External (WAN) Configuration:\n\n" +
-                "        IPv4 Address. . . . . . . . : " + d.query + "\n" +
-                "        Country . . . . . . . . . . : " + d.country + "\n" +
-                "        Region . . . . . . . . . . : " + d.regionName + "\n" +
-                "        City . . . . . . . . . . . : " + d.city + "\n" +
-                "        ISP . . . . . . . . . . . : " + d.isp + "\n" +
-                "        Organization . . . . . . . : " + d.org + "\n" +
-                "        AS . . . . . . . . . . . . : " + d.as + "\n" +
-                "        Timezone . . . . . . . . . : " + d.timezone + "\n" +
-                "        Coordinates . . . . . . . : " + d.lat + ", " + d.lon + "\n";
-              printPre(ext);
-            } else {
-              printPre("\nExternal IP: unavailable (" + (d.message || "error") + ")");
-            }
-          } catch (e) {
-            printPre("\nExternal IP: error processing response");
-          }
-        } else {
-          printPre("\nExternal IP: query failed");
-        }
-      };
-      xhr.onerror = function () {
-        printPre("\nExternal IP: server unreachable");
-      };
-      xhr.ontimeout = function () {
-        printPre("\nExternal IP: timeout exceeded");
-      };
-      xhr.send();
-      return "";
-    },
-    ping: function (args) {
-      var target = args || "localhost";
-      var results = [];
-      results.push("\nPingando " + target + " com 32 bytes de dados:");
-      var times = [];
-      for (var i = 0; i < 4; i++) {
-        times.push(Math.floor(Math.random() * 40 + 5));
-      }
-      for (var i = 0; i < 4; i++) {
-        results.push(
-          "Resposta de " +
-            target +
-            ": bytes=32 tempo=" +
-            times[i] +
-            "ms TTL=128",
-        );
-      }
-      var min = Math.min.apply(null, times);
-      var max = Math.max.apply(null, times);
-      var avg = Math.floor(
-        times.reduce(function (a, b) {
-          return a + b;
-        }, 0) / times.length,
-      );
-      results.push("\nEstatisticas do ping para " + target + ":");
-      results.push(
-        "    Pacotes: Enviados = 4, Recebidos = 4, Perdidos = 0 (0% de perda),",
-      );
-      results.push("Tempo aproximado em milissegundos:");
-      results.push(
-        "    Minimo = " +
-          min +
-          "ms, Maximo = " +
-          max +
-          "ms, Medio = " +
-          avg +
-          "ms",
-      );
-      return results.join("\n");
     },
     uptime: function () {
       return "Tempo de atividade: " + getUptime();
     },
     data: function () {
-      var now = new Date();
-      var days = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
-      var months = [
-        "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-        "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+      const now = new Date();
+      const days = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
+      const months = [
+        "Jan",
+        "Fev",
+        "Mar",
+        "Abr",
+        "Mai",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Set",
+        "Out",
+        "Nov",
+        "Dez",
       ];
-      var tz = "";
-      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
-      var conn = "";
-      try { conn = navigator.connection ? navigator.connection.effectiveType : ""; } catch (e) {}
-      var mem = "";
-      try { mem = navigator.deviceMemory ? navigator.deviceMemory + "GB" : ""; } catch (e) {}
-      var cpu = "";
-      try { cpu = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + " core" : ""; } catch (e) {}
-      var info =
-        "Informacoes do Sistema\n\n" +
-        "  Data: " + days[now.getDay()] + ", " + now.getDate() + " de " + months[now.getMonth()] + " de " + now.getFullYear() + "\n" +
-        "  Hora: " + now.toLocaleTimeString() + "\n" +
-        "  Fuso: " + (tz || "desconhecido") + "\n" +
-        "  Usuario: user\n" +
-        "  SO: " + getOS() + "\n" +
-        "  Arquitetura: " + (navigator.platform || "desconhecida") + "\n" +
-        "  Navegador: " + navigator.userAgent.replace(/[\/][^\s]*/g, "").substring(0, 60) + "\n" +
-        "  Idioma: " + (navigator.language || "") + "\n" +
-        "  Resolucao: " + screen.width + "x" + screen.height + "\n" +
-        "  Resolucao Disponivel: " + screen.availWidth + "x" + screen.availHeight + "\n" +
-        "  Profundidade de Cor: " + screen.colorDepth + "-bit\n" +
-        "  Sessao: " + getUptime() + "\n" +
-        "  CPU: " + (cpu || "desconhecida") + "\n" +
-        "  RAM: " + (mem || "desconhecida") + "\n" +
-        "  Conexao: " + (conn || "desconhecida") + "\n";
+
+      const tz =
+        Intl.DateTimeFormat().resolvedOptions()?.timeZone || "desconhecido";
+      const conn = navigator.connection?.effectiveType || "desconhecida";
+      const mem = navigator.deviceMemory
+        ? `${navigator.deviceMemory}GB`
+        : "desconhecida";
+      const cpu = navigator.hardwareConcurrency
+        ? `${navigator.hardwareConcurrency} nucleos`
+        : "desconhecida";
+      const uaClean = navigator.userAgent
+        ? navigator.userAgent.replace(/[\/][^\s]*/g, "").substring(0, 60)
+        : "desconhecido";
+
+      const info = `\nInformacoes do Sistema
+
+  Data: ${days[now.getDay()]} ${now.getDate()} de ${months[now.getMonth()]} de ${now.getFullYear()}
+  Hora: ${now.toLocaleTimeString()}
+  Fuso: ${tz}
+  SO: ${getOS()}
+  Arquitetura: ${navigator.platform || "desconhecida"}
+  Navegador: ${uaClean}
+  Idioma: ${navigator.language || ""}
+  Resolucao: ${screen.width}x${screen.height}
+  Resolucao Disponivel: ${screen.availWidth}x${screen.availHeight}
+  Profundidade de Cor: ${screen.colorDepth}-bit
+  Sessao: ${getUptime()}
+  CPU: ${cpu}
+  RAM: ${mem}
+  Conexao: ${conn}`;
+
       printPre(info);
-      printPre("  Buscando dados externos...");
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", "https://ip-api.com/json/?fields=status,country,regionName,city,isp,org,as,query,lat,lon,timezone");
-      xhr.timeout = 8000;
-      xhr.onload = function () {
-        if (xhr.status === 200 && xhr.responseText) {
-          try {
-            var d = JSON.parse(xhr.responseText);
-            if (d.status === "success") {
-              printPre(
-                "  IP Externo: " + d.query + "\n" +
-                "  Localizacao: " + d.city + ", " + d.regionName + ", " + d.country + "\n" +
-                "  ISP: " + d.isp + "\n" +
-                "  Fuso: " + d.timezone
-              );
-            } else {
-              printPre("  IP Externo: indisponivel (" + (d.message || "erro") + ")");
-            }
-          } catch (e) {
-            printPre("  IP Externo: erro ao processar resposta");
+      checkProtocol(); // Avisa no terminal se estiver usando file://
+      printPre("  Buscando dados externos (ipapi.co)...");
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+      // Nova API altamente compatível e resiliente
+      fetch("https://ipapi.co/json/", { signal: controller.signal })
+        .then((response) => {
+          if (!response.ok) throw new Error("HTTP Status " + response.status);
+          return response.json();
+        })
+        .then((d) => {
+          clearTimeout(timeoutId);
+          if (d && !d.error) {
+            printPre(`  IP Externo: ${d.ip || "Desconhecido"}
+  Localizacao: ${d.city || "?"}, ${d.region || "?"}, ${d.country_name || "?"}
+  ISP: ${d.org || "Desconhecido"}
+  Fuso: ${d.timezone || "Desconhecido"}`);
+          } else {
+            printPre(
+              `  IP Externo: indisponivel (${d.reason || "erro na API"})`,
+            );
           }
-        } else {
-          printPre("  IP Externo: falha na consulta");
-        }
-      };
-      xhr.onerror = function () { printPre("  IP Externo: servidor inacessivel"); };
-      xhr.ontimeout = function () { printPre("  IP Externo: tempo limite excedido"); };
-      xhr.send();
+        })
+        .catch((err) => {
+          clearTimeout(timeoutId);
+          if (err.name === "AbortError") {
+            printPre("  IP Externo: tempo limite excedido (8s)");
+          } else {
+            // DIAGNÓSTICO: Mostra o erro real gerado pelo navegador na tela
+            printPre("  IP Externo: Erro detectado -> " + err.toString());
+          }
+        });
+
       return "";
     },
   };
 
+  // Funções de Renderização na Tela
   function printLine(text) {
+    if (!termOutput) return;
     var div = document.createElement("div");
     div.className = "term-line";
     div.textContent = text;
@@ -245,6 +176,7 @@
   }
 
   function printPre(text) {
+    if (!text) return;
     var lines = text.split("\n");
     for (var i = 0; i < lines.length; i++) {
       printLine(lines[i]);
@@ -252,6 +184,7 @@
   }
 
   function printHTML(html) {
+    if (!termOutput) return;
     var div = document.createElement("div");
     div.className = "term-line";
     div.innerHTML = html;
@@ -259,6 +192,7 @@
     termOutput.scrollTop = termOutput.scrollHeight;
   }
 
+  // Interpretador de comandos executados
   function processCommand(cmd) {
     cmd = cmd.trim();
     if (!cmd) return;
@@ -273,7 +207,9 @@
     printLine(currentDir + ">" + cmd);
 
     if (command === "exit" || command === "quit") {
-      termBehavior.hide();
+      if (typeof termBehavior !== "undefined" && termBehavior.hide) {
+        termBehavior.hide();
+      }
       return;
     }
 
@@ -290,97 +226,114 @@
     }
   }
 
-  termInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      processCommand(termInput.value);
-      termInput.value = "";
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      if (historyIndex > 0) {
-        historyIndex--;
-        termInput.value = cmdHistory[historyIndex];
-      }
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      if (historyIndex < cmdHistory.length - 1) {
-        historyIndex++;
-        termInput.value = cmdHistory[historyIndex];
-      } else {
-        historyIndex = cmdHistory.length;
+  // Ouvintes de Eventos de Teclado e Foco
+  if (termInput) {
+    termInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        processCommand(termInput.value);
         termInput.value = "";
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          termInput.value = cmdHistory[historyIndex];
+        }
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (historyIndex < cmdHistory.length - 1) {
+          historyIndex++;
+          termInput.value = cmdHistory[historyIndex];
+        } else {
+          historyIndex = cmdHistory.length;
+          termInput.value = "";
+        }
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        termInput.value += "  ";
       }
-    } else if (e.key === "Tab") {
-      e.preventDefault();
-      termInput.value += "  ";
-    }
-  });
+    });
 
-  termInput.addEventListener("click", function () {
-    termInput.focus();
-  });
+    termInput.addEventListener("click", function () {
+      termInput.focus();
+    });
+  }
 
   function termReset() {
-    termOutput.innerHTML = "";
-    termInput.value = "";
+    if (termOutput) termOutput.innerHTML = "";
+    if (termInput) termInput.value = "";
     currentDir = "C:\\";
     cmdHistory = [];
     historyIndex = -1;
     terminalFirstOpen = true;
   }
 
-  var termBehavior = new WindowBehavior(termWin, {
-    dragHandle: termDragHandle,
-    btnClose: termBtnClose,
-    btnMinimize: termBtnMinimize,
-    btnMaximize: termBtnMaximize,
-    minW: 500,
-    minH: 300,
-    taskbarIcon:
-      '<img src="assets/icons/tango2kde/16x16/apps/terminal.png" alt="" width="14" height="14" style="flex-shrink:0;">',
-    taskbarLabel: "Terminal",
-    onShow: function () {
-      termWin.style.width = "580px";
-      termWin.style.height = "380px";
-      termInput.focus();
-      if (terminalFirstOpen) {
-        terminalFirstOpen = false;
-        var bootText =
-          "Microsoft Windows 2000 [Version 5.00.2195]\n" +
-          "(C) Copyright 1985-2000 Microsoft Corp.\n\n" +
-          commands.help();
-        var lines = bootText.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-          var div = document.createElement("div");
-          div.className = "term-line";
-          div.textContent = lines[i];
-          termOutput.appendChild(div);
+  // Instanciação e controle da janela do terminal
+  if (typeof WindowBehavior !== "undefined") {
+    var termBehavior = new WindowBehavior(termWin, {
+      dragHandle: termDragHandle,
+      btnClose: termBtnClose,
+      btnMinimize: termBtnMinimize,
+      btnMaximize: termBtnMaximize,
+      minW: 500,
+      minH: 300,
+      taskbarIcon:
+        '<img src="assets/system/icons/tango2kde/16x16/apps/terminal.png" alt="" width="14" height="14" style="flex-shrink:0;">',
+      taskbarLabel: "Terminal",
+      onShow: function () {
+        if (termWin) {
+          termWin.style.width = "580px";
+          termWin.style.height = "380px";
         }
-        termOutput.scrollTop = termOutput.scrollHeight;
-      }
-    },
-    onHide: function () {
-      termReset();
-    },
-  });
-
-  window.termMinimizeWindow = function () {
-    termBehavior.minimize();
-  };
-  window.termShowWindow = termBehavior.show;
-  window.termHasEntry = function () {
-    return termBehavior.hasTaskbarEntry();
-  };
-  window.showTerminal = function () {
-    termBehavior.show();
-  };
-
-  if (window.registerWindow) {
-    registerWindow({
-      minimize: function () {
-        termBehavior.minimize();
+        if (termInput) termInput.focus();
+        if (terminalFirstOpen) {
+          terminalFirstOpen = false;
+          var bootText =
+            "No Microsoft Windows 2000 [Version 5.00.2195]\n" +
+            "(C) Copyright 1985-2000 No Microsoft Corp.\n\n" +
+            commands.help();
+          var lines = bootText.split("\n");
+          for (var i = 0; i < lines.length; i++) {
+            if (termOutput) {
+              var div = document.createElement("div");
+              div.className = "term-line";
+              div.textContent = lines[i];
+              termOutput.appendChild(div);
+            }
+          }
+          if (termOutput) termOutput.scrollTop = termOutput.scrollHeight;
+        }
       },
+      onHide: function () {
+        termReset();
+      },
+    });
+
+    window.termMinimizeWindow = function () {
+      termBehavior.minimize();
+    };
+    window.termShowWindow = termBehavior.show;
+    window.termHasEntry = function () {
+      return termBehavior.hasTaskbarEntry();
+    };
+    window.showTerminal = function () {
+      termBehavior.show();
+    };
+  }
+
+  // Registro no sistema operacional simulado W2K
+  if (
+    typeof W2K !== "undefined" &&
+    W2K &&
+    W2K.AppRegistry &&
+    typeof termBehavior !== "undefined"
+  ) {
+    W2K.AppRegistry.register("terminal", {
+      label: "Terminal",
       show: function () {
         termBehavior.show();
+      },
+      minimize: function () {
+        termBehavior.minimize();
       },
       hasEntry: function () {
         return termBehavior.hasTaskbarEntry();

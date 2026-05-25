@@ -65,8 +65,12 @@
           '<svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">i</text></svg>';
         break;
       default:
-        iconSvg =
-          '<svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/></svg>';
+        if (typeof icon === "string" && icon.indexOf("<") === 0) {
+          iconSvg = icon;
+        } else {
+          iconSvg =
+            '<svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="#2255aa" stroke="#0a2a6a" stroke-width="2"/></svg>';
+        }
     }
 
     var buttons = "";

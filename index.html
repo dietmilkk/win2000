@@ -7,6 +7,17 @@
         <link rel="stylesheet" href="css/style.css" />
     </head>
     <body>
+        <div id="ambientOverlay"></div>
+        <div id="bootScreen">
+            <div class="boot-center">
+                <div class="boot-bottom">
+                    <div class="boot-msg" id="bootMsg">Iniciando...</div>
+                    <div class="boot-bar">
+                        <div class="boot-bar-fill" id="bootBarFill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="screen">
             <div class="desktop">
                 <!-- ===== DESKTOP ICONS ===== -->
@@ -14,7 +25,7 @@
                     <div class="desk-icon" data-action="terminal">
                         <span class="di-icon">
                             <img
-                                src="assets/icons/tango2kde/48x48/apps/terminal.png"
+                                src="assets/system/icons/tango2kde/48x48/apps/terminal.png"
                                 alt=""
                                 width="36"
                                 height="36"
@@ -26,7 +37,7 @@
                     <div class="desk-icon" data-action="wakatime">
                         <span class="di-icon">
                             <img
-                                src="assets/icons/tango2kde/48x48/actions/kontact_summary.png"
+                                src="assets/system/icons/tango2kde/48x48/actions/kontact_summary.png"
                                 alt=""
                                 width="36"
                                 height="36"
@@ -38,7 +49,7 @@
                     <div class="desk-icon" data-action="games">
                         <span class="di-icon">
                             <img
-                                src="assets/icons/tango2kde/48x48/categories/applications-games.png"
+                                src="assets/system/icons/tango2kde/48x48/categories/applications-games.png"
                                 alt=""
                                 width="36"
                                 height="36"
@@ -50,7 +61,7 @@
                     <div class="desk-icon" data-action="soundcloud">
                         <span class="di-icon">
                             <img
-                                src="assets/icons/tango2kde/48x48/apps/kaudiocreator.png"
+                                src="assets/system/icons/tango2kde/48x48/apps/kaudiocreator.png"
                                 alt=""
                                 width="36"
                                 height="36"
@@ -66,7 +77,7 @@
                         <span class="title-bar-text">
                             <span class="icon">
                                 <img
-                                    src="assets/icons/tango2kde/16x16/apps/dolphin.png"
+                                    src="assets/system/icons/tango2kde/16x16/apps/dolphin.png"
                                     alt=""
                                     width="14"
                                     height="14"
@@ -277,7 +288,7 @@
                         <span class="title-bar-text">
                             <span class="icon">
                                 <img
-                                    src="assets/icons/tango2kde/16x16/apps/kopete.png"
+                                    src="assets/system/icons/tango2kde/16x16/apps/kopete.png"
                                     alt=""
                                     width="14"
                                     height="14"
@@ -383,7 +394,7 @@
                         <span class="title-bar-text">
                             <span class="icon">
                                 <img
-                                    src="assets/icons/tango2kde/16x16/categories/applications-games.png"
+                                    src="assets/system/icons/tango2kde/16x16/categories/applications-games.png"
                                     alt=""
                                     width="14"
                                     height="14"
@@ -465,7 +476,7 @@
                         <span class="title-bar-text">
                             <span class="icon">
                                 <img
-                                    src="assets/icons/tango2kde/16x16/categories/redhat-system_tools.png"
+                                    src="assets/system/icons/tango2kde/16x16/categories/redhat-system_tools.png"
                                     alt=""
                                     width="14"
                                     height="14"
@@ -546,7 +557,7 @@
                                     data-category="appearance"
                                 >
                                     <img
-                                        src="assets/icons/tango2kde/16x16/categories/redhat-system_tools.png"
+                                        src="assets/system/icons/tango2kde/16x16/categories/redhat-system_tools.png"
                                         alt=""
                                         width="14"
                                         height="14"
@@ -558,7 +569,7 @@
                                     data-category="about"
                                 >
                                     <img
-                                        src="assets/icons/tango2kde/16x16/actions/help.png"
+                                        src="assets/system/icons/tango2kde/16x16/actions/help.png"
                                         alt=""
                                         width="14"
                                         height="14"
@@ -570,7 +581,7 @@
                                     data-category="changelog"
                                 >
                                     <img
-                                        src="assets/icons/tango2kde/16x16/actions/reload.png"
+                                        src="assets/system/icons/tango2kde/16x16/actions/reload.png"
                                         alt=""
                                         width="14"
                                         height="14"
@@ -662,7 +673,7 @@
                                         de culturas alternativas como hacker e
                                         grunge
                                         <br /><br />
-                                        só isso. se divirta :)
+                                        só isso. se divirta explorando :)
                                     </p>
                                 </div>
                                 <div
@@ -699,7 +710,7 @@
                         <span class="title-bar-text">
                             <span class="icon">
                                 <img
-                                    src="assets/icons/tango2kde/16x16/apps/terminal.png"
+                                    src="assets/system/icons/tango2kde/16x16/apps/terminal.png"
                                     alt=""
                                     width="14"
                                     height="14"
@@ -795,7 +806,7 @@
                         <span class="title-bar-text">
                             <span class="icon">
                                 <img
-                                    src="assets/icons/tango2kde/16x16/apps/kaudiocreator.png"
+                                    src="assets/system/icons/tango2kde/16x16/apps/kaudiocreator.png"
                                     alt=""
                                     width="14"
                                     height="14"
@@ -998,13 +1009,12 @@
                         <div
                             id="scIframeWrap"
                             style="
-                                position: absolute;
-                                left: -9999px;
-                                top: 0;
+                                position: fixed;
+                                left: 0;
+                                top: -9999px;
                                 width: 400px;
                                 height: 166px;
-                                opacity: 0;
-                                pointer-events: none;
+                                overflow: hidden;
                             "
                         ></div>
                     </div>
@@ -1015,7 +1025,7 @@
                     <div class="start-btn" id="startBtn">
                         <span class="start-orb">
                             <img
-                                src="assets/icons/kwin18.png"
+                                src="assets/system/icons/tango2kde/16x16/filesystems/desktop.png"
                                 alt=""
                                 width="18"
                                 height="18"
@@ -1026,7 +1036,7 @@
                     <div class="quick-launch">
                         <span class="ql-icon" id="qlShowDesktop">
                             <img
-                                src="assets/icons/tango2kde/16x16/filesystems/desktop.png"
+                                src="assets/system/icons/tango2kde/16x16/filesystems/desktop.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1037,7 +1047,7 @@
                     <div class="taskbar-tray" id="taskbarTray">
                         <span class="tray-icon" id="trayVolume">
                             <img
-                                src="assets/icons/tango2kde/22x22/apps/kmix.png"
+                                src="assets/system/icons/tango2kde/22x22/apps/kmix.png"
                                 alt=""
                                 width="18"
                                 height="18"
@@ -1058,7 +1068,7 @@
                         </div>
                         <div class="start-menu-item" data-action="terminal">
                             <img
-                                src="assets/icons/tango2kde/16x16/apps/terminal.png"
+                                src="assets/system/icons/tango2kde/16x16/apps/terminal.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1067,7 +1077,7 @@
                         </div>
                         <div class="start-menu-item" data-action="chat">
                             <img
-                                src="assets/icons/tango2kde/16x16/apps/kopete.png"
+                                src="assets/system/icons/tango2kde/16x16/apps/kopete.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1076,7 +1086,7 @@
                         </div>
                         <div class="start-menu-item" data-action="games">
                             <img
-                                src="assets/icons/tango2kde/16x16/categories/applications-games.png"
+                                src="assets/system/icons/tango2kde/16x16/categories/applications-games.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1085,7 +1095,7 @@
                         </div>
                         <div class="start-menu-item" data-action="randomgif">
                             <img
-                                src="assets/icons/tango2kde/16x16/apps/gwenview.png"
+                                src="assets/system/icons/tango2kde/16x16/apps/gwenview.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1094,7 +1104,7 @@
                         </div>
                         <div class="start-menu-item" data-action="programs">
                             <img
-                                src="assets/icons/tango2kde/16x16/apps/dolphin.png"
+                                src="assets/system/icons/tango2kde/16x16/apps/dolphin.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1103,7 +1113,7 @@
                         </div>
                         <div class="start-menu-item" data-action="settings">
                             <img
-                                src="assets/icons/tango2kde/16x16/categories/redhat-system_tools.png"
+                                src="assets/system/icons/tango2kde/16x16/categories/redhat-system_tools.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1112,7 +1122,7 @@
                         </div>
                         <div class="start-menu-item" data-action="soundcloud">
                             <img
-                                src="assets/icons/tango2kde/16x16/apps/kaudiocreator.png"
+                                src="assets/system/icons/tango2kde/16x16/apps/kaudiocreator.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1123,7 +1133,7 @@
                         <div class="start-menu-group-title">Sistema</div>
                         <div class="start-menu-item" data-action="fullscreen">
                             <img
-                                src="assets/icons/tango2kde/16x16/actions/view-fullscreen.png"
+                                src="assets/system/icons/tango2kde/16x16/actions/view-fullscreen.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1132,7 +1142,7 @@
                         </div>
                         <div class="start-menu-item" data-action="shutdown">
                             <img
-                                src="assets/icons/tango2kde/16x16/actions/exit.png"
+                                src="assets/system/icons/tango2kde/16x16/actions/exit.png"
                                 alt=""
                                 width="16"
                                 height="16"
@@ -1167,6 +1177,7 @@
         <div id="scanline"></div>
 
         <script src="js/config.js"></script>
+        <script src="js/app-registry.js"></script>
         <script src="js/animations.js"></script>
         <script src="js/fullscreen.js"></script>
         <script src="js/fps-limiter.js"></script>
@@ -1176,11 +1187,13 @@
         <script src="js/window-manager.js"></script>
         <script src="js/terminal.js"></script>
         <script src="js/games.js"></script>
+
+        <script src="https://w.soundcloud.com/player/api.js"></script>
+        <script src="js/soundcloud.js"></script>
+
         <script src="js/main.js"></script>
         <script src="js/chat.js"></script>
         <script src="js/settings.js"></script>
-        <script src="https://w.soundcloud.com/player/api.js"></script>
-        <script src="js/soundcloud.js"></script>
         <script>
             document.addEventListener(
                 "click",

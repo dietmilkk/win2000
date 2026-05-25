@@ -31,7 +31,7 @@
     minH: 500,
     startVisible: false,
     taskbarIcon:
-      '<img src="assets/icons/tango2kde/16x16/apps/dolphin.png" alt="" width="14" height="14" style="flex-shrink:0;">',
+      '<img src="assets/system/icons/tango2kde/16x16/apps/dolphin.png" alt="" width="14" height="14" style="flex-shrink:0;">',
     taskbarLabel: "Repositório",
     onInit: function (controls) {
       // Ensure initial position
@@ -43,11 +43,24 @@
        SHOW DESKTOP
        ================================================================ */
 
-  var _showDesktop = false;
-  var _sdState = [];
-
+  // Register main window for show-desktop
+  if (W2K && W2K.AppRegistry) {
+    W2K.AppRegistry.register("programs", {
+      label: "Repositório",
+      show: function () {
+        winBehavior.show();
+      },
+      minimize: function () {
+        winBehavior.minimize();
+      },
+      hasEntry: function () {
+        return winBehavior.hasTaskbarEntry();
+      },
+    });
+  }
+  // Legacy registry (for showDesktop fallback path)
   if (window.windowRegistry) {
-    registerWindow({
+    window.windowRegistry.push({
       minimize: function () {
         winBehavior.minimize();
       },
@@ -60,19 +73,41 @@
     });
   }
 
+  var _showDesktop = false;
+  var _sdState = [];
+
   function toggleShowDesktop() {
     _showDesktop = !_showDesktop;
-    var reg = window.windowRegistry || [];
     if (_showDesktop) {
-      _sdState = reg.map(function (w) {
-        return { wasOpen: w.hasEntry() };
+      _sdState = [];
+      (W2K && W2K.AppRegistry
+        ? W2K.AppRegistry.forEach
+        : function (fn) {
+            (window.windowRegistry || []).forEach(function (w, i) {
+              fn({ hasEntry: w.hasEntry }, "reg" + i);
+            });
+          })(function (app, id) {
+        _sdState.push({
+          id: id,
+          wasOpen: app.hasEntry ? app.hasEntry() : false,
+        });
       });
-      reg.forEach(function (w) {
-        w.minimize();
-      });
+      if (W2K && W2K.AppRegistry) W2K.AppRegistry.minimizeAll();
+      else
+        (window.windowRegistry || []).forEach(function (w) {
+          w.minimize();
+        });
     } else {
-      reg.forEach(function (w, i) {
-        if (_sdState[i] && _sdState[i].wasOpen) w.show();
+      _sdState.forEach(function (s) {
+        if (!s.wasOpen) return;
+        if (W2K && W2K.AppRegistry) {
+          var app = W2K.AppRegistry.get(s.id);
+          if (app) app.show();
+        } else {
+          var reg = window.windowRegistry || [];
+          var idx = parseInt(s.id.replace("reg", ""));
+          if (reg[idx]) reg[idx].show();
+        }
       });
       _sdState = [];
     }
@@ -99,23 +134,16 @@
   function openDesktopIcon(action) {
     trackUse(action);
     switch (action) {
-      case "terminal":
-        showTerminal();
-        break;
-      case "games":
-        if (typeof window.showGames !== "undefined") window.showGames();
-        break;
-      case "randomgif":
-        if (typeof window.openGallery !== "undefined") window.openGallery();
-        break;
       case "wakatime":
         window.open(
           "https://wakatime.com/@530e7be4-0c7e-40cf-9389-1017373810c3",
           "_blank",
         );
         break;
-      case "soundcloud":
-        if (typeof window.showSoundCloud !== "undefined") window.showSoundCloud();
+      default:
+        if (W2K && W2K.AppRegistry) {
+          W2K.AppRegistry.launch(action);
+        }
         break;
     }
   }
@@ -159,26 +187,27 @@
        MOST USED (frequência de uso)
        ================================================================ */
 
-  var mostUsed = JSON.parse(localStorage.getItem("w2kMostUsed") || "{}");
+  var mostUsed = {};
+  try {
+    mostUsed = JSON.parse(localStorage.getItem("w2kMostUsed") || "{}");
+  } catch (e) {
+    mostUsed = {};
+  }
 
   function trackUse(action) {
+    if (!action) return;
     mostUsed[action] = (mostUsed[action] || 0) + 1;
-    localStorage.setItem("w2kMostUsed", JSON.stringify(mostUsed));
+    try {
+      localStorage.setItem("w2kMostUsed", JSON.stringify(mostUsed));
+    } catch (e) {}
   }
 
   function sortMostUsed() {
     var body = document.getElementById("startMenuBody");
     if (!body) return;
+    var sep = body.querySelector(".start-menu-separator");
+    if (!sep) return;
     var items = Array.from(body.querySelectorAll(".start-menu-item"));
-    var grupos = body.querySelectorAll(".start-menu-separator, .start-menu-group-title");
-    var sepIndex = -1;
-    for (var i = 0; i < body.children.length; i++) {
-      if (body.children[i].classList.contains("start-menu-separator")) {
-        sepIndex = i;
-        break;
-      }
-    }
-    if (sepIndex < 0) return;
     var appItems = items.filter(function (el) {
       var action = el.getAttribute("data-action");
       return action && action !== "fullscreen" && action !== "shutdown";
@@ -191,9 +220,11 @@
       var bLabel = (b.textContent || "").trim();
       return aLabel.localeCompare(bLabel, "pt");
     });
-    var sep = body.querySelector(".start-menu-separator");
-    if (!sep) return;
-    appItems.forEach(function (el) { body.insertBefore(el, sep); });
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < appItems.length; i++) {
+      frag.appendChild(appItems[i]);
+    }
+    body.insertBefore(frag, sep);
   }
 
   /* ================================================================
@@ -214,29 +245,11 @@
         }
         winBehavior.bringToFront();
         break;
-      case "chat":
-        showChat();
-        break;
-      case "terminal":
-        showTerminal();
-        break;
-      case "games":
-        if (typeof window.showGames !== "undefined") window.showGames();
-        break;
-      case "randomgif":
-        if (typeof window.openGallery !== "undefined") window.openGallery();
-        break;
-      case "settings":
-        if (typeof window.showSettings !== "undefined") window.showSettings();
-        break;
-      case "soundcloud":
-        if (typeof window.showSoundCloud !== "undefined") window.showSoundCloud();
-        break;
       case "fullscreen":
         if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(function(){});
+          document.documentElement.requestFullscreen().catch(function () {});
         } else {
-          document.exitFullscreen().catch(function(){});
+          document.exitFullscreen().catch(function () {});
         }
         break;
       case "shutdown":
@@ -252,6 +265,11 @@
             }
           },
         });
+        break;
+      default:
+        if (W2K && W2K.AppRegistry) {
+          W2K.AppRegistry.launch(action);
+        }
         break;
     }
   });
@@ -367,43 +385,109 @@
   })();
 
   /* ================================================================
-       STARTUP ANIMATION
+       BOOT SCREEN
        ================================================================ */
 
-  setTimeout(function () {
-    var overlay = document.createElement("div");
-    overlay.id = "gifOverlay";
-    overlay.innerHTML =
-      '<img src="assets/enter.gif" style="position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:999999;">';
-    document.body.appendChild(overlay);
-    setTimeout(function () {
-      overlay.remove();
-    }, 3000);
-  }, 1500);
+  (function () {
+    var boot = document.getElementById("bootScreen");
+    if (!boot) return;
+
+    var bar = document.getElementById("bootBarFill");
+    var msg = document.getElementById("bootMsg");
+    if (!bar || !msg) return;
+
+    function tryFS() {
+      try {
+        document.documentElement.requestFullscreen();
+      } catch (e) {}
+    }
+    boot.addEventListener("click", tryFS);
+
+    var stages = [
+      { pct: 8, txt: "Iniciando..." },
+      { pct: 18, txt: "Carregando configurações..." },
+      { pct: 33, txt: "Iniciando serviços..." },
+      { pct: 54, txt: "Preparando interface..." },
+      { pct: 90, txt: "Finalizando inicialização..." },
+      { pct: 100, txt: "Pronto..." },
+    ];
+
+    var idx = 0;
+    var done = false;
+
+    function advance() {
+      if (done) return;
+      if (idx >= stages.length) {
+        finish();
+        return;
+      }
+      var s = stages[idx];
+      bar.style.width = s.pct + "%";
+      msg.textContent = s.txt;
+      idx++;
+      if (idx < stages.length) {
+        setTimeout(advance, 100 + Math.random() * 3000);
+      }
+    }
+
+    function fastForward() {
+      idx = stages.length;
+      bar.style.width = "100%";
+      msg.textContent = "Pronto! ^^";
+    }
+
+    function finish() {
+      if (done) return;
+      done = true;
+      fastForward();
+      setTimeout(function () {
+        boot.style.transition = "opacity 0.6s ease";
+        boot.style.opacity = "0";
+        setTimeout(function () {
+          boot.remove();
+        }, 1500);
+      }, 1500);
+    }
+
+    var minTime = 5000;
+    var loadTimer = setTimeout(finish, minTime);
+
+    window.addEventListener("load", function () {
+      clearTimeout(loadTimer);
+      setTimeout(finish, 8000);
+    });
+
+    advance();
+  })();
 
   /* ================================================================
        CHAT LAUNCHER
        ================================================================ */
 
   window.showChat = function () {
-    if (typeof window.chatShowWindow !== "undefined") {
-      window.chatShowWindow();
+    if (W2K && W2K.AppRegistry) {
+      W2K.AppRegistry.launch("chat");
     } else {
-      xpDialog({
-        title: "Chat IA",
-        icon: "i",
-        message: "Chat IA está carregando...\nAguarde um momento.",
-        width: "400px",
-      });
-      var checkLoaded = setInterval(function () {
-        if (typeof window.chatShowWindow !== "undefined") {
+      // Fallback: direct call
+      if (typeof window.chatShowWindow !== "undefined") {
+        window.chatShowWindow();
+      } else {
+        xpDialog({
+          title: "Chat IA",
+          icon: "i",
+          message: "Chat IA está carregando...\nAguarde um momento.",
+          width: "400px",
+        });
+        var checkLoaded = setInterval(function () {
+          if (typeof window.chatShowWindow !== "undefined") {
+            clearInterval(checkLoaded);
+            window.chatShowWindow();
+          }
+        }, 200);
+        setTimeout(function () {
           clearInterval(checkLoaded);
-          window.chatShowWindow();
-        }
-      }, 200);
-      setTimeout(function () {
-        clearInterval(checkLoaded);
-      }, 10000);
+        }, 10000);
+      }
     }
   };
 })();

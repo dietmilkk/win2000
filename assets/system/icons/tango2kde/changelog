@@ -1,0 +1,35 @@
+2026 bc-tango-kde to web win2000 project
+
+0.7 "Smooth Criminal":
+- kopete is now almost completly tangoified
+- more fixes in 32x32 icons
+- added missing icons from bctango-addon by chaotic
+- additional icons for GTK+2.0 apps
+- GTK+2.0 themes updated to make your desktop more consistent
+- icons for wine
+- icons for gwenview
+- more icons for digikam
+- icons for kontact
+- more icons for ktorrent
+- some fixes
+
+14-04-2007 (0.6 "Kubuntu touch"):
+- icons for ktorrent
+- folder_video_yellow fixed - thanks Nick!
+- fixed many 32x32 icons
+- additional icons based on Nick Bolten suggestion - thanks!
+- icons for kmail
+- many icons made specially for Kubuntu;
+	Now Kubuntu users should have much more consistent desktops
+- new icons for couple apps (gwenview, ktorrent, etc.)
+- many new "actions" icons (including, finally, arrows icons)
+- icons for KPDF - almost complete tangoified
+- some clean ups
+- fixed permissions for large icons
+- fixed some icons for digiKam
+- new link to better OpenOffice theme (made by Jimmac)
+- only 16x16 and 22x22 toolbar size is available
+	(because we don't have enough icons for larger toolbars anyway)
+
+03-12-2006 (0.5 "Folders!"):
+- 1st public release, which evolved from Flamenco theme

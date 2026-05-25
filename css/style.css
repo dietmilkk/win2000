@@ -3,15 +3,45 @@
    Stepped animations · W2K-style UI · Retro taskbar
    =========================================================== */
 
+@font-face {
+    font-family: "IBM VGA";
+    src: url("../assets/system/fonts/ttf - Ac (aspect-corrected)/Ac437_IBM_VGA_8x16.ttf")
+        format("truetype");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "IBM VGA 9x16";
+    src: url("../assets/system/fonts/ttf - Ac (aspect-corrected)/Ac437_IBM_VGA_9x16.ttf")
+        format("truetype");
+    font-display: swap;
+}
+
+:root {
+    --ff-body:
+        "MS Sans Serif", "Microsoft Sans Serif", "Tahoma", "Fixedsys",
+        "Terminal", "Courier New", monospace;
+    --ff-ui: "Tahoma", "MS Sans Serif", sans-serif;
+    --ff-mono:
+        "IBM VGA", "Courier New", "Consolas", "Lucida Console", monospace;
+    --ff-mono-lg:
+        "IBM VGA 9x16", "Courier New", "Consolas", "Lucida Console", monospace;
+    --ff-title: "Times New Roman", serif;
+    --clr-highlight: #000080;
+    --clr-highlight-bg: #e0e0f0;
+    --clr-window-bg: #ece9e0;
+    --clr-panel-bg: #d4d0c8;
+    --clr-border-dark: #5a5a5a;
+    --clr-border-light: #fff;
+}
+
 * {
     box-sizing: border-box;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    font-family:
-        "MS Sans Serif", "Microsoft Sans Serif", "Tahoma", "Fixedsys",
-        "Terminal", "Courier New", monospace !important;
+    font-family: var(--ff-body) !important;
 }
 .window-body,
 .window-body *,
@@ -34,13 +64,9 @@ body {
     padding: 0;
     height: 100%;
     overflow: hidden;
-    font-family:
-        "MS Sans Serif", "Microsoft Sans Serif", "Tahoma", "Fixedsys",
-        "Terminal", "Courier New", monospace;
+    font-family: var(--ff-body);
     font-size: 15px;
     -webkit-font-smoothing: none;
-    -moz-osx-font-smoothing: unset;
-    font-smooth: never;
     text-rendering: optimizeSpeed;
     background: #000;
 }
@@ -235,7 +261,7 @@ body {
     height: 22px;
     background: #d4d0c8;
     border-top: 1px solid #fff;
-    color: #444;
+    color: #000;
     border-left: 1px solid #fff;
     border-right: 1px solid #6a6a6a;
     border-bottom: 1px solid #6a6a6a;
@@ -1721,7 +1747,7 @@ body {
 
 /* ========== Games ========== */
 .games-container {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
     font-size: 11px;
     height: 100%;
     box-sizing: border-box;
@@ -1729,7 +1755,6 @@ body {
     flex-direction: column;
     background: #c0c0c0;
 }
-
 
 .games-titlebar {
     display: flex;
@@ -1779,7 +1804,7 @@ body {
     border: 2px solid;
     border-color: #fff #808080 #808080 #fff;
     cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
 }
 .games-card:hover {
     background: #c8c4bc;
@@ -1874,7 +1899,7 @@ body {
 .games-detail-text {
     font-size: 11px;
     color: #0f0;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
 }
 .games-detail-start {
     background: #d4d0c8;
@@ -1882,7 +1907,7 @@ body {
     border-color: #fff #808080 #808080 #fff;
     padding: 8px 24px;
     cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
     font-size: 12px;
     font-weight: bold;
     display: flex;
@@ -1957,7 +1982,7 @@ body {
     padding: 3px 8px 3px 34px;
     background: #000080;
     color: #fff;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
     font-size: 11px;
     flex-shrink: 0;
     border-bottom: 2px solid #808080;
@@ -2107,10 +2132,9 @@ body.is-fullscreen #gamesWindow #mazeBoard {
     color: #000;
     font-family: Tahoma, sans-serif;
     box-sizing: border-box;
-    container-type: inline-size;
 }
 
-/* ===== TOP ROW (playlist + artwork + mid) ===== */
+/* ===== TOP ROW (playlist + artwork) ===== */
 .sc-top-row {
     display: flex;
     flex-direction: row;
@@ -2181,7 +2205,9 @@ body.is-fullscreen #gamesWindow #mazeBoard {
     color: #fff;
 }
 
-.sc-playlist-item:hover:before { color: #fff; }
+.sc-playlist-item:hover:before {
+    color: #fff;
+}
 
 .sc-playlist-item-active {
     background: #000080 !important;
@@ -2189,7 +2215,9 @@ body.is-fullscreen #gamesWindow #mazeBoard {
     font-weight: bold;
 }
 
-.sc-playlist-item-active:before { color: #fff !important; }
+.sc-playlist-item-active:before {
+    color: #fff !important;
+}
 
 .sc-playlist-item-label {
     flex: 1;
@@ -2244,7 +2272,7 @@ body.is-fullscreen #gamesWindow #mazeBoard {
 
 /* ===== ARTWORK ===== */
 .sc-artwork {
-    width: 70%;
+    width: 70% !important;
     flex-shrink: 0;
     overflow: hidden;
     background: #d4d0c8;
@@ -2254,8 +2282,8 @@ body.is-fullscreen #gamesWindow #mazeBoard {
 }
 
 .sc-artwork img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: contain;
     display: block;
 }
@@ -2482,60 +2510,305 @@ body.is-fullscreen #gamesWindow #mazeBoard {
     color: #fff;
 }
 
-/* ===== WIDE LAYOUT ===== */
+/* ===== WIDE LAYOUT (>= 700px) ===== */
+/* Rows: 1fr artwork, auto for info/controls/progress — no excess space */
 .sc-player.sc-wide {
     display: grid !important;
-    grid-template-columns: minmax(200px, 40%) 1fr;
-    grid-template-rows: auto auto auto 1fr auto;
+    grid-template-columns: 1fr minmax(220px, 38%);
+    grid-template-rows: 1fr auto auto auto;
 }
 
 .sc-player.sc-wide .sc-top-row {
     display: contents;
 }
 
-.sc-player.sc-wide .sc-artwork {
+/* LEFT COLUMN: track list spans rows 1-3, playlist at row 4 */
+.sc-player.sc-wide .sc-track-list-wrap {
     grid-column: 1;
-    grid-row: 1;
-    width: 100%;
-    aspect-ratio: 1;
-    align-self: start;
-    overflow: hidden;
-    border-right: 1px solid #b0aca4;
-    border-bottom: 2px solid;
+    grid-row: 1 / 4;
+    border-top: none;
+    border-right: 2px solid;
     border-color: #5a5a5a #fff #fff #5a5a5a;
 }
 
 .sc-player.sc-wide .sc-playlist-bar {
-    grid-column: 2;
-    grid-row: 5;
+    grid-column: 1;
+    grid-row: 4;
     width: auto !important;
+    border-right: none;
+    border-bottom: none;
     border-top: 2px solid;
     border-color: #5a5a5a #fff #fff #5a5a5a;
+    max-height: none;
+    overflow-y: visible;
+}
+
+/* RIGHT COLUMN: artwork row 1 (60%), info row 2, controls row 3, progress row 4 */
+.sc-player.sc-wide .sc-artwork {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100% !important;
+    overflow: hidden;
+    border-right: none;
+    border: none;
+    aspect-ratio: auto;
+}
+
+.sc-player.sc-wide .sc-artwork img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    display: block;
 }
 
 .sc-player.sc-wide .sc-info {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 2;
 }
 
 .sc-player.sc-wide .sc-controls-row {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 3;
 }
 
 .sc-player.sc-wide .sc-progress-container {
-    grid-column: 1;
-    grid-row: 4;
-}
-
-.sc-player.sc-wide .sc-track-list-wrap {
-    grid-column: 2;
-    grid-row: 1 / 5;
-    border-top: none;
-    border-bottom: none;
+    grid-column: 2 !important;
 }
 
 .sc-player.sc-wide .sc-track-item {
     font-size: 19px;
     padding: 5px 10px;
+}
+
+/* ===== MAXIMIZED: bigger control buttons ===== */
+.window-maximized .sc-btn-play {
+    width: 64px;
+    height: 36px;
+}
+
+.window-maximized .sc-btn-play svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.window-maximized .sc-btn-sm {
+    width: 34px;
+    height: 30px;
+}
+
+.window-maximized .sc-btn-sm svg {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* ===== BOOT SCREEN ===== */
+#bootScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(
+        ellipse at 50% 30%,
+        #1a3a5c 0%,
+        #0a1a2e 40%,
+        #030a14 100%
+    );
+    font-family: var(--ff-body);
+    user-select: none;
+    overflow: hidden;
+}
+
+/* ===== SCANLINES (CRT effect) ===== */
+#bootScreen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.08) 0px,
+        rgba(0, 0, 0, 0.08) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+}
+
+/* ===== STRETCHED ZOOM (old CRT feel) ===== */
+.boot-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    transform: scaleY(1.08);
+}
+
+/* ===== BOTTOM: message + progress bar ===== */
+.boot-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.boot-msg {
+    font-size: 14px;
+    color: #b0c0d4;
+    font-family: "Times New Roman", Times, serif;
+    font-style: italic;
+    letter-spacing: 1px;
+    min-height: 18px;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.boot-bar {
+    width: 280px;
+    height: 22px;
+    background: #0a0a14;
+    border: 2px solid;
+    border-color: #000 #666 #888 #000;
+    box-sizing: border-box;
+    padding: 2px;
+    box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+.boot-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(
+        90deg,
+        #2a8acc,
+        #5ab8f0 40%,
+        #7ad0ff 70%,
+        #3aa0e0
+    );
+    transition: width 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.boot-bar-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%
+    );
+    background-size: 20px 100%;
+    animation: bootShine 1.2s linear infinite;
+}
+
+@keyframes bootShine {
+    0% {
+        transform: translateX(-20px);
+    }
+    100% {
+        transform: translateX(280px);
+    }
+}
+
+.boot-bar {
+    width: 280px;
+    height: 22px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #5a5a5a #fff #fff #5a5a5a;
+    box-sizing: border-box;
+    padding: 2px;
+}
+
+.boot-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0000cc, #0066ff 50%, #3399ff 90%);
+    transition: width 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.boot-bar-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.15) 50%,
+        transparent 100%
+    );
+    background-size: 20px 100%;
+    animation: bootShine 1.2s linear infinite;
+}
+
+@keyframes bootShine {
+    0% {
+        transform: translateX(-20px);
+    }
+    100% {
+        transform: translateX(280px);
+    }
+}
+
+.boot-msg {
+    font-size: 13px;
+    color: #c0c0ff;
+    font-family: Tahoma, sans-serif;
+    min-height: 18px;
+    text-align: center;
+}
+
+.boot-legal {
+    position: absolute;
+    bottom: 24px;
+    font-size: 11px;
+    color: #6666aa;
+    font-family: var(--ff-ui);
+}
+
+/* ===== AMBIENT OVERLAY ===== */
+#ambientOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999990;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 55%,
+        rgba(0, 0, 10, 0.2) 100%
+    );
+}
+
+#ambientOverlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(0, 0, 20, 0.02) 1px,
+        rgba(0, 0, 20, 0.02) 2px
+    );
+}
+
+#ambientOverlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
 }
